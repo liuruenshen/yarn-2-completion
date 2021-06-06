@@ -141,6 +141,27 @@ expand_yarn_workspace_command_list() {
 }
 
 generate_yarn_command_list() {
+  declare -i show_yarn_version_error=$1
+
+  if [[ ${#YARN_COMMAND_WORDS_REFS[@]} -ne 0 ]]; then
+    return 0
+  fi
+
+  if ! command -v yarn > /dev/null 2>&1; then
+    echo "Yarn executable is not found, yarn-2-completion won't activate" 1>&2
+    return 1
+  fi
+
+  local yarn_version
+  yarn_version=$(yarn --version)
+
+  if [[ ${yarn_version%%.*} -lt 2 ]]; then
+    if [[ $show_yarn_version_error -eq 1 ]]; then
+      echo "yarn-2-completion only supports Yarn 2+" 1>&2
+    fi
+    return 1
+  fi
+
   declare -i word_is_flag=0
   declare -i previous_word_is_flag=0
   declare -i store_yarn_command_index=0
@@ -411,6 +432,7 @@ yc_run_yarn_completion() {
 }
 
 yc_yarn_completion_for_complete() {
+  generate_yarn_command_list
   yc_run_yarn_completion "$2"
 }
 
@@ -454,7 +476,7 @@ yc_yarn_completion_main() {
     IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT=0
   fi
 
-  generate_yarn_command_list
+  generate_yarn_command_list 1
   get_yarn_workspace_packages
 
   complete -F yc_yarn_completion_for_complete -o bashdefault -o default yarn
