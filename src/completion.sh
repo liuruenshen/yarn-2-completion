@@ -1,26 +1,107 @@
 #!/usr/bin/env bash
 
-YC_COMPLETION_SCRIPT_LOCATION=$(dirname "${BASH_SOURCE[0]}")
+Y2C_COMPLETION_SCRIPT_LOCATION=$(dirname "${BASH_SOURCE[0]}")
 
-YC_COMMAND_WORDS_VARNAME_PREFIX="YARN_COMMAND_WORDS_"
-YC_COMMAND_END_MARK="yarn_command_end_mark_for_prorcesing_last_word"
-YC_ALTRENATIVE_FLAG_SYMBOL="|"
-YC_FLAG_GROUP_CONCAT_SYMBOL=","
-YC_VARIABLE_SYMBOL='<'
-YC_ROOT_PACKAGE_PATH="./package.json"
-YC_YARN_WORD_IS_TOKEN=1
-YC_YARN_WORD_IS_FLAG=2
-YC_YARN_WORD_IS_VARIABLE=3
+Y2C_COMMAND_WORDS_VARNAME_PREFIX="YARN_COMMAND_WORDS_"
 
-declare -a YC_TMP_IDENTIFIED_WORDS=()
+Y2C_COMMAND_END_MARK="yarn_command_end_mark_for_prorcesing_last_word"
+Y2C_ALTRENATIVE_FLAG_SYMBOL="|"
+Y2C_FLAG_GROUP_CONCAT_SYMBOL=","
+Y2C_VARIABLE_SYMBOL='<'
+Y2C_ROOT_PACKAGE_PATH="./package.json"
+Y2C_YARN_WORD_IS_TOKEN=1
+Y2C_YARN_WORD_IS_FLAG=2
+Y2C_YARN_WORD_IS_VARIABLE=3
+
+declare -a Y2C_TMP_IDENTIFIED_WORDS=()
 declare -a CURRENT_YARN_ALTERNATIVE_FLAGS=()
 declare -a YARN_COMMAND_WORDS_REFS=()
 
-YC_WORKSPACE_PACKAGES=
-YC_TMP_EXPANDED_VAR_RESULT=
+Y2C_WORKSPACE_PACKAGES=
+Y2C_TMP_EXPANDED_VAR_RESULT=
+Y2C_REPO_ROOT_YARN_VERSION_VAR_NAME_PREFIX="Y2C_REPO_YARN_VERSION_"
 
 IS_SUPPORT_DECLARE_N_FLAG=1
 IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT=1
+
+Y2C_CURRENT_ROOT_REPO_PATH=
+declare -i Y2C_IS_YARN_2_REPO=0
+
+y2c_setup() {
+  declare -i is_yarn_2=0
+  declare -i subscript=0
+
+  local root_repo_path="${1:-"$PWD"}"
+  local var_name=""
+  local available_paths=()
+  local checking_path=""
+
+  if [[ -f "${root_repo_path}/yarn.lock" ]]; then
+    Y2C_CURRENT_ROOT_REPO_PATH="${root_repo_path}"
+    var_name="${Y2C_REPO_ROOT_YARN_VERSION_VAR_NAME_PREFIX}"$(y2c_get_var_name "$root_repo_path")
+    
+    if [[ -n ${!var_name} ]]; then
+      Y2C_IS_YARN_2_REPO=${!var_name}
+    elif command -v yarn > /dev/null 2>&1; then
+      y2c_is_yarn_2
+      is_yarn_2=$(($? ^ 1))
+
+      Y2C_IS_YARN_2_REPO=$is_yarn_2
+
+      if [[ $IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
+        declare -n yarn_version_ref="${var_name}"
+        yarn_version_ref=$is_yarn_2
+      else
+        eval "$var_name=$is_yarn_2"
+      fi
+    fi
+
+    if [[ Y2C_IS_YARN_2_REPO -eq 1 ]]; then
+      y2c_generate_yarn_command_list
+      get_yarn_workspace_packages
+    fi
+
+    return 0
+  elif [[ -z $1 ]] && [[ -f "./package.json" ]] && ! [[ $PWD = "${Y2C_CURRENT_ROOT_REPO_PATH}"* ]]; then
+    checking_path="${PWD}"
+    while [[ -n $checking_path ]]; do
+      checking_path="${checking_path%/*}"
+      available_paths+=("${checking_path}")
+    done
+    
+    [[ $IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT -eq 1 ]] && subscript=-1 || { subscript=${#available_paths[@]}; : $(( subscript-- )); }
+    unset available_paths[$subscript]
+
+    for checking_path in "${available_paths[@]}"; do
+      if y2c_setup "${checking_path}"; then
+        return 0
+      fi
+    done
+
+    return 1
+  fi
+
+  return 1
+}
+
+cd() {
+  builtin cd "$@"
+  y2c_setup
+}
+
+pushd() {
+  builtin pushd "$@"
+  y2c_setup
+}
+
+popd() {
+  builtin popd "$@"
+  y2c_setup
+}
+
+y2c_set_path_yarn_version() {
+  :
+}
 
 get_yarn_workspace_packages() {
   local package_json_path
@@ -29,11 +110,11 @@ get_yarn_workspace_packages() {
   local package_name
   local packages_path
 
-  if ! [[ -f "${YC_ROOT_PACKAGE_PATH}" ]]; then
+  if ! [[ -f "${Y2C_ROOT_PACKAGE_PATH}" ]]; then
     return 0
   fi
 
-  packages_path=($(node -e "console.log((require('${YC_ROOT_PACKAGE_PATH}').workspaces || []).join(' '))"))
+  packages_path=($(node -e "console.log((require('${Y2C_ROOT_PACKAGE_PATH}').workspaces || []).join(' '))"))
 
   for package_path in "${packages_path[@]}"; do
     package_json_path="./${package_path}/package.json"
@@ -43,9 +124,9 @@ get_yarn_workspace_packages() {
     fi
   done
 
-  YC_WORKSPACE_PACKAGES=$(node -e "${node_commands}")
+  Y2C_WORKSPACE_PACKAGES=$(node -e "${node_commands}")
 
-  package_names=($YC_WORKSPACE_PACKAGES)
+  package_names=($Y2C_WORKSPACE_PACKAGES)
 
   for (( index=0; index<${#package_names[@]}; ++index )); do
     set_package_name_path_map "${package_names[$index]}" "${packages_path[$index]}"
@@ -53,32 +134,32 @@ get_yarn_workspace_packages() {
 }
 
 expand_workspaceName_variable() {
-  YC_TMP_EXPANDED_VAR_RESULT="$YC_WORKSPACE_PACKAGES"
+  Y2C_TMP_EXPANDED_VAR_RESULT="$Y2C_WORKSPACE_PACKAGES"
 }
 
 expand_commandName_variable() {
   :
 }
 
-yc_get_expand_var() {
+y2c_get_expand_var() {
   local var_name="$1"
   local var_name_func_name=""
   
   shift 1
 
-  YC_TMP_EXPANDED_VAR_RESULT=""
+  Y2C_TMP_EXPANDED_VAR_RESULT=""
   
-  if ! [[ $var_name = "$YC_VARIABLE_SYMBOL"* ]]; then
-    YC_TMP_EXPANDED_VAR_RESULT="${var_name}"
+  if ! [[ $var_name = "$Y2C_VARIABLE_SYMBOL"* ]]; then
+    Y2C_TMP_EXPANDED_VAR_RESULT="${var_name}"
     return 0
   fi
 
-  var_name_func_name="expand_${var_name#$YC_VARIABLE_SYMBOL}_variable"
+  var_name_func_name="expand_${var_name#$Y2C_VARIABLE_SYMBOL}_variable"
 
   if declare -f "${var_name_func_name}" > /dev/null 2>&1; then
     $var_name_func_name "$@"
   else
-    YC_TMP_EXPANDED_VAR_RESULT="${var_name}"
+    Y2C_TMP_EXPANDED_VAR_RESULT="${var_name}"
   fi
 }
 
@@ -126,7 +207,7 @@ expand_yarn_workspace_command_list() {
       fi
     done
 
-    store_yarn_command_var_name="${YC_COMMAND_WORDS_VARNAME_PREFIX}${store_yarn_command_index}"
+    store_yarn_command_var_name="${Y2C_COMMAND_WORDS_VARNAME_PREFIX}${store_yarn_command_index}"
     store_yarn_command_index+=1
 
     YARN_COMMAND_WORDS_REFS[${#YARN_COMMAND_WORDS_REFS[@]}]="${store_yarn_command_var_name}"
@@ -140,25 +221,24 @@ expand_yarn_workspace_command_list() {
   done
 }
 
-generate_yarn_command_list() {
-  declare -i show_yarn_version_error=$1
+y2c_is_yarn_2() {
+  local yarn_version
+  yarn_version=$(yarn --version)
 
+  if [[ ${yarn_version%%.*} -lt 2 ]]; then
+    return 1
+  fi
+
+  return 0
+}
+
+y2c_generate_yarn_command_list() {
   if [[ ${#YARN_COMMAND_WORDS_REFS[@]} -ne 0 ]]; then
     return 0
   fi
 
   if ! command -v yarn > /dev/null 2>&1; then
     echo "Yarn executable is not found, yarn-2-completion won't activate" 1>&2
-    return 1
-  fi
-
-  local yarn_version
-  yarn_version=$(yarn --version)
-
-  if [[ ${yarn_version%%.*} -lt 2 ]]; then
-    if [[ $show_yarn_version_error -eq 1 ]]; then
-      echo "yarn-2-completion only supports Yarn 2+" 1>&2
-    fi
     return 1
   fi
 
@@ -183,7 +263,7 @@ generate_yarn_command_list() {
     previous_word_is_flag=0
 
     IFS="${ORI_IFS}"
-    instruction+=" ${YC_COMMAND_END_MARK}"
+    instruction+=" ${Y2C_COMMAND_END_MARK}"
     yarn_command_broken_words=($instruction)
 
     yarn_command_words=()
@@ -195,7 +275,7 @@ generate_yarn_command_list() {
         word_is_flag=0
       fi
 
-      broken_word=${broken_word//,/$YC_ALTRENATIVE_FLAG_SYMBOL}
+      broken_word=${broken_word//,/$Y2C_ALTRENATIVE_FLAG_SYMBOL}
 
       if [[ word_is_flag -eq 1 ]]; then
         if [[ $previous_word_is_flag -eq 1 ]]; then
@@ -214,7 +294,7 @@ generate_yarn_command_list() {
 
           if [[ $previous_word_is_flag -eq 1 ]]; then
             [[ $IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT -eq 1 ]] && subscript=-1 || { subscript=${#yarn_command_words[@]}; : $(( subscript-- )); }
-            yarn_command_words[subscript]+="${YC_FLAG_GROUP_CONCAT_SYMBOL}${assembling_flag}"
+            yarn_command_words[subscript]+="${Y2C_FLAG_GROUP_CONCAT_SYMBOL}${assembling_flag}"
       
           else
             yarn_command_words+=("${assembling_flag}")
@@ -236,7 +316,7 @@ generate_yarn_command_list() {
           done
         fi
 
-        if ! [[ $broken_word = "$YC_COMMAND_END_MARK" ]]; then
+        if ! [[ $broken_word = "$Y2C_COMMAND_END_MARK" ]]; then
           broken_word="${broken_word%]}"
           broken_word="${broken_word%>}"
 
@@ -246,7 +326,7 @@ generate_yarn_command_list() {
       fi
     done
 
-    store_yarn_command_var_name="${YC_COMMAND_WORDS_VARNAME_PREFIX}${store_yarn_command_index}"
+    store_yarn_command_var_name="${Y2C_COMMAND_WORDS_VARNAME_PREFIX}${store_yarn_command_index}"
     store_yarn_command_index+=1
 
     YARN_COMMAND_WORDS_REFS[${#YARN_COMMAND_WORDS_REFS[@]}]="${store_yarn_command_var_name}"
@@ -266,23 +346,23 @@ generate_yarn_command_list() {
   expand_yarn_workspace_command_list "$yarn_command_workspace_ref" $store_yarn_command_index
 }
 
-yc_get_identified_word() {
+y2c_get_identified_word() {
   local token="$1"
   local ORI_IFS="${IFS}"
 
   if [[ $token = \[* ]]; then
     token="${token#[}"
-    IFS="${YC_FLAG_GROUP_CONCAT_SYMBOL}"
-    YC_TMP_IDENTIFIED_WORDS=($token)
+    IFS="${Y2C_FLAG_GROUP_CONCAT_SYMBOL}"
+    Y2C_TMP_IDENTIFIED_WORDS=($token)
     IFS="${ORI_IFS}"
 
-    return $YC_YARN_WORD_IS_FLAG
+    return $Y2C_YARN_WORD_IS_FLAG
   elif [[ $token = \<* ]]; then
-    YC_TMP_IDENTIFIED_WORDS=("${token}")
-    return $YC_YARN_WORD_IS_VARIABLE
+    Y2C_TMP_IDENTIFIED_WORDS=("${token}")
+    return $Y2C_YARN_WORD_IS_VARIABLE
   else
-    YC_TMP_IDENTIFIED_WORDS=("${token}")
-    return $YC_YARN_WORD_IS_TOKEN
+    Y2C_TMP_IDENTIFIED_WORDS=("${token}")
+    return $Y2C_YARN_WORD_IS_TOKEN
   fi
 }
 
@@ -290,7 +370,7 @@ set_yarn_alternative_flags() {
   local token="$1"
   local ORI_IFS="${IFS}"
 
-  IFS="${YC_ALTRENATIVE_FLAG_SYMBOL}"
+  IFS="${Y2C_ALTRENATIVE_FLAG_SYMBOL}"
   CURRENT_YARN_ALTERNATIVE_FLAGS=($token)
   IFS="$ORI_IFS"
 }
@@ -307,7 +387,7 @@ add_word_to_comreply() {
   fi
 }
 
-yc_add_word_candidates() {
+y2c_add_word_candidates() {
   declare -i yarn_command_words_index=$1
   local completing_word="$2"
 
@@ -319,18 +399,18 @@ yc_add_word_candidates() {
   local flag
   local flag_remaining_chars
 
-  yc_get_identified_word "${yarn_command_words[$yarn_command_words_index]}"
+  y2c_get_identified_word "${yarn_command_words[$yarn_command_words_index]}"
   word_type=$?
 
-  copied_identified_words=("${YC_TMP_IDENTIFIED_WORDS[@]}")
+  copied_identified_words=("${Y2C_TMP_IDENTIFIED_WORDS[@]}")
 
   for processing_word in "${copied_identified_words[@]}"; do
 
     case "$word_type" in
-      "$YC_YARN_WORD_IS_TOKEN")
+      "$Y2C_YARN_WORD_IS_TOKEN")
         add_word_to_comreply "${processing_word}" "${completing_word}"
         ;;
-      "$YC_YARN_WORD_IS_FLAG")
+      "$Y2C_YARN_WORD_IS_FLAG")
         set_yarn_alternative_flags "${processing_word}"
         copied_flags=("${CURRENT_YARN_ALTERNATIVE_FLAGS[@]}")
 
@@ -351,9 +431,9 @@ yc_add_word_candidates() {
           done
         fi
         ;;
-      "$YC_YARN_WORD_IS_VARIABLE")
-        yc_get_expand_var "${processing_word}" "${completing_word}"
-        expanded_vars=(${YC_TMP_EXPANDED_VAR_RESULT})
+      "$Y2C_YARN_WORD_IS_VARIABLE")
+        y2c_get_expand_var "${processing_word}" "${completing_word}"
+        expanded_vars=(${Y2C_TMP_EXPANDED_VAR_RESULT})
 
         for expanded_var in "${expanded_vars[@]}"; do
           add_word_to_comreply "${expanded_var}" "${completing_word}";
@@ -363,7 +443,7 @@ yc_add_word_candidates() {
   done
 }
 
-yc_run_yarn_completion() {
+y2c_run_yarn_completion() {
   if [[ $IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
     declare -n yarn_command_words
   else
@@ -390,19 +470,19 @@ yc_run_yarn_completion() {
 
 
     for (( comp_word_index=0; comp_word_index<$last_word_index; ++comp_word_index )); do
-      yc_get_identified_word "${yarn_command_words[$comp_word_index]}"
+      y2c_get_identified_word "${yarn_command_words[$comp_word_index]}"
       word_type=$?
 
-      copied_identified_words=("${YC_TMP_IDENTIFIED_WORDS[@]}")
+      copied_identified_words=("${Y2C_TMP_IDENTIFIED_WORDS[@]}")
 
       for processing_word in "${copied_identified_words[@]}"; do
         case "$word_type" in
-          "$YC_YARN_WORD_IS_TOKEN")
+          "$Y2C_YARN_WORD_IS_TOKEN")
             if [[ ${COMP_WORDS[$comp_word_index]} = "${processing_word}" ]]; then
               continue 2
             fi
             ;;
-          "$YC_YARN_WORD_IS_FLAG")
+          "$Y2C_YARN_WORD_IS_FLAG")
             set_yarn_alternative_flags "${processing_word}"
             for flag in "${CURRENT_YARN_ALTERNATIVE_FLAGS[@]}"; do
               if [[ ${COMP_WORDS[$comp_word_index]} = "${flag}" ]]; then
@@ -410,9 +490,9 @@ yc_run_yarn_completion() {
               fi
             done
             ;;
-          "$YC_YARN_WORD_IS_VARIABLE")
-            yc_get_expand_var "${processing_word}" "${completing_word}"
-            expanded_vars=(${YC_TMP_EXPANDED_VAR_RESULT})
+          "$Y2C_YARN_WORD_IS_VARIABLE")
+            y2c_get_expand_var "${processing_word}" "${completing_word}"
+            expanded_vars=(${Y2C_TMP_EXPANDED_VAR_RESULT})
             for expanded_var in "${expanded_vars[@]}"; do
               if [[ ${COMP_WORDS[$comp_word_index]} = "${expanded_var}" ]]; then
                 continue 3
@@ -425,18 +505,21 @@ yc_run_yarn_completion() {
       continue 2
     done
 
-    yc_add_word_candidates $last_word_index "${completing_word}"
+    y2c_add_word_candidates $last_word_index "${completing_word}"
   done
 
   return 0
 }
 
-yc_yarn_completion_for_complete() {
-  generate_yarn_command_list
-  yc_run_yarn_completion "$2"
+y2c_yarn_completion_for_complete() {
+  if [[ $Y2C_IS_YARN_2_REPO -eq 0 ]]; then
+    return 0
+  fi
+
+  y2c_run_yarn_completion "$2"
 }
 
-get_var_name_for_package_name() {
+y2c_get_var_name() {
   local data
   data=$(echo "$1" | base64)
   echo ${data//=/_}
@@ -447,7 +530,7 @@ set_package_name_path_map() {
   local package_path="$2"
   local var_name_for_package_name
 
-  var_name_for_package_name=$(get_var_name_for_package_name "$package_name")
+  var_name_for_package_name=$(y2c_get_var_name "$package_name")
   if [[ IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
     declare -n package_name_path_ref="$var_name_for_package_name"
     package_name_path_ref="$package_path"
@@ -456,7 +539,7 @@ set_package_name_path_map() {
   fi
 }
 
-yc_yarn_completion_main() {
+y2c_yarn_completion_main() {
 
   if [ -z "$BASH_VERSINFO" ]; then
     echo "Sorry, the yarn completion only supports BASH" 1>&2
@@ -472,14 +555,13 @@ yc_yarn_completion_main() {
     IS_SUPPORT_DECLARE_N_FLAG=0
   fi
 
-  if ! "${YC_COMPLETION_SCRIPT_LOCATION}/syntax-checker/negative-subscript.sh" > /dev/null 2>&1; then
+  if ! "${Y2C_COMPLETION_SCRIPT_LOCATION}/syntax-checker/negative-subscript.sh" > /dev/null 2>&1; then
     IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT=0
   fi
 
-  generate_yarn_command_list 1
-  get_yarn_workspace_packages
+  y2c_setup
 
-  complete -F yc_yarn_completion_for_complete -o bashdefault -o default yarn
+  complete -F y2c_yarn_completion_for_complete -o bashdefault -o default yarn
 }
 
-yc_yarn_completion_main
+y2c_yarn_completion_main
