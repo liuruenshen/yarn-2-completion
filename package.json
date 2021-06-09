@@ -10,5 +10,8 @@
   ],
   "repository": "git@github.com:dustin71728/yarn-completion.git",
   "author": "kiwi <kiwi71728@icloud.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "husky": "^6.0.0"
+  }
 }
