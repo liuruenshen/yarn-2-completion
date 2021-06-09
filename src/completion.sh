@@ -50,6 +50,7 @@ y2c_setup() {
 
       if [[ $IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
         declare -n yarn_version_ref="${var_name}"
+        # shellcheck disable=SC2034
         yarn_version_ref=$is_yarn_2
       else
         eval "$var_name=$is_yarn_2"
@@ -69,11 +70,12 @@ y2c_setup() {
       available_paths+=("${checking_path}")
     done
 
+    # shellcheck disable=SC2015
     [[ $IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT -eq 1 ]] && subscript=-1 || {
       subscript=${#available_paths[@]}
       : $((subscript--))
     }
-    unset available_paths[$subscript]
+    unset "available_paths[$subscript]"
 
     for checking_path in "${available_paths[@]}"; do
       if y2c_setup "${checking_path}"; then
@@ -88,18 +90,15 @@ y2c_setup() {
 }
 
 cd() {
-  builtin cd "$@"
-  y2c_setup
+  builtin cd "$@" && y2c_setup
 }
 
 pushd() {
-  builtin pushd "$@"
-  y2c_setup
+  builtin pushd "$@" && y2c_setup
 }
 
 popd() {
-  builtin popd "$@"
-  y2c_setup
+  builtin popd "$@" && y2c_setup
 }
 
 y2c_set_path_yarn_version() {
@@ -117,6 +116,7 @@ get_yarn_workspace_packages() {
     return 0
   fi
 
+  # shellcheck disable=SC2207
   packages_path=($(node -e "console.log((require('${Y2C_ROOT_PACKAGE_PATH}').workspaces || []).join(' '))"))
 
   for package_path in "${packages_path[@]}"; do
@@ -127,9 +127,10 @@ get_yarn_workspace_packages() {
     fi
   done
 
-  Y2C_WORKSPACE_PACKAGES=$(node -e "${node_commands}")
+  # shellcheck disable=SC2207
+  package_names=($(node -e "${node_commands}"))
 
-  package_names=($Y2C_WORKSPACE_PACKAGES)
+  Y2C_WORKSPACE_PACKAGES="${package_names[*]}"
 
   for ((index = 0; index < ${#package_names[@]}; ++index)); do
     set_package_name_path_map "${package_names[$index]}" "${packages_path[$index]}"
@@ -215,9 +216,9 @@ expand_yarn_workspace_command_list() {
     YARN_COMMAND_WORDS_REFS[${#YARN_COMMAND_WORDS_REFS[@]}]="${store_yarn_command_var_name}"
     if [[ $IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
       declare -n store_yarn_command_ref="${store_yarn_command_var_name}"
+      # shellcheck disable=SC2034
       store_yarn_command_ref=("${workspace_recursive_command[@]}")
     else
-      local store_yarn_command_ref="${store_yarn_command_var_name}"
       eval "$store_yarn_command_var_name=("'"''${workspace_recursive_command[@]}''"'")"
     fi
   done
@@ -252,7 +253,6 @@ y2c_generate_yarn_command_list() {
   local assembling_flag=""
   local yarn_command_broken_words
   local yarn_command_words
-  local flags_num=0
   local store_yarn_command_var_name
   local broken_word=""
   local yarn_command_workspace_ref
@@ -266,7 +266,7 @@ y2c_generate_yarn_command_list() {
 
     IFS="${ORI_IFS}"
     instruction+=" ${Y2C_COMMAND_END_MARK}"
-    yarn_command_broken_words=($instruction)
+    IFS=" " read -r -a yarn_command_broken_words <<<"$instruction"
 
     yarn_command_words=()
 
@@ -290,11 +290,12 @@ y2c_generate_yarn_command_list() {
           assembling_flag="${broken_word}"
         fi
 
-        if [[ $broken_word = *\] ]]; then
+        if [[ $broken_word = *$'\x5d' ]]; then
           assembling_flag="${assembling_flag%]}"
           assembling_flag="${assembling_flag%>}"
 
           if [[ $previous_word_is_flag -eq 1 ]]; then
+            # shellcheck disable=SC2015
             [[ $IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT -eq 1 ]] && subscript=-1 || {
               subscript=${#yarn_command_words[@]}
               : $((subscript--))
@@ -310,15 +311,16 @@ y2c_generate_yarn_command_list() {
         fi
       else
         if [[ $previous_word_is_flag -eq 1 ]]; then
+          # shellcheck disable=SC2015
           [[ $IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT -eq 1 ]] && subscript=-1 || {
             subscript=${#yarn_command_words[@]}
             : $((subscript--))
           }
-          IFS=','
-          flags=(${yarn_command_words[subscript]})
-          IFS="$ORI_IFS"
+
+          IFS=',' read -r -a flags <<<"${yarn_command_words[subscript]}"
 
           for ((i = 0; i < ${#flags[@]}; ++i)); do
+            # shellcheck disable=SC2015
             [[ $IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT -eq 1 ]] && subscript=-1 || {
               subscript=${#yarn_command_words[@]}
               : $((subscript--))
@@ -343,8 +345,9 @@ y2c_generate_yarn_command_list() {
     YARN_COMMAND_WORDS_REFS[${#YARN_COMMAND_WORDS_REFS[@]}]="${store_yarn_command_var_name}"
 
     if [[ IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
-      declare -n store_yarn_command_ref="${store_yarn_command_var_name}"
-      store_yarn_command_ref=("${yarn_command_words[@]}")
+      declare -n store_yarn_command_words_ref="${store_yarn_command_var_name}"
+      # shellcheck disable=SC2034
+      store_yarn_command_words_ref=("${yarn_command_words[@]}")
     else
       eval "$store_yarn_command_var_name=("'"''${yarn_command_words[@]}''"'")"
     fi
@@ -363,9 +366,7 @@ y2c_get_identified_word() {
 
   if [[ $token = \[* ]]; then
     token="${token#[}"
-    IFS="${Y2C_FLAG_GROUP_CONCAT_SYMBOL}"
-    Y2C_TMP_IDENTIFIED_WORDS=($token)
-    IFS="${ORI_IFS}"
+    IFS="${Y2C_FLAG_GROUP_CONCAT_SYMBOL}" read -r -a Y2C_TMP_IDENTIFIED_WORDS <<<"$token"
 
     return $Y2C_YARN_WORD_IS_FLAG
   elif [[ $token = \<* ]]; then
@@ -381,9 +382,7 @@ set_yarn_alternative_flags() {
   local token="$1"
   local ORI_IFS="${IFS}"
 
-  IFS="${Y2C_ALTRENATIVE_FLAG_SYMBOL}"
-  CURRENT_YARN_ALTERNATIVE_FLAGS=($token)
-  IFS="$ORI_IFS"
+  IFS="${Y2C_ALTRENATIVE_FLAG_SYMBOL}" read -r -a CURRENT_YARN_ALTERNATIVE_FLAGS <<<"$token"
 }
 
 add_word_to_comreply() {
@@ -444,7 +443,8 @@ y2c_add_word_candidates() {
       ;;
     "$Y2C_YARN_WORD_IS_VARIABLE")
       y2c_get_expand_var "${processing_word}" "${completing_word}"
-      expanded_vars=(${Y2C_TMP_EXPANDED_VAR_RESULT})
+
+      IFS=" " read -r -a expanded_vars <<<"$Y2C_TMP_EXPANDED_VAR_RESULT"
 
       for expanded_var in "${expanded_vars[@]}"; do
         add_word_to_comreply "${expanded_var}" "${completing_word}"
@@ -464,7 +464,6 @@ y2c_run_yarn_completion() {
   local completing_word="$1"
   local word_num="${#COMP_WORDS[@]}"
   local last_word_index=$((--word_num))
-  local preceding_word_index=$((last_word_index - 1))
   local expanded_vars=()
   local expanded_var
   local word_type
@@ -479,7 +478,7 @@ y2c_run_yarn_completion() {
       yarn_command_words=("${!yarn_command_words}")
     fi
 
-    for ((comp_word_index = 0; comp_word_index < $last_word_index; ++comp_word_index)); do
+    for ((comp_word_index = 0; comp_word_index < last_word_index; ++comp_word_index)); do
       y2c_get_identified_word "${yarn_command_words[$comp_word_index]}"
       word_type=$?
 
@@ -502,7 +501,8 @@ y2c_run_yarn_completion() {
           ;;
         "$Y2C_YARN_WORD_IS_VARIABLE")
           y2c_get_expand_var "${processing_word}" "${completing_word}"
-          expanded_vars=(${Y2C_TMP_EXPANDED_VAR_RESULT})
+
+          IFS=" " read -r -a expanded_vars <<<"$Y2C_TMP_EXPANDED_VAR_RESULT"
           for expanded_var in "${expanded_vars[@]}"; do
             if [[ ${COMP_WORDS[$comp_word_index]} = "${expanded_var}" ]]; then
               continue 3
@@ -532,7 +532,7 @@ y2c_yarn_completion_for_complete() {
 y2c_get_var_name() {
   local data
   data=$(echo "$1" | base64)
-  echo ${data//=/_}
+  echo "${data//=/_}"
 }
 
 set_package_name_path_map() {
@@ -543,6 +543,7 @@ set_package_name_path_map() {
   var_name_for_package_name=$(y2c_get_var_name "$package_name")
   if [[ IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
     declare -n package_name_path_ref="$var_name_for_package_name"
+    # shellcheck disable=SC2034
     package_name_path_ref="$package_path"
   else
     eval "$var_name_for_package_name="'"'"${package_path}"'"'
@@ -551,7 +552,7 @@ set_package_name_path_map() {
 
 y2c_yarn_completion_main() {
 
-  if [ -z "$BASH_VERSINFO" ]; then
+  if [ -z "${BASH_VERSINFO[0]}" ]; then
     echo "Sorry, the yarn completion only supports BASH" 1>&2
     return 1
   fi
@@ -561,6 +562,7 @@ y2c_yarn_completion_main() {
     return 1
   fi
 
+  # shellcheck disable=SC2034
   if ! declare -n declare_n_flag_test >/dev/null 2>&1; then
     IS_SUPPORT_DECLARE_N_FLAG=0
   fi
