@@ -39,10 +39,10 @@ y2c_setup() {
   if [[ -f "${root_repo_path}/yarn.lock" ]]; then
     Y2C_CURRENT_ROOT_REPO_PATH="${root_repo_path}"
     var_name="${Y2C_REPO_ROOT_YARN_VERSION_VAR_NAME_PREFIX}"$(y2c_get_var_name "$root_repo_path")
-    
+
     if [[ -n ${!var_name} ]]; then
       Y2C_IS_YARN_2_REPO=${!var_name}
-    elif command -v yarn > /dev/null 2>&1; then
+    elif command -v yarn >/dev/null 2>&1; then
       y2c_is_yarn_2
       is_yarn_2=$(($? ^ 1))
 
@@ -68,8 +68,11 @@ y2c_setup() {
       checking_path="${checking_path%/*}"
       available_paths+=("${checking_path}")
     done
-    
-    [[ $IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT -eq 1 ]] && subscript=-1 || { subscript=${#available_paths[@]}; : $(( subscript-- )); }
+
+    [[ $IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT -eq 1 ]] && subscript=-1 || {
+      subscript=${#available_paths[@]}
+      : $((subscript--))
+    }
     unset available_paths[$subscript]
 
     for checking_path in "${available_paths[@]}"; do
@@ -128,7 +131,7 @@ get_yarn_workspace_packages() {
 
   package_names=($Y2C_WORKSPACE_PACKAGES)
 
-  for (( index=0; index<${#package_names[@]}; ++index )); do
+  for ((index = 0; index < ${#package_names[@]}; ++index)); do
     set_package_name_path_map "${package_names[$index]}" "${packages_path[$index]}"
   done
 }
@@ -144,11 +147,11 @@ expand_commandName_variable() {
 y2c_get_expand_var() {
   local var_name="$1"
   local var_name_func_name=""
-  
+
   shift 1
 
   Y2C_TMP_EXPANDED_VAR_RESULT=""
-  
+
   if ! [[ $var_name = "$Y2C_VARIABLE_SYMBOL"* ]]; then
     Y2C_TMP_EXPANDED_VAR_RESULT="${var_name}"
     return 0
@@ -156,7 +159,7 @@ y2c_get_expand_var() {
 
   var_name_func_name="expand_${var_name#$Y2C_VARIABLE_SYMBOL}_variable"
 
-  if declare -f "${var_name_func_name}" > /dev/null 2>&1; then
+  if declare -f "${var_name_func_name}" >/dev/null 2>&1; then
     $var_name_func_name "$@"
   else
     Y2C_TMP_EXPANDED_VAR_RESULT="${var_name}"
@@ -173,7 +176,7 @@ expand_yarn_workspace_command_list() {
   fi
 
   declare -i store_yarn_command_index=$2
-  
+
   local word
   local workspace_recursive_command
   local store_yarn_command_var_name
@@ -190,8 +193,7 @@ expand_yarn_workspace_command_list() {
       yarn_command_words_ref=("${!yarn_command_words_ref}")
     fi
 
-
-    if [[ ${yarn_command_words_ref[*]} = "yarn workspace"* ]] || \
+    if [[ ${yarn_command_words_ref[*]} = "yarn workspace"* ]] ||
       [[ ${yarn_command_words_ref[*]} = "yarn workspaces"* ]]; then
       continue
     fi
@@ -237,7 +239,7 @@ y2c_generate_yarn_command_list() {
     return 0
   fi
 
-  if ! command -v yarn > /dev/null 2>&1; then
+  if ! command -v yarn >/dev/null 2>&1; then
     echo "Yarn executable is not found, yarn-2-completion won't activate" 1>&2
     return 1
   fi
@@ -271,7 +273,7 @@ y2c_generate_yarn_command_list() {
     for broken_word in "${yarn_command_broken_words[@]}"; do
       if [[ $broken_word = \[* ]] || [[ -n $assembling_flag ]]; then
         word_is_flag=1
-      else 
+      else
         word_is_flag=0
       fi
 
@@ -293,9 +295,12 @@ y2c_generate_yarn_command_list() {
           assembling_flag="${assembling_flag%>}"
 
           if [[ $previous_word_is_flag -eq 1 ]]; then
-            [[ $IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT -eq 1 ]] && subscript=-1 || { subscript=${#yarn_command_words[@]}; : $(( subscript-- )); }
+            [[ $IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT -eq 1 ]] && subscript=-1 || {
+              subscript=${#yarn_command_words[@]}
+              : $((subscript--))
+            }
             yarn_command_words[subscript]+="${Y2C_FLAG_GROUP_CONCAT_SYMBOL}${assembling_flag}"
-      
+
           else
             yarn_command_words+=("${assembling_flag}")
           fi
@@ -305,13 +310,19 @@ y2c_generate_yarn_command_list() {
         fi
       else
         if [[ $previous_word_is_flag -eq 1 ]]; then
-          [[ $IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT -eq 1 ]] && subscript=-1 || { subscript=${#yarn_command_words[@]}; : $(( subscript-- )); }
+          [[ $IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT -eq 1 ]] && subscript=-1 || {
+            subscript=${#yarn_command_words[@]}
+            : $((subscript--))
+          }
           IFS=','
           flags=(${yarn_command_words[subscript]})
           IFS="$ORI_IFS"
 
-          for (( i=0; i<${#flags[@]}; ++i )); do
-            [[ $IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT -eq 1 ]] && subscript=-1 || { subscript=${#yarn_command_words[@]}; : $(( subscript-- )); }
+          for ((i = 0; i < ${#flags[@]}; ++i)); do
+            [[ $IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT -eq 1 ]] && subscript=-1 || {
+              subscript=${#yarn_command_words[@]}
+              : $((subscript--))
+            }
             yarn_command_words+=("${yarn_command_words[subscript]}")
           done
         fi
@@ -380,9 +391,9 @@ add_word_to_comreply() {
   local completing_word="$2"
   local current_command="${COMP_WORDS[*]}"
 
-  if ! [[ $current_command = *"$processing_word"* ]] && \
-    [[ ${processing_word} = "${completing_word}"* ]] && \
-    ! [[ ${COMPREPLY[*]}" " = *"$processing_word "* ]]; then 
+  if ! [[ $current_command = *"$processing_word"* ]] &&
+    [[ ${processing_word} = "${completing_word}"* ]] &&
+    ! [[ ${COMPREPLY[*]}" " = *"$processing_word "* ]]; then
     COMPREPLY+=("${processing_word}")
   fi
 }
@@ -407,38 +418,38 @@ y2c_add_word_candidates() {
   for processing_word in "${copied_identified_words[@]}"; do
 
     case "$word_type" in
-      "$Y2C_YARN_WORD_IS_TOKEN")
-        add_word_to_comreply "${processing_word}" "${completing_word}"
-        ;;
-      "$Y2C_YARN_WORD_IS_FLAG")
-        set_yarn_alternative_flags "${processing_word}"
-        copied_flags=("${CURRENT_YARN_ALTERNATIVE_FLAGS[@]}")
+    "$Y2C_YARN_WORD_IS_TOKEN")
+      add_word_to_comreply "${processing_word}" "${completing_word}"
+      ;;
+    "$Y2C_YARN_WORD_IS_FLAG")
+      set_yarn_alternative_flags "${processing_word}"
+      copied_flags=("${CURRENT_YARN_ALTERNATIVE_FLAGS[@]}")
 
+      for flag in "${copied_flags[@]}"; do
+        if [[ $current_command = *" $flag"* ]]; then
+          continue 2
+        fi
+      done
+
+      if [[ -z $completing_word ]]; then
+        COMPREPLY+=("${copied_flags[@]}")
+      else
         for flag in "${copied_flags[@]}"; do
-          if [[ $current_command = *" $flag"* ]]; then
-            continue 2;
+          flag_remaining_chars="${flag#$completing_word}"
+          if ! [[ ${flag} = "$flag_remaining_chars" ]]; then
+            COMPREPLY+=("${flag}")
           fi
         done
+      fi
+      ;;
+    "$Y2C_YARN_WORD_IS_VARIABLE")
+      y2c_get_expand_var "${processing_word}" "${completing_word}"
+      expanded_vars=(${Y2C_TMP_EXPANDED_VAR_RESULT})
 
-        if [[ -z $completing_word ]]; then
-          COMPREPLY+=("${copied_flags[@]}")
-        else
-          for flag in "${copied_flags[@]}"; do
-            flag_remaining_chars="${flag#$completing_word}"
-            if ! [[ ${flag} = "$flag_remaining_chars" ]]; then
-              COMPREPLY+=("${flag}")
-            fi
-          done
-        fi
-        ;;
-      "$Y2C_YARN_WORD_IS_VARIABLE")
-        y2c_get_expand_var "${processing_word}" "${completing_word}"
-        expanded_vars=(${Y2C_TMP_EXPANDED_VAR_RESULT})
-
-        for expanded_var in "${expanded_vars[@]}"; do
-          add_word_to_comreply "${expanded_var}" "${completing_word}";
-        done          
-        ;;
+      for expanded_var in "${expanded_vars[@]}"; do
+        add_word_to_comreply "${expanded_var}" "${completing_word}"
+      done
+      ;;
     esac
   done
 }
@@ -452,8 +463,8 @@ y2c_run_yarn_completion() {
 
   local completing_word="$1"
   local word_num="${#COMP_WORDS[@]}"
-  local last_word_index=$(( --word_num ))
-  local preceding_word_index=$(( last_word_index - 1 ))
+  local last_word_index=$((--word_num))
+  local preceding_word_index=$((last_word_index - 1))
   local expanded_vars=()
   local expanded_var
   local word_type
@@ -468,8 +479,7 @@ y2c_run_yarn_completion() {
       yarn_command_words=("${!yarn_command_words}")
     fi
 
-
-    for (( comp_word_index=0; comp_word_index<$last_word_index; ++comp_word_index )); do
+    for ((comp_word_index = 0; comp_word_index < $last_word_index; ++comp_word_index)); do
       y2c_get_identified_word "${yarn_command_words[$comp_word_index]}"
       word_type=$?
 
@@ -477,28 +487,28 @@ y2c_run_yarn_completion() {
 
       for processing_word in "${copied_identified_words[@]}"; do
         case "$word_type" in
-          "$Y2C_YARN_WORD_IS_TOKEN")
-            if [[ ${COMP_WORDS[$comp_word_index]} = "${processing_word}" ]]; then
-              continue 2
+        "$Y2C_YARN_WORD_IS_TOKEN")
+          if [[ ${COMP_WORDS[$comp_word_index]} = "${processing_word}" ]]; then
+            continue 2
+          fi
+          ;;
+        "$Y2C_YARN_WORD_IS_FLAG")
+          set_yarn_alternative_flags "${processing_word}"
+          for flag in "${CURRENT_YARN_ALTERNATIVE_FLAGS[@]}"; do
+            if [[ ${COMP_WORDS[$comp_word_index]} = "${flag}" ]]; then
+              continue 3
             fi
-            ;;
-          "$Y2C_YARN_WORD_IS_FLAG")
-            set_yarn_alternative_flags "${processing_word}"
-            for flag in "${CURRENT_YARN_ALTERNATIVE_FLAGS[@]}"; do
-              if [[ ${COMP_WORDS[$comp_word_index]} = "${flag}" ]]; then
-                continue 3
-              fi
-            done
-            ;;
-          "$Y2C_YARN_WORD_IS_VARIABLE")
-            y2c_get_expand_var "${processing_word}" "${completing_word}"
-            expanded_vars=(${Y2C_TMP_EXPANDED_VAR_RESULT})
-            for expanded_var in "${expanded_vars[@]}"; do
-              if [[ ${COMP_WORDS[$comp_word_index]} = "${expanded_var}" ]]; then
-                continue 3
-              fi         
-            done
-            ;;
+          done
+          ;;
+        "$Y2C_YARN_WORD_IS_VARIABLE")
+          y2c_get_expand_var "${processing_word}" "${completing_word}"
+          expanded_vars=(${Y2C_TMP_EXPANDED_VAR_RESULT})
+          for expanded_var in "${expanded_vars[@]}"; do
+            if [[ ${COMP_WORDS[$comp_word_index]} = "${expanded_var}" ]]; then
+              continue 3
+            fi
+          done
+          ;;
         esac
       done
 
@@ -551,11 +561,11 @@ y2c_yarn_completion_main() {
     return 1
   fi
 
-  if ! declare -n declare_n_flag_test > /dev/null 2>&1; then
+  if ! declare -n declare_n_flag_test >/dev/null 2>&1; then
     IS_SUPPORT_DECLARE_N_FLAG=0
   fi
 
-  if ! "${Y2C_COMPLETION_SCRIPT_LOCATION}/syntax-checker/negative-subscript.sh" > /dev/null 2>&1; then
+  if ! "${Y2C_COMPLETION_SCRIPT_LOCATION}/syntax-checker/negative-subscript.sh" >/dev/null 2>&1; then
     IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT=0
   fi
 
