@@ -249,7 +249,6 @@ y2c_generate_yarn_command_list() {
   declare -i previous_word_is_flag=0
   declare -i store_yarn_command_index=0
 
-  local ORI_IFS="${IFS}"
   local assembling_flag=""
   local yarn_command_broken_words
   local yarn_command_words
@@ -257,14 +256,15 @@ y2c_generate_yarn_command_list() {
   local broken_word=""
   local yarn_command_workspace_ref
   local subscript
+  local instructions=()
 
   local flags=()
 
-  IFS=$'\n'
-  for instruction in $(yarn --help | grep -E '^[[:space:]]+yarn'); do
+  while IFS='' read -r line; do instructions+=("$line"); done <<<"$(yarn --help | grep -E '^[[:space:]]+yarn')"
+
+  for instruction in "${instructions[@]}"; do
     previous_word_is_flag=0
 
-    IFS="${ORI_IFS}"
     instruction+=" ${Y2C_COMMAND_END_MARK}"
     IFS=" " read -r -a yarn_command_broken_words <<<"$instruction"
 
@@ -362,7 +362,6 @@ y2c_generate_yarn_command_list() {
 
 y2c_get_identified_word() {
   local token="$1"
-  local ORI_IFS="${IFS}"
 
   if [[ $token = \[* ]]; then
     token="${token#[}"
@@ -380,7 +379,6 @@ y2c_get_identified_word() {
 
 set_yarn_alternative_flags() {
   local token="$1"
-  local ORI_IFS="${IFS}"
 
   IFS="${Y2C_ALTRENATIVE_FLAG_SYMBOL}" read -r -a CURRENT_YARN_ALTERNATIVE_FLAGS <<<"$token"
 }
