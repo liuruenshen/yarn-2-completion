@@ -12,6 +12,13 @@
   "author": "kiwi <kiwi71728@icloud.com>",
   "license": "MIT",
   "devDependencies": {
-    "husky": "^6.0.0"
+    "husky": "^6.0.0",
+    "pinst": "^2.0.0"
+  },
+  "scripts": {
+    "postinstall": "husky install",
+    "prepublishOnly": "pinst --disable",
+    "postpublish": "pinst --enable",
+    "lint": "./src/dev/lint.sh "
   }
 }
