@@ -89,18 +89,6 @@ y2c_setup() {
   return 1
 }
 
-cd() {
-  builtin cd "$@" && y2c_setup
-}
-
-pushd() {
-  builtin pushd "$@" && y2c_setup
-}
-
-popd() {
-  builtin popd "$@" && y2c_setup
-}
-
 y2c_set_path_yarn_version() {
   :
 }
@@ -548,8 +536,7 @@ set_package_name_path_map() {
   fi
 }
 
-y2c_yarn_completion_main() {
-
+y2c_detect_environment() {
   if [ -z "${BASH_VERSINFO[0]}" ]; then
     echo "Sorry, the yarn completion only supports BASH" 1>&2
     return 1
@@ -568,8 +555,16 @@ y2c_yarn_completion_main() {
   if ! "${Y2C_COMPLETION_SCRIPT_LOCATION}/syntax-checker/negative-subscript.sh" >/dev/null 2>&1; then
     IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT=0
   fi
+}
+
+y2c_yarn_completion_main() {
+  if ! y2c_detect_environment; then
+    return 1
+  fi
 
   y2c_setup
+  # shellcheck disable=SC1091
+  . "$(dirname "${BASH_SOURCE[0]}")/builtin-hook.sh"
 
   complete -F y2c_yarn_completion_for_complete -o bashdefault -o default yarn
 }

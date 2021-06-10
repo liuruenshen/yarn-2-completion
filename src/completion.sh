@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-#!/usr/bin/env bash
-
 # shellcheck disable=SC1091
 source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 

@@ -1,4 +1,4 @@
-setup() {
+setup_file() {
     load 'test_helper/bats-support/load'
     load 'test_helper/bats-assert/load'
 
@@ -10,6 +10,17 @@ setup() {
     PATH="$DIR/../src:$PATH"
 }
 
-@test "can run our script" {
-   . lib.sh
+setup() {
+    cd "$( dirname "$BATS_TEST_FILENAME" )/yarn-repo"
+    . lib.sh
+}
+
+@test "expect the environemnt values has the correct values after running y2c_setup" {
+    cd test1
+    y2c_detect_environment
+    y2c_setup
+
+    [[ $Y2C_REPO_YARN_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3QxCg__ -eq 1 ]]
+    [[ $Y2C_CURRENT_ROOT_REPO_PATH = "${PWD}" ]]
+    [[ $Y2C_IS_YARN_2_REPO -eq 1 ]]
 }
