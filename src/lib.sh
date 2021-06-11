@@ -3,6 +3,7 @@
 Y2C_COMPLETION_SCRIPT_LOCATION=$(dirname "${BASH_SOURCE[0]}")
 
 Y2C_COMMAND_WORDS_VARNAME_PREFIX="YARN_COMMAND_WORDS_"
+Y2C_COMMAND_WORDS_VERSION_REF_PREFIX="YARN_COMMAND_WORDS_VER_"
 
 Y2C_COMMAND_END_MARK="yarn_command_end_mark_for_prorcesing_last_word"
 Y2C_ALTRENATIVE_FLAG_SYMBOL="|"
@@ -25,6 +26,9 @@ IS_SUPPORT_DECLARE_N_FLAG=1
 IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT=1
 
 Y2C_CURRENT_ROOT_REPO_PATH=
+
+Y2C_TMP_REPO_YARN_VERSION=
+Y2C_TMP_YARN_COMMAND_WORDS_VER_REF=
 declare -i Y2C_IS_YARN_2_REPO=0
 
 y2c_setup() {
@@ -35,6 +39,7 @@ y2c_setup() {
   local var_name=""
   local available_paths=()
   local checking_path=""
+  local yarn_version=""
 
   if [[ -f "${root_repo_path}/yarn.lock" ]]; then
     Y2C_CURRENT_ROOT_REPO_PATH="${root_repo_path}"
@@ -45,6 +50,8 @@ y2c_setup() {
     elif command -v yarn >/dev/null 2>&1; then
       y2c_is_yarn_2
       is_yarn_2=$(($? ^ 1))
+
+      yarn_version="${Y2C_TMP_REPO_YARN_VERSION}"
 
       Y2C_IS_YARN_2_REPO=$is_yarn_2
 
@@ -58,7 +65,7 @@ y2c_setup() {
     fi
 
     if [[ Y2C_IS_YARN_2_REPO -eq 1 ]]; then
-      y2c_generate_yarn_command_list
+      y2c_generate_yarn_command_list "${yarn_version}"
       y2c_generate_workspace_packages
     fi
 
@@ -215,6 +222,7 @@ expand_yarn_workspace_command_list() {
 y2c_is_yarn_2() {
   local yarn_version
   yarn_version=$(yarn --version)
+  Y2C_TMP_REPO_YARN_VERSION="${yarn_version}"
 
   if [[ ${yarn_version%%.*} -lt 2 ]]; then
     return 1
@@ -223,9 +231,25 @@ y2c_is_yarn_2() {
   return 0
 }
 
+y2c_get_yarn_commands_words_var_name() {
+  local yarn_version="$1"
+  Y2C_TMP_YARN_COMMAND_WORDS_VER_REF="${Y2C_COMMAND_WORDS_VERSION_REF_PREFIX}$(y2c_get_var_name "${yarn_version}")"
+}
+
 y2c_generate_yarn_command_list() {
-  if [[ ${#YARN_COMMAND_WORDS_REFS[@]} -ne 0 ]]; then
+  local yarn_version="$1"
+
+  y2c_get_yarn_commands_words_var_name "${yarn_version}"
+
+  if [[ -n ${!Y2C_TMP_YARN_COMMAND_WORDS_VER_REF} ]]; then
     return 0
+  fi
+
+  if [[ $IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
+    declare -n yarn_command_words_version_ref="${Y2C_TMP_YARN_COMMAND_WORDS_VER_REF}"
+    yarn_command_words_version_ref=()
+  else
+    eval "$Y2C_TMP_YARN_COMMAND_WORDS_VER_REF=()"
   fi
 
   if ! command -v yarn >/dev/null 2>&1; then
@@ -333,10 +357,13 @@ y2c_generate_yarn_command_list() {
     YARN_COMMAND_WORDS_REFS[${#YARN_COMMAND_WORDS_REFS[@]}]="${store_yarn_command_var_name}"
 
     if [[ IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
+      yarn_command_words_version_ref[${#yarn_command_words_version_ref[@]}]="${store_yarn_command_var_name}"
+
       declare -n store_yarn_command_words_ref="${store_yarn_command_var_name}"
       # shellcheck disable=SC2034
       store_yarn_command_words_ref=("${yarn_command_words[@]}")
     else
+      eval "${Y2C_TMP_YARN_COMMAND_WORDS_VER_REF}+=("'"'"${store_yarn_command_var_name}"'"'")"
       eval "$store_yarn_command_var_name=("'"''${yarn_command_words[@]}''"'")"
     fi
 

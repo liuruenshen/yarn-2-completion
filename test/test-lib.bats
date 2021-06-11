@@ -49,3 +49,19 @@ setup() {
     [ $Y2C_CURRENT_ROOT_REPO_PATH = "${PWD%/workspace-b}" ]
     [ $Y2C_IS_YARN_2_REPO -eq 1 ]
 }
+
+@test "expect y2c_generate_yarn_command_list working well" {
+    cd test1
+    y2c_detect_environment
+
+    y2c_generate_yarn_command_list
+    [ -n $YARN_COMMAND_WORDS_VER_Mi40LjIK ]
+    [ -z $YARN_COMMAND_WORDS_VER_Mi4xLjAK ]
+    
+    cd ../test3
+    y2c_generate_yarn_command_list
+
+    [ -n $YARN_COMMAND_WORDS_VER_Mi40LjIK ]
+    [ -n $YARN_COMMAND_WORDS_VER_Mi4xLjAK ]
+
+}
