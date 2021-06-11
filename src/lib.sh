@@ -59,7 +59,7 @@ y2c_setup() {
 
     if [[ Y2C_IS_YARN_2_REPO -eq 1 ]]; then
       y2c_generate_yarn_command_list
-      get_yarn_workspace_packages
+      y2c_generate_workspace_packages
     fi
 
     return 0
@@ -93,7 +93,7 @@ y2c_set_path_yarn_version() {
   :
 }
 
-get_yarn_workspace_packages() {
+y2c_generate_workspace_packages() {
   local package_json_path
   local node_commands
   local package_names
