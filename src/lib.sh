@@ -555,9 +555,22 @@ y2c_yarn_completion_for_complete() {
 }
 
 y2c_get_var_name() {
-  local data
-  data=$(echo "$1" | base64)
-  echo "$2${data//=/_}"
+  local str_list="$1"
+  local prefix="$2"
+  local node_commands=""
+  local encoded_list=""
+
+  { while read -r str; do
+    str="${str//"'"/\\\'}"
+    str="${str//"\\"/\\\\}"
+
+    node_commands+="console.log('${prefix//"'"/\\\'}' + Buffer.from('${str}').toString('base64'));"
+  done; } <<<"${str_list}"
+
+  encoded_list=$(node -e "${node_commands}")
+  encoded_list="${encoded_list//"="/_}"
+  encoded_list="${encoded_list//"+"/_A}"
+  echo "${encoded_list//"/"/_B}"
 }
 
 set_package_name_path_map() {

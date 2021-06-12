@@ -10,15 +10,30 @@ setup_file() {
     PATH="$DIR/../src:$PATH"
 }
 
-get_yarn_commands() {
-    local commands
-    { while read -r line; do 
-        if [[ $line =~ ^\s*yarn ]]; then
-            echo $line
-        fi 
-    done; } < <(yarn --help)
+# The native "yarn --version" command is a bit slow, so this function is a workaround 
+# to get the yarn version faster for accelerating the testing.
+yarn_get_version_from_yarnrc() {
+    local yarn_version=""
+    local inspected_path="${PWD}"
+
+    while [[ -n "${inspected_path}" ]]; do
+        if [[ -f "${inspected_path}/.yarnrc.yml" ]]; then
+            yarn_version=$(cat "${inspected_path}/.yarnrc.yml" | grep yarnPath)
+            yarn_version=${yarn_version#*yarn-}
+            yarn_version=${yarn_version%.*}
+
+            echo "$yarn_version"
+            return $?
+        fi
+        inspected_path="${inspected_path%/*}"
+    done
+
+    echo "1.22.10"
+    return
 }
 
+# Before yarn_help_mock gets called, making sure that y2c_is_yarn_2 function has been called.
+# It is the function that helps speed up testing
 yarn_help_mock() {
     case "${Y2C_TMP_REPO_YARN_VERSION}" in
         2.4.2)
@@ -396,66 +411,6 @@ setup() {
     . lib.sh
 }
 
-@test "y2c_setup works as exepcted" {
-    local is_y2c_failed=1
-
-    y2c_generate_yarn_command_list() {
-        :
-    }
-
-    y2c_generate_workspace_packages() {
-        :
-    }
-
-    cd test1
-    y2c_detect_environment
-    y2c_setup
-
-    [ $Y2C_SETUP_HIT_CACHE -eq 0 ]
-    [ $Y2C_REPO_YARN_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3QxCg__ == "2.4.2" ]
-    [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3QxCg__ -eq 1 ]
-    [ $Y2C_CURRENT_ROOT_REPO_PATH = "${PWD}" ]
-    [ $Y2C_IS_YARN_2_REPO -eq 1 ]
-
-    cd ../test2
-
-    y2c_setup || is_y2c_failed=0
-
-    [ $is_y2c_failed ]
-    [ $Y2C_SETUP_HIT_CACHE -eq 0 ]
-    [ $Y2C_REPO_YARN_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3QxCg__ == "2.4.2" ]
-    [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3QxCg__ -eq 1 ]
-    [ $Y2C_REPO_YARN_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3QyCg__ == "1.22.10" ]
-    [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3QyCg__ -eq 0 ]
-    [ $Y2C_CURRENT_ROOT_REPO_PATH = "${PWD}" ]
-    [ $Y2C_IS_YARN_2_REPO -eq 0 ]
-
-    cd ../test1/workspace-b
-    y2c_setup
-
-    [ $Y2C_SETUP_HIT_CACHE -eq 1 ]
-    [ $Y2C_REPO_YARN_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3QxCg__ == "2.4.2" ]
-    [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3QxCg__ -eq 1 ]
-    [ $Y2C_REPO_YARN_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3QyCg__ == "1.22.10" ]
-    [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3QyCg__ -eq 0 ]
-    [ $Y2C_CURRENT_ROOT_REPO_PATH = "${PWD%/workspace-b}" ]
-    [ $Y2C_IS_YARN_2_REPO -eq 1 ]
-
-    cd ../../test3/packages/workspace-a
-    y2c_setup
-
-    [ $Y2C_SETUP_HIT_CACHE -eq 0 ]
-    [ $Y2C_REPO_YARN_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3QxCg__ == "2.4.2" ]
-    [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3QxCg__ -eq 1 ]
-    [ $Y2C_REPO_YARN_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3QyCg__ == "1.22.10" ]
-    [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3QyCg__ -eq 0 ]
-    [ $Y2C_REPO_YARN_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3QzCg__ == "2.1.0" ]
-    [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3QzCg__ -eq 1 ]
-    [ $Y2C_CURRENT_ROOT_REPO_PATH = "${PWD%/packages/workspace-a}" ]
-    [ $Y2C_IS_YARN_2_REPO -eq 1 ]
-
-}
-
 validate_yarn_command_words() {
     declare -i command_line_num="$3"
     declare -i command_index=0
@@ -488,7 +443,121 @@ validate_yarn_command_words() {
 
 }
 
-@test "y2c_generate_yarn_command_list works as expected" {
+@test "yarn_get_version_from_yarnrc" {
+    local yarn_version
+
+    yarn() {
+        if [[ $1 == '--version' ]]; then
+            yarn_get_version_from_yarnrc
+            return $?
+        fi
+        command yarn "$@"
+    }
+
+    cd test1
+    yarn_version=$(yarn --version)
+    [ "$yarn_version" == "2.4.2" ]
+
+    cd ../test2
+    yarn_version=$(yarn --version)
+    [ "$yarn_version" == "1.22.10" ]
+
+    cd ../test3
+    yarn_version=$(yarn --version)
+    [ "$yarn_version" == "2.1.0" ]
+
+    cd ../test1/workspace-a
+    yarn_version=$(yarn --version)
+    [ "$yarn_version" == "2.4.2" ]
+
+    cd ../../test3/packages/workspace-a
+    yarn_version=$(yarn --version)
+    [ "$yarn_version" == "2.1.0" ]
+}
+
+@test "y2c_get_var_name" {
+    local result=""
+    local decoded_str_by_base64=""
+
+    result=$(y2c_get_var_name "/home/test/12345/file \(111\)")
+    [ "$result" == "L2hvbWUvdGVzdC8xMjM0NS9maWxlIFwoMTExXCk_" ]
+
+    result=$(y2c_get_var_name "/tag/@12345" "PREFIX_")
+    [ "$result" == 'PREFIX_L3RhZy9AMTIzNDU_' ]
+
+    result=$( y2c_get_var_name "/test/123/folder1 \[a\]"$'\n'"/test/123/folder1 \[b\]"$'\n'"/test/123/folder1 \[b\]" )
+    [ "$result" == "L3Rlc3QvMTIzL2ZvbGRlcjEgXFthXF0_"$'\n'"L3Rlc3QvMTIzL2ZvbGRlcjEgXFtiXF0_"$'\n'"L3Rlc3QvMTIzL2ZvbGRlcjEgXFtiXF0_" ]
+}
+
+@test "y2c_setup" {
+    local is_y2c_failed=1
+
+    y2c_generate_yarn_command_list() {
+        :
+    }
+
+    y2c_generate_workspace_packages() {
+        :
+    }
+
+    yarn() {
+        if [[ $1 == '--version' ]]; then
+            yarn_get_version_from_yarnrc
+        else
+            command yarn "$@"
+        fi
+    }
+
+    cd test1
+    y2c_detect_environment
+    y2c_setup
+
+    [ $Y2C_SETUP_HIT_CACHE -eq 0 ]
+    [ $Y2C_REPO_YARN_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx == "2.4.2" ]
+    [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx -eq 1 ]
+    [ $Y2C_CURRENT_ROOT_REPO_PATH = "${PWD}" ]
+    [ $Y2C_IS_YARN_2_REPO -eq 1 ]
+
+    cd ../test2
+
+    y2c_setup || is_y2c_failed=0
+
+    [ $is_y2c_failed ]
+    [ $Y2C_SETUP_HIT_CACHE -eq 0 ]
+    [ $Y2C_REPO_YARN_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx == "2.4.2" ]
+    [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx -eq 1 ]
+    [ $Y2C_REPO_YARN_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qy == "1.22.10" ]
+    [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qy -eq 0 ]
+    [ $Y2C_CURRENT_ROOT_REPO_PATH = "${PWD}" ]
+    [ $Y2C_IS_YARN_2_REPO -eq 0 ]
+
+    cd ../test1/workspace-b
+    y2c_setup
+
+    [ $Y2C_SETUP_HIT_CACHE -eq 1 ]
+    [ $Y2C_REPO_YARN_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx == "2.4.2" ]
+    [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx -eq 1 ]
+    [ $Y2C_REPO_YARN_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qy == "1.22.10" ]
+    [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qy -eq 0 ]
+    [ $Y2C_CURRENT_ROOT_REPO_PATH = "${PWD%/workspace-b}" ]
+    [ $Y2C_IS_YARN_2_REPO -eq 1 ]
+
+    cd ../../test3/packages/workspace-a
+    y2c_setup
+
+    [ $Y2C_SETUP_HIT_CACHE -eq 0 ]
+    [ $Y2C_REPO_YARN_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx == "2.4.2" ]
+    [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx -eq 1 ]
+    [ $Y2C_REPO_YARN_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qy == "1.22.10" ]
+    [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qy -eq 0 ]
+    [ $Y2C_REPO_YARN_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz == "2.1.0" ]
+    [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz -eq 1 ]
+    [ $Y2C_CURRENT_ROOT_REPO_PATH = "${PWD%/packages/workspace-a}" ]
+    [ $Y2C_IS_YARN_2_REPO -eq 1 ]
+
+}
+
+@test "y2c_generate_yarn_command_list" {
     expand_yarn_workspace_command_list() {
         :
     }
@@ -496,6 +565,8 @@ validate_yarn_command_words() {
     yarn() {
         if [[ $1 == '--help' ]]; then
             yarn_help_mock
+        elif [[ $1 == '--version' ]]; then
+            yarn_get_version_from_yarnrc
         else
             command yarn "$@"
         fi
@@ -508,9 +579,9 @@ validate_yarn_command_words() {
     y2c_generate_yarn_command_list "${Y2C_TMP_REPO_YARN_VERSION}"
     generate_yarn_expected_coomand_words "${Y2C_TMP_REPO_YARN_VERSION}"
     
-    [ $YARN_COMMAND_WORDS_VER_Mi40LjIK ]
-    [ ! $YARN_COMMAND_WORDS_VER_Mi4xLjAK ]
-    validate_yarn_command_words "YARN_COMMAND_WORDS_VER_Mi40LjIK[@]" "EXPECTED_YARN_COMMAND_WORDS_242_" 43
+    [ $YARN_COMMAND_WORDS_VER_Mi40LjI_ ]
+    [ ! $YARN_COMMAND_WORDS_VER_Mi4xLjA_ ]
+    validate_yarn_command_words "YARN_COMMAND_WORDS_VER_Mi40LjI_[@]" "EXPECTED_YARN_COMMAND_WORDS_242_" 43
 
     cd ../test3
 
@@ -518,6 +589,6 @@ validate_yarn_command_words() {
     y2c_generate_yarn_command_list "${Y2C_TMP_REPO_YARN_VERSION}"
     generate_yarn_expected_coomand_words "${Y2C_TMP_REPO_YARN_VERSION}"
 
-    validate_yarn_command_words "YARN_COMMAND_WORDS_VER_Mi40LjIK[@]" "EXPECTED_YARN_COMMAND_WORDS_242_" 43
-    validate_yarn_command_words "YARN_COMMAND_WORDS_VER_Mi4xLjAK[@]" "EXPECTED_YARN_COMMAND_WORDS_210_" 36
+    validate_yarn_command_words "YARN_COMMAND_WORDS_VER_Mi40LjI_[@]" "EXPECTED_YARN_COMMAND_WORDS_242_" 43
+    validate_yarn_command_words "YARN_COMMAND_WORDS_VER_Mi4xLjA_[@]" "EXPECTED_YARN_COMMAND_WORDS_210_" 36
 }
