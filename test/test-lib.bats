@@ -440,6 +440,20 @@ setup() {
     [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3QyCg__ -eq 0 ]
     [ $Y2C_CURRENT_ROOT_REPO_PATH = "${PWD%/workspace-b}" ]
     [ $Y2C_IS_YARN_2_REPO -eq 1 ]
+
+    cd ../../test3/packages/workspace-a
+    y2c_setup
+
+    [ $Y2C_SETUP_HIT_CACHE -eq 0 ]
+    [ $Y2C_REPO_YARN_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3QxCg__ == "2.4.2" ]
+    [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3QxCg__ -eq 1 ]
+    [ $Y2C_REPO_YARN_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3QyCg__ == "1.22.10" ]
+    [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3QyCg__ -eq 0 ]
+    [ $Y2C_REPO_YARN_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3QzCg__ == "2.1.0" ]
+    [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3QzCg__ -eq 1 ]
+    [ $Y2C_CURRENT_ROOT_REPO_PATH = "${PWD%/packages/workspace-a}" ]
+    [ $Y2C_IS_YARN_2_REPO -eq 1 ]
+
 }
 
 validate_yarn_command_words() {
@@ -481,7 +495,6 @@ validate_yarn_command_words() {
 
     yarn() {
         if [[ $1 == '--help' ]]; then
-            yarn_help_mock > ./tmps
             yarn_help_mock
         else
             command yarn "$@"
