@@ -4,6 +4,7 @@ Y2C_COMPLETION_SCRIPT_LOCATION=$(dirname "${BASH_SOURCE[0]}")
 
 Y2C_COMMAND_WORDS_VARNAME_PREFIX="YARN_COMMAND_WORDS_"
 Y2C_COMMAND_WORDS_VERSION_REF_PREFIX="YARN_COMMAND_WORDS_VER_"
+Y2C_PACKAGE_NAME_PATH_PREFIX="Y2C_PACKAGE_NAME_PATH_"
 
 Y2C_COMMAND_END_MARK="yarn_command_end_mark_for_prorcesing_last_word"
 Y2C_ALTRENATIVE_FLAG_SYMBOL="|"
@@ -80,7 +81,7 @@ y2c_setup() {
 
     if [[ Y2C_IS_YARN_2_REPO -eq 1 ]]; then
       y2c_generate_yarn_command_list "${Y2C_YARN_VERSION}"
-      y2c_generate_workspace_packages
+      y2c_generate_workspace_packages "${Y2C_YARN_VERSION}"
     fi
 
     return 0
@@ -578,7 +579,7 @@ set_package_name_path_map() {
   local package_path="$2"
   local var_name_for_package_name
 
-  var_name_for_package_name=$(y2c_get_var_name "$package_name" "")
+  var_name_for_package_name=$(y2c_get_var_name "$package_name" "${Y2C_PACKAGE_NAME_PATH_PREFIX}")
   if [[ IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
     declare -n package_name_path_ref="$var_name_for_package_name"
     # shellcheck disable=SC2034

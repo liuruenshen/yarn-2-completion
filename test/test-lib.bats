@@ -314,6 +314,16 @@ END
     esac
 }
 
+run_mocked_yarn_command() {
+    if [[ $1 == '--help' ]]; then
+        yarn_help_mock
+    elif [[ $1 == '--version' ]]; then
+        yarn_get_version_from_yarnrc
+    else
+        command yarn "$@"
+    fi
+}
+
 generate_yarn_expected_coomand_words() {
     local version="$1"
     
@@ -501,11 +511,7 @@ validate_yarn_command_words() {
     }
 
     yarn() {
-        if [[ $1 == '--version' ]]; then
-            yarn_get_version_from_yarnrc
-        else
-            command yarn "$@"
-        fi
+      run_mocked_yarn_command "$@"
     }
 
     cd test1
@@ -563,13 +569,7 @@ validate_yarn_command_words() {
     }
 
     yarn() {
-        if [[ $1 == '--help' ]]; then
-            yarn_help_mock
-        elif [[ $1 == '--version' ]]; then
-            yarn_get_version_from_yarnrc
-        else
-            command yarn "$@"
-        fi
+      run_mocked_yarn_command "$@"
     }
 
     cd test1
@@ -591,4 +591,18 @@ validate_yarn_command_words() {
 
     validate_yarn_command_words "YARN_COMMAND_WORDS_VER_Mi40LjI_[@]" "EXPECTED_YARN_COMMAND_WORDS_242_" 43
     validate_yarn_command_words "YARN_COMMAND_WORDS_VER_Mi4xLjA_[@]" "EXPECTED_YARN_COMMAND_WORDS_210_" 36
+}
+
+@test "set_package_name_path_map" {
+    yarn() {
+      run_mocked_yarn_command "$@"
+    }
+
+    y2c_detect_environment
+
+    set_package_name_path_map "workspace-a" "/yarn-repo/packages/workspace-a"
+    [ "$Y2C_PACKAGE_NAME_PATH_d29ya3NwYWNlLWE_" = "/yarn-repo/packages/workspace-a" ]
+
+    set_package_name_path_map "@package1" "/yarn-repo/packages/package-1"
+    [ "$Y2C_PACKAGE_NAME_PATH_QHBhY2thZ2Ux" = "/yarn-repo/packages/package-1" ]
 }
