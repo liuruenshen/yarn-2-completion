@@ -10,7 +10,7 @@ setup_file() {
     PATH="$DIR/../src:$PATH"
 }
 
-# The native "yarn --version" command is a bit slow, so this function is a workaround 
+# The native "yarn --version" command is a bit slow, so this function is a workaround
 # to get the yarn version faster for accelerating the testing.
 yarn_get_version_from_yarnrc() {
     local yarn_version=""
@@ -180,7 +180,7 @@ Workspace-related commands:
   yarn workspaces list [-v,--verbose] [--json]
     list all available workspaces
 
-You can also print more details about any of these commands by calling them 
+You can also print more details about any of these commands by calling them
 after adding the `-h,--help` flag right after the command name.
 END
         ;;
@@ -307,7 +307,7 @@ Workspace-related commands:
   yarn workspaces list [-v,--verbose] [--json]
     list all available workspaces
 
-You can also print more details about any of these commands by calling them 
+You can also print more details about any of these commands by calling them
 after adding the `-h,--help` flag right after the command name.
 END
         ;;
@@ -326,7 +326,7 @@ run_mocked_yarn_command() {
 
 generate_yarn_expected_coomand_words() {
     local version="$1"
-    
+
     case "${version}" in
         2.4.2)
         EXPECTED_YARN_COMMAND_WORDS_242_0=([0]="yarn" [1]="add" [2]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [3]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [4]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [5]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [6]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [7]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [8]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [9]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [10]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [11]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [12]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [13]="...")
@@ -435,11 +435,11 @@ validate_yarn_command_words() {
         word_index=0
         for words in "${!yarn_command_words_ref}"; do
             validating_command_words_ref="${expected_yarn_command_words_var_name_prefix}${command_index}[$word_index]"
-        
+
             [ "$words" ]
             [ "${!validating_command_words_ref}" ]
             [ "$words" == "${!validating_command_words_ref}" ]
-        
+
             word_index+=1
         done
 
@@ -484,7 +484,7 @@ validate_yarn_command_words() {
 }
 
 @test "y2c_get_var_name" {
-    # The variable assignment by declare command makes them be local variables, 
+    # The variable assignment by declare command makes them be local variables,
     # so we can't put the source command in the setup function.
     . lib.sh
 
@@ -589,7 +589,7 @@ validate_yarn_command_words() {
     y2c_is_yarn_2
     y2c_generate_yarn_command_list "${Y2C_TMP_REPO_YARN_VERSION}"
     generate_yarn_expected_coomand_words "${Y2C_TMP_REPO_YARN_VERSION}"
-    
+
     [ $YARN_COMMAND_WORDS_VER_Mi40LjI_ ]
     [ ! $YARN_COMMAND_WORDS_VER_Mi4xLjA_ ]
     validate_yarn_command_words "YARN_COMMAND_WORDS_VER_Mi40LjI_[@]" "EXPECTED_YARN_COMMAND_WORDS_242_" 43
@@ -626,4 +626,23 @@ validate_yarn_command_words() {
     package_paths=("/yarn-repo/packages/package-1")
     set_package_name_path_map "package_names[@]" "package_paths[@]"
     [ "$Y2C_PACKAGE_NAME_PATH_QHBhY2thZ2Ux" = "/yarn-repo/packages/package-1" ]
+}
+
+@test "y2c_generate_workspace_packages" {
+    . lib.sh
+
+    set_package_name_path_map() {
+        :
+    }
+
+    y2c_detect_environment
+
+    cd test1
+    y2c_generate_workspace_packages "${PWD}"
+    [ "${Y2C_WORKSPACE_PACKAGES_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx[*]}" == "wrk-a wrk-b wrk-c" ]
+
+    cd ../test3
+    y2c_generate_workspace_packages "${PWD}"
+    [ "${Y2C_WORKSPACE_PACKAGES_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz[*]}" == "wrk-a wrk-b wrk-c" ]
+ 
 }

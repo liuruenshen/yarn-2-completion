@@ -13,7 +13,7 @@ Y2C_COMMAND_END_MARK="yarn_command_end_mark_for_prorcesing_last_word"
 Y2C_ALTRENATIVE_FLAG_SYMBOL="|"
 Y2C_FLAG_GROUP_CONCAT_SYMBOL=","
 Y2C_VARIABLE_SYMBOL='<'
-Y2C_ROOT_PACKAGE_PATH="./package.json"
+
 declare -i Y2C_YARN_WORD_IS_TOKEN=1
 declare -i Y2C_YARN_WORD_IS_FLAG=2
 declare -i Y2C_YARN_WORD_IS_VARIABLE=3
@@ -115,12 +115,9 @@ y2c_setup() {
   return 1
 }
 
-y2c_set_path_yarn_version() {
-  :
-}
-
 y2c_generate_workspace_packages() {
   local repo_path="$1"
+  local repo_package_path="${repo_path}/package.json"
   local package_json_path=""
   local node_commands=""
   local package_names=()
@@ -129,12 +126,12 @@ y2c_generate_workspace_packages() {
   local package_paths=()
   local store_map_var_name=""
 
-  if ! [[ -f "${Y2C_ROOT_PACKAGE_PATH}" ]]; then
+  if ! [[ -f "${repo_package_path}" ]]; then
     return 0
   fi
 
   # shellcheck disable=SC2207
-  package_paths=($(node -e "console.log((require('${Y2C_ROOT_PACKAGE_PATH}').workspaces || []).join(' '))"))
+  package_paths=($(node -e "console.log((require('${repo_package_path}').workspaces || []).join(' '))"))
 
   for package_path in "${package_paths[@]}"; do
     package_json_path="./${package_path}/package.json"
@@ -147,7 +144,7 @@ y2c_generate_workspace_packages() {
   { while read -r package_name; do package_names+=("${package_name}"); done; } < <(node -e "${node_commands}")
 
   store_map_var_name=$(y2c_get_var_name "${repo_path}" "${Y2C_WORKSPACE_PACKAGES_PREFIX}")
-  if [[ -n $IS_SUPPORT_DECLARE_N_FLAG ]]; then
+  if [[ $IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
     declare -n store_map_ref="${store_map_var_name}"
     # shellcheck disable=2034
     store_map_ref=("${package_names[@]}")
