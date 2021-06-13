@@ -158,7 +158,7 @@ expand_workspaceName_variable() {
   Y2C_TMP_EXPANDED_VAR_RESULT=("${!var_name}")
 }
 
-y2c_get_expand_var() {
+y2c_set_expand_var() {
   local var_name="$1"
   local var_name_func_name=""
 
@@ -176,7 +176,7 @@ y2c_get_expand_var() {
   if declare -f "${var_name_func_name}" >/dev/null 2>&1; then
     $var_name_func_name "$@"
   else
-    Y2C_TMP_EXPANDED_VAR_RESULT=("${var_name}")
+    Y2C_TMP_EXPANDED_VAR_RESULT=("${var_name#$Y2C_VARIABLE_SYMBOL}")
   fi
 }
 
@@ -472,7 +472,7 @@ y2c_add_word_candidates() {
       fi
       ;;
     "$Y2C_YARN_WORD_IS_VARIABLE")
-      y2c_get_expand_var "${processing_word}" "${completing_word}"
+      y2c_set_expand_var "${processing_word}" "${completing_word}"
 
       for expanded_var in "${Y2C_TMP_EXPANDED_VAR_RESULT[@]}"; do
         add_word_to_comreply "${expanded_var}" "${completing_word}"
@@ -527,7 +527,7 @@ y2c_run_yarn_completion() {
           done
           ;;
         "$Y2C_YARN_WORD_IS_VARIABLE")
-          y2c_get_expand_var "${processing_word}" "${completing_word}"
+          y2c_set_expand_var "${processing_word}" "${completing_word}"
 
           for expanded_var in "${Y2C_TMP_EXPANDED_VAR_RESULT[@]}"; do
             if [[ ${COMP_WORDS[$comp_word_index]} = "${expanded_var}" ]]; then

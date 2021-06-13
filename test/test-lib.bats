@@ -690,7 +690,7 @@ validate_yarn_command_words() {
 
     Y2C_CURRENT_ROOT_REPO_PATH="${PWD}"
     expand_workspaceName_variable
-    
+
     [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" == "${Y2C_WORKSPACE_PACKAGES_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx[*]}" ]
 
     cd ../test3
@@ -701,5 +701,39 @@ validate_yarn_command_words() {
     expand_workspaceName_variable
 
     [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" == "${Y2C_WORKSPACE_PACKAGES_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz[*]}" ]
+}
 
+@test "y2c_set_expand_var" {
+    . lib.sh
+
+    set_package_name_path_map() {
+        :
+    }
+
+    y2c_detect_environment
+
+    cd test1
+    y2c_generate_workspace_packages "${PWD}"
+
+    Y2C_CURRENT_ROOT_REPO_PATH="${PWD}"
+    y2c_set_expand_var "<workspaceName"
+
+    [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" == "${Y2C_WORKSPACE_PACKAGES_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx[*]}" ]
+
+    y2c_set_expand_var "tag"
+    [ ${#Y2C_TMP_EXPANDED_VAR_RESULT[@]} == 1 ]
+    [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" == "tag" ]
+
+    y2c_set_expand_var "<tag"
+    [ ${#Y2C_TMP_EXPANDED_VAR_RESULT[@]} == 1 ]
+    [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" == "tag" ]
+
+    cd ../test3
+
+    y2c_generate_workspace_packages "${PWD}"
+
+    Y2C_CURRENT_ROOT_REPO_PATH="${PWD}"
+    y2c_set_expand_var "<workspaceName"
+
+    [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" == "${Y2C_WORKSPACE_PACKAGES_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz[*]}" ]
 }
