@@ -324,7 +324,7 @@ run_mocked_yarn_command() {
     fi
 }
 
-generate_yarn_expected_coomand_words() {
+generate_yarn_expected_command_words() {
     local version="$1"
 
     case "${version}" in
@@ -589,7 +589,7 @@ validate_yarn_command_words() {
 
     Y2C_YARN_VERSION=$(y2c_is_yarn_2)
     y2c_generate_yarn_command_list "${Y2C_YARN_VERSION}"
-    generate_yarn_expected_coomand_words "${Y2C_YARN_VERSION}"
+    generate_yarn_expected_command_words "${Y2C_YARN_VERSION}"
 
     [ $YARN_COMMAND_WORDS_VER_Mi40LjI_ ]
     [ ! $YARN_COMMAND_WORDS_VER_Mi4xLjA_ ]
@@ -599,7 +599,7 @@ validate_yarn_command_words() {
 
     Y2C_YARN_VERSION=$(y2c_is_yarn_2)
     y2c_generate_yarn_command_list "${Y2C_YARN_VERSION}"
-    generate_yarn_expected_coomand_words "${Y2C_YARN_VERSION}"
+    generate_yarn_expected_command_words "${Y2C_YARN_VERSION}"
 
     validate_yarn_command_words "YARN_COMMAND_WORDS_VER_Mi40LjI_[@]" "EXPECTED_YARN_COMMAND_WORDS_242_" 43
     validate_yarn_command_words "YARN_COMMAND_WORDS_VER_Mi4xLjA_[@]" "EXPECTED_YARN_COMMAND_WORDS_210_" 36
@@ -655,7 +655,7 @@ validate_yarn_command_words() {
 
     . lib.sh
 
-    generate_yarn_expected_coomand_words "2.4.2"
+    generate_yarn_expected_command_words "2.4.2"
 
     y2c_get_identified_word "${EXPECTED_YARN_COMMAND_WORDS_242_0[2]}" || status=$?
     [ $status -eq "$Y2C_YARN_WORD_IS_FLAG" ]
@@ -674,4 +674,32 @@ validate_yarn_command_words() {
     status=0
     y2c_get_identified_word "${EXPECTED_YARN_COMMAND_WORDS_242_22[6]}" || status=$?
     [ $status -eq "$Y2C_YARN_WORD_IS_VARIABLE" ]
+}
+
+@test "expand_workspaceName_variable" {
+    . lib.sh
+
+    set_package_name_path_map() {
+        :
+    }
+
+    y2c_detect_environment
+
+    cd test1
+    y2c_generate_workspace_packages "${PWD}"
+
+    Y2C_CURRENT_ROOT_REPO_PATH="${PWD}"
+    expand_workspaceName_variable
+    
+    [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" == "${Y2C_WORKSPACE_PACKAGES_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx[*]}" ]
+
+    cd ../test3
+
+    y2c_generate_workspace_packages "${PWD}"
+
+    Y2C_CURRENT_ROOT_REPO_PATH="${PWD}"
+    expand_workspaceName_variable
+
+    [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" == "${Y2C_WORKSPACE_PACKAGES_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz[*]}" ]
+
 }

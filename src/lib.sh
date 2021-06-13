@@ -25,7 +25,6 @@ declare -a Y2C_TMP_IDENTIFIED_WORDS=()
 declare -a CURRENT_YARN_ALTERNATIVE_FLAGS=()
 declare -a YARN_COMMAND_WORDS_REFS=()
 
-Y2C_WORKSPACE_PACKAGES=
 Y2C_TMP_EXPANDED_VAR_RESULT=
 
 IS_SUPPORT_DECLARE_N_FLAG=1
@@ -153,11 +152,10 @@ y2c_generate_workspace_packages() {
 }
 
 expand_workspaceName_variable() {
-  Y2C_TMP_EXPANDED_VAR_RESULT="$Y2C_WORKSPACE_PACKAGES"
-}
+  local var_name=""
 
-expand_commandName_variable() {
-  :
+  var_name="$(y2c_get_var_name "${Y2C_CURRENT_ROOT_REPO_PATH}" "${Y2C_WORKSPACE_PACKAGES_PREFIX}")[@]"
+  Y2C_TMP_EXPANDED_VAR_RESULT=("${!var_name}")
 }
 
 y2c_get_expand_var() {
@@ -166,10 +164,10 @@ y2c_get_expand_var() {
 
   shift 1
 
-  Y2C_TMP_EXPANDED_VAR_RESULT=""
+  Y2C_TMP_EXPANDED_VAR_RESULT=()
 
   if ! [[ $var_name = "$Y2C_VARIABLE_SYMBOL"* ]]; then
-    Y2C_TMP_EXPANDED_VAR_RESULT="${var_name}"
+    Y2C_TMP_EXPANDED_VAR_RESULT=("${var_name}")
     return 0
   fi
 
@@ -178,7 +176,7 @@ y2c_get_expand_var() {
   if declare -f "${var_name_func_name}" >/dev/null 2>&1; then
     $var_name_func_name "$@"
   else
-    Y2C_TMP_EXPANDED_VAR_RESULT="${var_name}"
+    Y2C_TMP_EXPANDED_VAR_RESULT=("${var_name}")
   fi
 }
 
@@ -476,9 +474,7 @@ y2c_add_word_candidates() {
     "$Y2C_YARN_WORD_IS_VARIABLE")
       y2c_get_expand_var "${processing_word}" "${completing_word}"
 
-      IFS=" " read -r -a expanded_vars <<<"$Y2C_TMP_EXPANDED_VAR_RESULT"
-
-      for expanded_var in "${expanded_vars[@]}"; do
+      for expanded_var in "${Y2C_TMP_EXPANDED_VAR_RESULT[@]}"; do
         add_word_to_comreply "${expanded_var}" "${completing_word}"
       done
       ;;
@@ -496,7 +492,6 @@ y2c_run_yarn_completion() {
   local completing_word="$1"
   local word_num="${#COMP_WORDS[@]}"
   local last_word_index=$((--word_num))
-  local expanded_vars=()
   local expanded_var
   local word_type
   local processing_word
@@ -534,8 +529,7 @@ y2c_run_yarn_completion() {
         "$Y2C_YARN_WORD_IS_VARIABLE")
           y2c_get_expand_var "${processing_word}" "${completing_word}"
 
-          IFS=" " read -r -a expanded_vars <<<"$Y2C_TMP_EXPANDED_VAR_RESULT"
-          for expanded_var in "${expanded_vars[@]}"; do
+          for expanded_var in "${Y2C_TMP_EXPANDED_VAR_RESULT[@]}"; do
             if [[ ${COMP_WORDS[$comp_word_index]} = "${expanded_var}" ]]; then
               continue 3
             fi
