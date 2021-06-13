@@ -416,9 +416,7 @@ generate_yarn_expected_coomand_words() {
 
 setup() {
     Y2C_TESTING_MODE=1
-
     cd "$( dirname "$BATS_TEST_FILENAME" )/yarn-repo"
-    . lib.sh
 }
 
 validate_yarn_command_words() {
@@ -486,8 +484,15 @@ validate_yarn_command_words() {
 }
 
 @test "y2c_get_var_name" {
+    # The variable assignment by declare command makes them be local variables, 
+    # so we can't put the source command in the setup function.
+    . lib.sh
+
+    declare | grep Y2C_YARN_WORD_IS_TOKEN
+
     local result=""
     local decoded_str_by_base64=""
+    local sources=()
 
     result=$(y2c_get_var_name "/home/test/12345/file \(111\)")
     [ "$result" == "L2hvbWUvdGVzdC8xMjM0NS9maWxlIFwoMTExXCk_" ]
@@ -495,11 +500,15 @@ validate_yarn_command_words() {
     result=$(y2c_get_var_name "/tag/@12345" "PREFIX_")
     [ "$result" == 'PREFIX_L3RhZy9AMTIzNDU_' ]
 
-    result=$( y2c_get_var_name "/test/123/folder1 \[a\]"$'\n'"/test/123/folder1 \[b\]"$'\n'"/test/123/folder1 \[b\]" )
+    sources=("/test/123/folder1 \[a\]" "/test/123/folder1 \[b\]" "/test/123/folder1 \[b\]")
+    result=$( y2c_get_var_name "sources[@]" '' 1 )
+
     [ "$result" == "L3Rlc3QvMTIzL2ZvbGRlcjEgXFthXF0_"$'\n'"L3Rlc3QvMTIzL2ZvbGRlcjEgXFtiXF0_"$'\n'"L3Rlc3QvMTIzL2ZvbGRlcjEgXFtiXF0_" ]
 }
 
 @test "y2c_setup" {
+    . lib.sh
+
     local is_y2c_failed=1
 
     y2c_generate_yarn_command_list() {
@@ -564,6 +573,8 @@ validate_yarn_command_words() {
 }
 
 @test "y2c_generate_yarn_command_list" {
+    . lib.sh
+
     expand_yarn_workspace_command_list() {
         :
     }
@@ -594,15 +605,25 @@ validate_yarn_command_words() {
 }
 
 @test "set_package_name_path_map" {
+    . lib.sh
+
+    local package_names=()
+    local package_paths=()
+
     yarn() {
       run_mocked_yarn_command "$@"
     }
 
     y2c_detect_environment
 
-    set_package_name_path_map "workspace-a" "/yarn-repo/packages/workspace-a"
-    [ "$Y2C_PACKAGE_NAME_PATH_d29ya3NwYWNlLWE_" = "/yarn-repo/packages/workspace-a" ]
+    package_names=("workspace-a" "workspace-b")
+    package_paths=("/yarn-repo/packages/workspace-a" "/yarn-repo/packages/workspace-b")
+    set_package_name_path_map "package_names[@]" "package_paths[@]"
+    [ "$Y2C_PACKAGE_NAME_PATH_d29ya3NwYWNlLWE_" == "/yarn-repo/packages/workspace-a" ]
+    [ "$Y2C_PACKAGE_NAME_PATH_d29ya3NwYWNlLWI_" == "/yarn-repo/packages/workspace-b" ]
 
-    set_package_name_path_map "@package1" "/yarn-repo/packages/package-1"
+    package_names=("@package1")
+    package_paths=("/yarn-repo/packages/package-1")
+    set_package_name_path_map "package_names[@]" "package_paths[@]"
     [ "$Y2C_PACKAGE_NAME_PATH_QHBhY2thZ2Ux" = "/yarn-repo/packages/package-1" ]
 }

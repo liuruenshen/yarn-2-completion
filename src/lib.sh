@@ -5,15 +5,21 @@ Y2C_COMPLETION_SCRIPT_LOCATION=$(dirname "${BASH_SOURCE[0]}")
 Y2C_COMMAND_WORDS_VARNAME_PREFIX="YARN_COMMAND_WORDS_"
 Y2C_COMMAND_WORDS_VERSION_REF_PREFIX="YARN_COMMAND_WORDS_VER_"
 Y2C_PACKAGE_NAME_PATH_PREFIX="Y2C_PACKAGE_NAME_PATH_"
+Y2C_REPO_ROOT_YARN_VERSION_VAR_NAME_PREFIX="Y2C_REPO_YARN_VERSION_"
+Y2C_REPO_ROOT_IS_YARN_2_VAR_NAME_PREFIX="Y2C_REPO_IS_YARN_2_"
+Y2C_WORKSPACE_PACKAGES_PREFIX="Y2C_WORKSPACE_PACKAGES_"
 
 Y2C_COMMAND_END_MARK="yarn_command_end_mark_for_prorcesing_last_word"
 Y2C_ALTRENATIVE_FLAG_SYMBOL="|"
 Y2C_FLAG_GROUP_CONCAT_SYMBOL=","
 Y2C_VARIABLE_SYMBOL='<'
 Y2C_ROOT_PACKAGE_PATH="./package.json"
-Y2C_YARN_WORD_IS_TOKEN=1
-Y2C_YARN_WORD_IS_FLAG=2
-Y2C_YARN_WORD_IS_VARIABLE=3
+declare -i Y2C_YARN_WORD_IS_TOKEN=1
+declare -i Y2C_YARN_WORD_IS_FLAG=2
+declare -i Y2C_YARN_WORD_IS_VARIABLE=3
+
+declare -i Y2C_FUNC_ARG_IS_STR=0
+declare -i Y2C_FUNC_ARG_IS_ARR=1
 
 declare -a Y2C_TMP_IDENTIFIED_WORDS=()
 declare -a CURRENT_YARN_ALTERNATIVE_FLAGS=()
@@ -21,8 +27,6 @@ declare -a YARN_COMMAND_WORDS_REFS=()
 
 Y2C_WORKSPACE_PACKAGES=
 Y2C_TMP_EXPANDED_VAR_RESULT=
-Y2C_REPO_ROOT_YARN_VERSION_VAR_NAME_PREFIX="Y2C_REPO_YARN_VERSION_"
-Y2C_REPO_ROOT_IS_YARN_2_VAR_NAME_PREFIX="Y2C_REPO_IS_YARN_2_"
 
 IS_SUPPORT_DECLARE_N_FLAG=1
 IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT=1
@@ -81,7 +85,7 @@ y2c_setup() {
 
     if [[ Y2C_IS_YARN_2_REPO -eq 1 ]]; then
       y2c_generate_yarn_command_list "${Y2C_YARN_VERSION}"
-      y2c_generate_workspace_packages "${Y2C_YARN_VERSION}"
+      y2c_generate_workspace_packages "${Y2C_CURRENT_ROOT_REPO_PATH}"
     fi
 
     return 0
@@ -116,20 +120,23 @@ y2c_set_path_yarn_version() {
 }
 
 y2c_generate_workspace_packages() {
-  local package_json_path
-  local node_commands
-  local package_names
-  local package_name
-  local packages_path
+  local repo_path="$1"
+  local package_json_path=""
+  local node_commands=""
+  local package_names=()
+  local package_name=""
+  local package_path=""
+  local package_paths=()
+  local store_map_var_name=""
 
   if ! [[ -f "${Y2C_ROOT_PACKAGE_PATH}" ]]; then
     return 0
   fi
 
   # shellcheck disable=SC2207
-  packages_path=($(node -e "console.log((require('${Y2C_ROOT_PACKAGE_PATH}').workspaces || []).join(' '))"))
+  package_paths=($(node -e "console.log((require('${Y2C_ROOT_PACKAGE_PATH}').workspaces || []).join(' '))"))
 
-  for package_path in "${packages_path[@]}"; do
+  for package_path in "${package_paths[@]}"; do
     package_json_path="./${package_path}/package.json"
 
     if [[ -f "${package_json_path}" ]]; then
@@ -137,14 +144,18 @@ y2c_generate_workspace_packages() {
     fi
   done
 
-  # shellcheck disable=SC2207
-  package_names=($(node -e "${node_commands}"))
+  { while read -r package_name; do package_names+=("${package_name}"); done; } < <(node -e "${node_commands}")
 
-  Y2C_WORKSPACE_PACKAGES="${package_names[*]}"
+  store_map_var_name=$(y2c_get_var_name "${repo_path}" "${Y2C_WORKSPACE_PACKAGES_PREFIX}")
+  if [[ -n $IS_SUPPORT_DECLARE_N_FLAG ]]; then
+    declare -n store_map_ref="${store_map_var_name}"
+    # shellcheck disable=2034
+    store_map_ref=("${package_names[@]}")
+  else
+    eval "$store_map_var_name=(\"\${package_names[@]}\")"
+  fi
 
-  for ((index = 0; index < ${#package_names[@]}; ++index)); do
-    set_package_name_path_map "${package_names[$index]}" "${packages_path[$index]}"
-  done
+  set_package_name_path_map "package_names[@]" "package_paths[@]"
 }
 
 expand_workspaceName_variable() {
@@ -558,15 +569,25 @@ y2c_yarn_completion_for_complete() {
 y2c_get_var_name() {
   local str_list="$1"
   local prefix="$2"
+  local str_list_type="${3:-$Y2C_FUNC_ARG_IS_STR}"
   local node_commands=""
   local encoded_list=""
+  local str=""
 
-  { while read -r str; do
+  get_node_commands() {
     str="${str//"'"/\\\'}"
     str="${str//"\\"/\\\\}"
-
     node_commands+="console.log('${prefix//"'"/\\\'}' + Buffer.from('${str}').toString('base64'));"
-  done; } <<<"${str_list}"
+  }
+
+  if [[ $str_list_type -eq $Y2C_FUNC_ARG_IS_STR ]]; then
+    str="${str_list}"
+    get_node_commands
+  elif [[ $str_list_type -eq $Y2C_FUNC_ARG_IS_ARR ]]; then
+    for str in "${!str_list}"; do
+      get_node_commands
+    done
+  fi
 
   encoded_list=$(node -e "${node_commands}")
   encoded_list="${encoded_list//"="/_}"
@@ -575,17 +596,23 @@ y2c_get_var_name() {
 }
 
 set_package_name_path_map() {
-  local package_name="$1"
-  local package_path="$2"
-  local var_name_for_package_name
+  local package_names_ref="$1"
+  local package_paths=("${!2}")
+  local var_names_for_package_names=()
 
-  var_name_for_package_name=$(y2c_get_var_name "$package_name" "${Y2C_PACKAGE_NAME_PATH_PREFIX}")
+  # shellcheck disable=SC2207
+  var_names_for_package_names=($(y2c_get_var_name "${package_names_ref}" "${Y2C_PACKAGE_NAME_PATH_PREFIX}" $Y2C_FUNC_ARG_IS_ARR))
+
   if [[ IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
-    declare -n package_name_path_ref="$var_name_for_package_name"
-    # shellcheck disable=SC2034
-    package_name_path_ref="$package_path"
+    for index in "${!var_names_for_package_names[@]}"; do
+      declare -n package_name_path_ref="${var_names_for_package_names[$index]}"
+      # shellcheck disable=SC2034
+      package_name_path_ref="${package_paths[$index]}"
+    done
   else
-    eval "$var_name_for_package_name="'"'"${package_path}"'"'
+    for index in "${!var_names_for_package_names[@]}"; do
+      eval "${var_names_for_package_names[$index]}="'"'"${package_paths[$index]}"'"'
+    done
   fi
 }
 
