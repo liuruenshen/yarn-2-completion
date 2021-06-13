@@ -644,5 +644,33 @@ validate_yarn_command_words() {
     cd ../test3
     y2c_generate_workspace_packages "${PWD}"
     [ "${Y2C_WORKSPACE_PACKAGES_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz[*]}" == "wrk-a wrk-b wrk-c" ]
- 
+}
+
+@test "y2c_get_identified_word" {
+    declare -i status=0
+    local delimiter=""
+    local word=""
+    local result=""
+
+    . lib.sh
+
+    generate_yarn_expected_coomand_words "2.4.2"
+
+    y2c_get_identified_word "${EXPECTED_YARN_COMMAND_WORDS_242_0[2]}" || status=$?
+    [ $status -eq "$Y2C_YARN_WORD_IS_FLAG" ]
+
+    result=""
+    for word in "${Y2C_TMP_IDENTIFIED_WORDS}"; do
+        result+="${delimiter}${word}"
+        delimiter=","
+    done
+    [ "$result" == "${Y2C_TMP_IDENTIFIED_WORDS}" ]
+
+    status=0
+    y2c_get_identified_word "${EXPECTED_YARN_COMMAND_WORDS_242_120[1]}" || status=$?
+    [ $status -eq "$Y2C_YARN_WORD_IS_TOKEN" ]
+
+    status=0
+    y2c_get_identified_word "${EXPECTED_YARN_COMMAND_WORDS_242_22[6]}" || status=$?
+    [ $status -eq "$Y2C_YARN_WORD_IS_VARIABLE" ]
 }
