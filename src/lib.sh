@@ -31,8 +31,6 @@ Y2C_TMP_EXPANDED_VAR_RESULT=
 IS_SUPPORT_DECLARE_N_FLAG=1
 IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT=1
 
-Y2C_TMP_REPO_YARN_VERSION=
-
 declare -i Y2C_IS_YARN_2_REPO=0
 declare -i Y2C_SETUP_HIT_CACHE=0
 
@@ -64,10 +62,9 @@ y2c_setup() {
       [[ $Y2C_TESTING_MODE -eq 1 ]] && Y2C_SETUP_HIT_CACHE=1
 
     elif command -v yarn >/dev/null 2>&1; then
-      y2c_is_yarn_2
+      Y2C_YARN_VERSION=$(y2c_is_yarn_2)
       is_yarn_2=$(($? ^ 1))
 
-      Y2C_YARN_VERSION="${Y2C_TMP_REPO_YARN_VERSION}"
       Y2C_IS_YARN_2_REPO=$is_yarn_2
 
       if [[ $IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
@@ -245,7 +242,8 @@ expand_yarn_workspace_command_list() {
 y2c_is_yarn_2() {
   local yarn_version
   yarn_version=$(yarn --version)
-  Y2C_TMP_REPO_YARN_VERSION="${yarn_version}"
+
+  echo "${yarn_version}"
 
   if [[ ${yarn_version%%.*} -lt 2 ]]; then
     return 1

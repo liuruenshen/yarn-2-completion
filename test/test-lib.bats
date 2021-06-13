@@ -35,7 +35,7 @@ yarn_get_version_from_yarnrc() {
 # Before yarn_help_mock gets called, making sure that y2c_is_yarn_2 function has been called.
 # It is the function that helps speed up testing
 yarn_help_mock() {
-    case "${Y2C_TMP_REPO_YARN_VERSION}" in
+    case "${Y2C_YARN_VERSION}" in
         2.4.2)
         cat <<"END"
 Yarn Package Manager - 2.4.2
@@ -573,6 +573,7 @@ validate_yarn_command_words() {
 }
 
 @test "y2c_generate_yarn_command_list" {
+    local yarn_version=""
     . lib.sh
 
     expand_yarn_workspace_command_list() {
@@ -586,9 +587,9 @@ validate_yarn_command_words() {
     cd test1
     y2c_detect_environment
 
-    y2c_is_yarn_2
-    y2c_generate_yarn_command_list "${Y2C_TMP_REPO_YARN_VERSION}"
-    generate_yarn_expected_coomand_words "${Y2C_TMP_REPO_YARN_VERSION}"
+    Y2C_YARN_VERSION=$(y2c_is_yarn_2)
+    y2c_generate_yarn_command_list "${Y2C_YARN_VERSION}"
+    generate_yarn_expected_coomand_words "${Y2C_YARN_VERSION}"
 
     [ $YARN_COMMAND_WORDS_VER_Mi40LjI_ ]
     [ ! $YARN_COMMAND_WORDS_VER_Mi4xLjA_ ]
@@ -596,9 +597,9 @@ validate_yarn_command_words() {
 
     cd ../test3
 
-    y2c_is_yarn_2
-    y2c_generate_yarn_command_list "${Y2C_TMP_REPO_YARN_VERSION}"
-    generate_yarn_expected_coomand_words "${Y2C_TMP_REPO_YARN_VERSION}"
+    Y2C_YARN_VERSION=$(y2c_is_yarn_2)
+    y2c_generate_yarn_command_list "${Y2C_YARN_VERSION}"
+    generate_yarn_expected_coomand_words "${Y2C_YARN_VERSION}"
 
     validate_yarn_command_words "YARN_COMMAND_WORDS_VER_Mi40LjI_[@]" "EXPECTED_YARN_COMMAND_WORDS_242_" 43
     validate_yarn_command_words "YARN_COMMAND_WORDS_VER_Mi4xLjA_[@]" "EXPECTED_YARN_COMMAND_WORDS_210_" 36
