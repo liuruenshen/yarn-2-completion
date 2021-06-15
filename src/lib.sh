@@ -3,7 +3,8 @@
 Y2C_COMPLETION_SCRIPT_LOCATION=$(dirname "${BASH_SOURCE[0]}")
 
 Y2C_COMMAND_TOKENS_VARNAME_PREFIX="YARN_COMMAND_TOKENS_"
-Y2C_COMMAND_TOKENS_VERSION_REF_PREFIX="YARN_COMMAND_TOKENS_VER_"
+Y2C_WORKSPACE_COMMAND_TOKENS_VARNAME_PREFIX="YARN_WORKSPACE_COMMAND_TOKENS_"
+Y2C_COMMAND_TOKENS_LIST_VERSION_REF_PREFIX="YARN_COMMAND_TOKENS_LIST_VER_"
 Y2C_PACKAGE_NAME_PATH_PREFIX="Y2C_PACKAGE_NAME_PATH_"
 Y2C_REPO_ROOT_YARN_VERSION_VAR_NAME_PREFIX="Y2C_REPO_YARN_VERSION_"
 Y2C_REPO_ROOT_IS_YARN_2_VAR_NAME_PREFIX="Y2C_REPO_IS_YARN_2_"
@@ -180,32 +181,34 @@ y2c_set_expand_var() {
   fi
 }
 
+get_yarn_command_tokens_var_name() {
+  local base64_yarn_version="$1"
+  local index="$2"
+  echo "${Y2C_COMMAND_TOKENS_VARNAME_PREFIX}${base64_yarn_version}_${index}"
+}
+
 expand_yarn_workspace_command_list() {
-  if [[ $IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
-    declare -n yarn_command_workspace_ref="$1"
-    declare -n yarn_command_tokens_ref
-  else
-    local yarn_command_workspace_ref="$1"
-    local yarn_command_tokens_ref
-  fi
+  local yarn_command_workspace_var_name="${1}"
+  local yarn_command_tokens_list_var_name="${2}"
+  local yarn_command_workspace_ref="${yarn_command_workspace_var_name}[@]"
+  local yarn_command_tokens_list_ref="${yarn_command_tokens_list_var_name}[@]"
+  local yarn_command_tokens_var_name=""
+  local yarn_command_tokens_ref=""
 
-  declare -i store_yarn_command_index=$2
+  local base64_yarn_version="$3"
 
-  local token
-  local workspace_recursive_command
-  local store_yarn_command_var_name
-  local appending_tokens
-  local yarn_command_workspace_tokens=()
-  local yarn_command_tokens=()
+  declare -i store_yarn_command_index=0
 
-  if [[ $IS_SUPPORT_DECLARE_N_FLAG -eq 0 ]]; then
-    yarn_command_workspace_ref+="[@]"
-    yarn_command_workspace_tokens=("${!yarn_command_workspace_ref}")
-  fi
+  local token=""
+  local workspace_recursive_command=()
+  local store_yarn_command_var_name=""
+  local appending_tokens=()
 
-  for yarn_command_tokens_ref in "${Y2C_COMMAND_TOKENS_REF[@]}"; do
-    if [[ $IS_SUPPORT_DECLARE_N_FLAG -eq 0 ]]; then
-      yarn_command_tokens_ref+="[@]"
+  for yarn_command_tokens_var_name in "${!yarn_command_tokens_list_ref}"; do
+    if [[ $IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
+      declare -n yarn_command_tokens="${yarn_command_tokens_var_name}"
+    else
+      yarn_command_tokens_ref="${yarn_command_tokens_var_name}[@]"
       yarn_command_tokens=("${!yarn_command_tokens_ref}")
     fi
 
@@ -215,26 +218,32 @@ expand_yarn_workspace_command_list() {
     fi
 
     workspace_recursive_command=()
-    for token in "${yarn_command_workspace_tokens[@]}"; do
+    for token in "${!yarn_command_workspace_ref}"; do
       if [[ $token = '<commandName' ]]; then
         appending_tokens=("${yarn_command_tokens[@]}")
         unset "appending_tokens[0]"
         workspace_recursive_command+=("${appending_tokens[@]}")
+
+        break
       else
         workspace_recursive_command+=("$token")
       fi
     done
 
-    store_yarn_command_var_name="${Y2C_COMMAND_TOKENS_VARNAME_PREFIX}${store_yarn_command_index}"
+    store_yarn_command_var_name="${Y2C_WORKSPACE_COMMAND_TOKENS_VARNAME_PREFIX}${base64_yarn_version}_${store_yarn_command_index}"
     store_yarn_command_index+=1
 
-    Y2C_COMMAND_TOKENS_REF[${#Y2C_COMMAND_TOKENS_REF[@]}]="${store_yarn_command_var_name}"
+    #Y2C_COMMAND_TOKENS_REF[${#Y2C_COMMAND_TOKENS_REF[@]}]="${store_yarn_command_var_name}"
     if [[ $IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
       declare -n store_yarn_command_ref="${store_yarn_command_var_name}"
       # shellcheck disable=SC2034
       store_yarn_command_ref=("${workspace_recursive_command[@]}")
+
+      declare -n store_yarn_command_tokens_list_ref="${yarn_command_tokens_list_var_name}"
+      store_yarn_command_tokens_list_ref+=("${store_yarn_command_var_name}")
     else
-      eval "$store_yarn_command_var_name=("'"''${workspace_recursive_command[@]}''"'")"
+      eval "$store_yarn_command_var_name=(\""'${workspace_recursive_command[@]}'"\")"
+      eval "$yarn_command_tokens_list_var_name+=(\"${store_yarn_command_var_name}\")"
     fi
   done
 }
@@ -255,20 +264,20 @@ y2c_is_yarn_2() {
 y2c_generate_yarn_command_list() {
   local yarn_version="$1"
   local base64_yarn_version=""
-  local yarn_command_tokens_var_name
+  local yarn_command_tokens_list_var_name
 
-  yarn_command_tokens_var_name="$(y2c_get_var_name "${yarn_version}" "${Y2C_COMMAND_TOKENS_VERSION_REF_PREFIX}")"
-  base64_yarn_version="${yarn_command_tokens_var_name#$Y2C_COMMAND_TOKENS_VERSION_REF_PREFIX}"
+  yarn_command_tokens_list_var_name="$(y2c_get_var_name "${yarn_version}" "${Y2C_COMMAND_TOKENS_LIST_VERSION_REF_PREFIX}")"
+  base64_yarn_version="${yarn_command_tokens_list_var_name#$Y2C_COMMAND_TOKENS_LIST_VERSION_REF_PREFIX}"
 
-  if [[ -n ${!yarn_command_tokens_var_name} ]]; then
+  if [[ -n ${!yarn_command_tokens_list_var_name} ]]; then
     return 0
   fi
 
   if [[ $IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
-    declare -n yarn_command_tokens_ref="${yarn_command_tokens_var_name}"
-    yarn_command_tokens_ref=()
+    declare -n yarn_command_tokens_list_ref="${yarn_command_tokens_list_var_name}"
+    yarn_command_tokens_list_ref=()
   else
-    eval "$yarn_command_tokens_var_name=()"
+    eval "$yarn_command_tokens_list_var_name=()"
   fi
 
   if ! command -v yarn >/dev/null 2>&1; then
@@ -285,7 +294,7 @@ y2c_generate_yarn_command_list() {
   local yarn_command_words=()
   local store_yarn_command_var_name=""
   local broken_word=""
-  local yarn_command_workspace_ref=""
+  local yarn_command_workspace_var_name=""
   local subscript
   local instructions=()
 
@@ -370,28 +379,26 @@ y2c_generate_yarn_command_list() {
       fi
     done
 
-    store_yarn_command_var_name="${Y2C_COMMAND_TOKENS_VARNAME_PREFIX}${base64_yarn_version}_${store_yarn_command_index}"
+    store_yarn_command_var_name="$(get_yarn_command_tokens_var_name "${base64_yarn_version}" "${store_yarn_command_index}")"
     store_yarn_command_index+=1
 
-    Y2C_COMMAND_TOKENS_REF[${#Y2C_COMMAND_TOKENS_REF[@]}]="${store_yarn_command_var_name}"
-
     if [[ IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
-      yarn_command_tokens_ref[${#yarn_command_tokens_ref[@]}]="${store_yarn_command_var_name}"
+      yarn_command_tokens_list_ref[${#yarn_command_tokens_list_ref[@]}]="${store_yarn_command_var_name}"
 
       declare -n store_yarn_command_tokens_ref="${store_yarn_command_var_name}"
       # shellcheck disable=SC2034
       store_yarn_command_tokens_ref=("${yarn_command_words[@]}")
     else
-      eval "${yarn_command_tokens_var_name}+=("'"'"${store_yarn_command_var_name}"'"'")"
+      eval "${yarn_command_tokens_list_var_name}+=("'"'"${store_yarn_command_var_name}"'"'")"
       eval "$store_yarn_command_var_name=("'"''${yarn_command_words[@]}''"'")"
     fi
 
     if [[ $instruction = *"yarn workspace "* ]]; then
-      yarn_command_workspace_ref="${store_yarn_command_var_name}"
+      yarn_command_workspace_var_name="${store_yarn_command_var_name}"
     fi
   done
 
-  expand_yarn_workspace_command_list "$yarn_command_workspace_ref" $store_yarn_command_index
+  expand_yarn_workspace_command_list "${yarn_command_workspace_var_name}" "${yarn_command_tokens_list_var_name}" "${base64_yarn_version}"
 }
 
 y2c_get_identified_word() {
