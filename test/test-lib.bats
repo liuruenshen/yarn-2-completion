@@ -882,3 +882,60 @@ validate_yarn_command_words() {
 
   validate_yarn_command_words "workspace_commands[@]" "EXPECTED_WORKSPACE_COMMAND_TOKENS_210_" 34
 }
+
+@test "y2c_set_yarn_options" {
+  . lib.sh
+
+  y2c_set_yarn_options "-D|--dev"
+
+  [ "${Y2C_TMP_OPTIONS[0]}" == "-D" ]
+  [ "${Y2C_TMP_OPTIONS[1]}" == "--dev" ]
+}
+
+@test "add_word_to_comreply" {
+  . lib.sh
+
+  COMPREPLY=()
+  COMP_WORDS=("yarn" "add" "--json")
+  add_word_to_comreply "--json" "--"
+  [ "${COMPREPLY[*]}" == "" ]
+
+  COMPREPLY=()
+  COMP_WORDS=("yarn" "add" "--json")
+  add_word_to_comreply "--interactive" "--"
+  [ "${COMPREPLY[*]}" == "--interactive" ]
+
+  COMPREPLY=()
+  COMP_WORDS=("yarn" "config" "g")
+  add_word_to_comreply "add" "g"
+  add_word_to_comreply "get" "g"
+  add_word_to_comreply "gets" "g"
+  add_word_to_comreply "set" "g"
+  [ "${COMPREPLY[*]}" == "get gets" ]
+
+  COMPREPLY=()
+  COMP_WORDS=("yarn" "workspace" "@test" "add" "-i" "--json" "")
+  add_word_to_comreply "workspace" ""
+  add_word_to_comreply "--interactive" ""
+  add_word_to_comreply "-i" ""
+  add_word_to_comreply "--json" ""
+  [ "${COMPREPLY[*]}" == "--interactive" ]
+
+  COMPREPLY=()
+  COMP_WORDS=("yarn" "workspace" "@test" "add" "-i" "--json" "--")
+  add_word_to_comreply "-D" "--"
+  add_word_to_comreply "--dev" "--"
+  add_word_to_comreply "-O" "--"
+  add_word_to_comreply "--option" "--"
+  [ "${COMPREPLY[*]}" == "--dev --option" ]
+
+  COMPREPLY=()
+  COMP_WORDS=("yarn" "workspace" "@test" "add" "--interactive" "-")
+  add_word_to_comreply "-D" "-"
+  add_word_to_comreply "--dev" "-"
+  add_word_to_comreply "-O" "-"
+  add_word_to_comreply "--option" "-"
+  add_word_to_comreply "-i" "-"
+  [ "${COMPREPLY[*]}" == "-D --dev -O --option -i" ]
+
+}

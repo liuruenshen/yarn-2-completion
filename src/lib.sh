@@ -11,7 +11,7 @@ Y2C_REPO_ROOT_IS_YARN_2_VAR_NAME_PREFIX="Y2C_REPO_IS_YARN_2_"
 Y2C_WORKSPACE_PACKAGES_PREFIX="Y2C_WORKSPACE_PACKAGES_"
 
 Y2C_COMMAND_END_MARK="yarn_command_end_mark_for_prorcesing_last_word"
-Y2C_ALTRENATIVE_FLAG_SYMBOL="|"
+Y2C_OPTION_SYMBOL="|"
 Y2C_FLAG_GROUP_CONCAT_SYMBOL=","
 Y2C_VARIABLE_SYMBOL='<'
 
@@ -317,7 +317,7 @@ y2c_generate_yarn_command_list() {
         word_is_flag=0
       fi
 
-      broken_word=${broken_word//,/$Y2C_ALTRENATIVE_FLAG_SYMBOL}
+      broken_word=${broken_word//,/$Y2C_OPTION_SYMBOL}
 
       if [[ word_is_flag -eq 1 ]]; then
         if [[ $previous_word_is_flag -eq 1 ]]; then
@@ -418,10 +418,10 @@ y2c_get_identified_word() {
   fi
 }
 
-set_yarn_alternative_flags() {
+y2c_set_yarn_options() {
   local token="$1"
 
-  IFS="${Y2C_ALTRENATIVE_FLAG_SYMBOL}" read -r -a Y2C_TMP_OPTIONS <<<"$token"
+  IFS="${Y2C_OPTION_SYMBOL}" read -r -a Y2C_TMP_OPTIONS <<<"$token"
 }
 
 add_word_to_comreply() {
@@ -429,9 +429,8 @@ add_word_to_comreply() {
   local completing_word="$2"
   local current_command="${COMP_WORDS[*]}"
 
-  if ! [[ $current_command = *"$processing_word"* ]] &&
-    [[ ${processing_word} = "${completing_word}"* ]] &&
-    ! [[ ${COMPREPLY[*]}" " = *"$processing_word "* ]]; then
+  if ! [[ " ${current_command} " = *" ${processing_word} "* ]] &&
+    [[ ${processing_word} = "${completing_word}"* ]]; then
     COMPREPLY+=("${processing_word}")
   fi
 }
@@ -460,7 +459,7 @@ y2c_add_word_candidates() {
       add_word_to_comreply "${processing_word}" "${completing_word}"
       ;;
     "$Y2C_YARN_WORD_IS_OPTION")
-      set_yarn_alternative_flags "${processing_word}"
+      y2c_set_yarn_options "${processing_word}"
       copied_flags=("${Y2C_TMP_OPTIONS[@]}")
 
       for flag in "${copied_flags[@]}"; do
@@ -528,7 +527,7 @@ y2c_run_yarn_completion() {
           fi
           ;;
         "$Y2C_YARN_WORD_IS_OPTION")
-          set_yarn_alternative_flags "${processing_word}"
+          y2c_set_yarn_options "${processing_word}"
           for flag in "${Y2C_TMP_OPTIONS[@]}"; do
             if [[ ${COMP_WORDS[$comp_word_index]} = "${flag}" ]]; then
               continue 3
