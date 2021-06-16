@@ -750,11 +750,15 @@ validate_yarn_command_words() {
   y2c_detect_environment
 
   cd test1
-  y2c_generate_workspace_packages "${PWD}"
+  Y2C_CURRENT_ROOT_REPO_PATH="${PWD}"
+  Y2C_CURRENT_ROOT_REPO_BASE64_PATH=$(y2c_get_var_name "${Y2C_CURRENT_ROOT_REPO_PATH}")
+  y2c_generate_workspace_packages
   [ "${Y2C_WORKSPACE_PACKAGES_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx[*]}" == "wrk-a wrk-b wrk-c" ]
 
   cd ../test3
-  y2c_generate_workspace_packages "${PWD}"
+  Y2C_CURRENT_ROOT_REPO_PATH="${PWD}"
+  Y2C_CURRENT_ROOT_REPO_BASE64_PATH=$(y2c_get_var_name "${Y2C_CURRENT_ROOT_REPO_PATH}")
+  y2c_generate_workspace_packages
   [ "${Y2C_WORKSPACE_PACKAGES_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz[*]}" == "wrk-a wrk-b wrk-c" ]
 }
 
@@ -797,20 +801,18 @@ validate_yarn_command_words() {
   y2c_detect_environment
 
   cd test1
-  y2c_generate_workspace_packages "${PWD}"
-
   Y2C_CURRENT_ROOT_REPO_PATH="${PWD}"
-  Y2C_CURRENT_ROOT_REPO_PATH_BASE64=$(y2c_get_var_name "${Y2C_CURRENT_ROOT_REPO_PATH}")
+  Y2C_CURRENT_ROOT_REPO_BASE64_PATH=$(y2c_get_var_name "${Y2C_CURRENT_ROOT_REPO_PATH}")
+  y2c_generate_workspace_packages
   expand_workspaceName_variable
 
   [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" == "${Y2C_WORKSPACE_PACKAGES_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx[*]}" ]
 
   cd ../test3
 
-  y2c_generate_workspace_packages "${PWD}"
-
   Y2C_CURRENT_ROOT_REPO_PATH="${PWD}"
-  Y2C_CURRENT_ROOT_REPO_PATH_BASE64=$(y2c_get_var_name "${Y2C_CURRENT_ROOT_REPO_PATH}")
+  Y2C_CURRENT_ROOT_REPO_BASE64_PATH=$(y2c_get_var_name "${Y2C_CURRENT_ROOT_REPO_PATH}")
+  y2c_generate_workspace_packages
   expand_workspaceName_variable
 
   [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" == "${Y2C_WORKSPACE_PACKAGES_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz[*]}" ]
@@ -826,10 +828,10 @@ validate_yarn_command_words() {
   y2c_detect_environment
 
   cd test1
-  y2c_generate_workspace_packages "${PWD}"
 
   Y2C_CURRENT_ROOT_REPO_PATH="${PWD}"
-  Y2C_CURRENT_ROOT_REPO_PATH_BASE64=$(y2c_get_var_name "${Y2C_CURRENT_ROOT_REPO_PATH}")
+  Y2C_CURRENT_ROOT_REPO_BASE64_PATH=$(y2c_get_var_name "${Y2C_CURRENT_ROOT_REPO_PATH}")
+  y2c_generate_workspace_packages
   y2c_set_expand_var "<workspaceName"
 
   [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" == "${Y2C_WORKSPACE_PACKAGES_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx[*]}" ]
@@ -844,9 +846,9 @@ validate_yarn_command_words() {
 
   cd ../test3
 
-  y2c_generate_workspace_packages "${PWD}"
-
   Y2C_CURRENT_ROOT_REPO_PATH="${PWD}"
+  Y2C_CURRENT_ROOT_REPO_BASE64_PATH=$(y2c_get_var_name "${Y2C_CURRENT_ROOT_REPO_PATH}")
+  y2c_generate_workspace_packages
   y2c_set_expand_var "<workspaceName"
 
   [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" == "${Y2C_WORKSPACE_PACKAGES_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz[*]}" ]

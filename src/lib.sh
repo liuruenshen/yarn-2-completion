@@ -37,7 +37,7 @@ declare -i Y2C_SETUP_HIT_CACHE=0
 Y2C_YARN_VERSION=
 Y2C_YARN_BASE64_VERSION=
 Y2C_CURRENT_ROOT_REPO_PATH=
-Y2C_CURRENT_ROOT_REPO_PATH_BASE64=
+Y2C_CURRENT_ROOT_REPO_BASE64_PATH=
 
 y2c_setup() {
   declare -i is_yarn_2=0
@@ -54,10 +54,10 @@ y2c_setup() {
 
   if [[ -f "${root_repo_path}/yarn.lock" ]]; then
     Y2C_CURRENT_ROOT_REPO_PATH="${root_repo_path}"
-    Y2C_CURRENT_ROOT_REPO_PATH_BASE64=$(y2c_get_var_name "${Y2C_CURRENT_ROOT_REPO_PATH}")
-    yarn_version_var_name="${Y2C_REPO_ROOT_YARN_VERSION_VAR_NAME_PREFIX}${Y2C_CURRENT_ROOT_REPO_PATH_BASE64}"
-    yarn_base64_version_var_name="${Y2C_REPO_ROOT_YARN_BASE64_VERSION_VAR_NAME_PREFIX}${Y2C_CURRENT_ROOT_REPO_PATH_BASE64}"
-    is_yarn_2_var_name="${Y2C_REPO_ROOT_IS_YARN_2_VAR_NAME_PREFIX}${Y2C_CURRENT_ROOT_REPO_PATH_BASE64}"
+    Y2C_CURRENT_ROOT_REPO_BASE64_PATH=$(y2c_get_var_name "${Y2C_CURRENT_ROOT_REPO_PATH}")
+    yarn_version_var_name="${Y2C_REPO_ROOT_YARN_VERSION_VAR_NAME_PREFIX}${Y2C_CURRENT_ROOT_REPO_BASE64_PATH}"
+    yarn_base64_version_var_name="${Y2C_REPO_ROOT_YARN_BASE64_VERSION_VAR_NAME_PREFIX}${Y2C_CURRENT_ROOT_REPO_BASE64_PATH}"
+    is_yarn_2_var_name="${Y2C_REPO_ROOT_IS_YARN_2_VAR_NAME_PREFIX}${Y2C_CURRENT_ROOT_REPO_BASE64_PATH}"
 
     if [[ -n ${!yarn_version_var_name} ]]; then
       Y2C_YARN_VERSION="${!yarn_version_var_name}"
@@ -92,7 +92,7 @@ y2c_setup() {
 
     if [[ Y2C_IS_YARN_2_REPO -eq 1 ]]; then
       y2c_generate_yarn_command_list
-      y2c_generate_workspace_packages "${Y2C_CURRENT_ROOT_REPO_PATH}"
+      y2c_generate_workspace_packages
     fi
 
     return 0
@@ -123,8 +123,7 @@ y2c_setup() {
 }
 
 y2c_generate_workspace_packages() {
-  local repo_path="$1"
-  local repo_package_path="${repo_path}/package.json"
+  local repo_package_path="${Y2C_CURRENT_ROOT_REPO_PATH}/package.json"
   local package_json_path=""
   local node_commands=""
   local package_names=()
@@ -137,7 +136,7 @@ y2c_generate_workspace_packages() {
     return 0
   fi
 
-  workspace_packagaes_var_name=$(y2c_get_var_name "${repo_path}" "${Y2C_WORKSPACE_PACKAGES_PREFIX}")
+  workspace_packagaes_var_name="${Y2C_WORKSPACE_PACKAGES_PREFIX}${Y2C_CURRENT_ROOT_REPO_BASE64_PATH}"
   if [[ -n ${!workspace_packagaes_var_name} ]]; then
     return 0
   fi
@@ -169,7 +168,7 @@ y2c_generate_workspace_packages() {
 expand_workspaceName_variable() {
   local var_name=""
 
-  var_name="${Y2C_WORKSPACE_PACKAGES_PREFIX}${Y2C_CURRENT_ROOT_REPO_PATH_BASE64}[@]"
+  var_name="${Y2C_WORKSPACE_PACKAGES_PREFIX}${Y2C_CURRENT_ROOT_REPO_BASE64_PATH}[@]"
   Y2C_TMP_EXPANDED_VAR_RESULT=("${!var_name}")
 }
 
