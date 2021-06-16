@@ -7,6 +7,7 @@ Y2C_WORKSPACE_COMMAND_TOKENS_VARNAME_PREFIX="YARN_WORKSPACE_COMMAND_TOKENS_"
 Y2C_COMMAND_TOKENS_LIST_VERSION_REF_PREFIX="YARN_COMMAND_TOKENS_LIST_VER_"
 Y2C_PACKAGE_NAME_PATH_PREFIX="Y2C_PACKAGE_NAME_PATH_"
 Y2C_REPO_ROOT_YARN_VERSION_VAR_NAME_PREFIX="Y2C_REPO_YARN_VERSION_"
+Y2C_REPO_ROOT_YARN_BASE64_VERSION_VAR_NAME_PREFIX="Y2C_REPO_YARN_BASE64_VERSION_"
 Y2C_REPO_ROOT_IS_YARN_2_VAR_NAME_PREFIX="Y2C_REPO_IS_YARN_2_"
 Y2C_WORKSPACE_PACKAGES_PREFIX="Y2C_WORKSPACE_PACKAGES_"
 
@@ -34,6 +35,7 @@ declare -i Y2C_IS_YARN_2_REPO=0
 declare -i Y2C_SETUP_HIT_CACHE=0
 
 Y2C_YARN_VERSION=
+Y2C_YARN_BASE64_VERSION=
 Y2C_CURRENT_ROOT_REPO_PATH=
 Y2C_CURRENT_ROOT_REPO_PATH_BASE64=
 
@@ -43,6 +45,7 @@ y2c_setup() {
 
   local root_repo_path="${1:-"$PWD"}"
   local yarn_version_var_name=""
+  local yarn_base64_version_var_name=""
   local is_yarn_2_var_name=""
   local available_paths=()
   local checking_path=""
@@ -53,36 +56,42 @@ y2c_setup() {
     Y2C_CURRENT_ROOT_REPO_PATH="${root_repo_path}"
     Y2C_CURRENT_ROOT_REPO_PATH_BASE64=$(y2c_get_var_name "${Y2C_CURRENT_ROOT_REPO_PATH}")
     yarn_version_var_name="${Y2C_REPO_ROOT_YARN_VERSION_VAR_NAME_PREFIX}${Y2C_CURRENT_ROOT_REPO_PATH_BASE64}"
+    yarn_base64_version_var_name="${Y2C_REPO_ROOT_YARN_BASE64_VERSION_VAR_NAME_PREFIX}${Y2C_CURRENT_ROOT_REPO_PATH_BASE64}"
     is_yarn_2_var_name="${Y2C_REPO_ROOT_IS_YARN_2_VAR_NAME_PREFIX}${Y2C_CURRENT_ROOT_REPO_PATH_BASE64}"
 
     if [[ -n ${!yarn_version_var_name} ]]; then
       Y2C_YARN_VERSION="${!yarn_version_var_name}"
       Y2C_IS_YARN_2_REPO=${!is_yarn_2_var_name}
-
+      Y2C_YARN_BASE64_VERSION="${!yarn_base64_version_var_name}"
       # shellcheck disable=SC2034
       [[ $Y2C_TESTING_MODE -eq 1 ]] && Y2C_SETUP_HIT_CACHE=1
 
     elif command -v yarn >/dev/null 2>&1; then
       Y2C_YARN_VERSION=$(y2c_is_yarn_2)
       is_yarn_2=$(($? ^ 1))
+      Y2C_YARN_BASE64_VERSION=$(y2c_get_var_name "${Y2C_YARN_VERSION}")
 
       Y2C_IS_YARN_2_REPO=$is_yarn_2
 
       if [[ $IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
         declare -n yarn_version_ref="${yarn_version_var_name}"
         declare -n yarn_is_yarn2_ref="${is_yarn_2_var_name}"
+        declare -n yarn_base64_version_ref="${yarn_base64_version_var_name}"
         # shellcheck disable=SC2034
         yarn_version_ref="${Y2C_YARN_VERSION}"
         # shellcheck disable=SC2034
         yarn_is_yarn2_ref="${is_yarn_2}"
+        # shellcheck disable=SC2034
+        yarn_base64_version_ref="${Y2C_YARN_BASE64_VERSION}"
       else
         eval "$yarn_version_var_name=$Y2C_YARN_VERSION"
+        eval "$yarn_base64_version_var_name=$Y2C_YARN_BASE64_VERSION"
         eval "$is_yarn_2_var_name=$is_yarn_2"
       fi
     fi
 
     if [[ Y2C_IS_YARN_2_REPO -eq 1 ]]; then
-      y2c_generate_yarn_command_list "${Y2C_YARN_VERSION}"
+      y2c_generate_yarn_command_list
       y2c_generate_workspace_packages "${Y2C_CURRENT_ROOT_REPO_PATH}"
     fi
 
@@ -128,6 +137,11 @@ y2c_generate_workspace_packages() {
     return 0
   fi
 
+  workspace_packagaes_var_name=$(y2c_get_var_name "${repo_path}" "${Y2C_WORKSPACE_PACKAGES_PREFIX}")
+  if [[ -n ${!workspace_packagaes_var_name} ]]; then
+    return 0
+  fi
+
   # shellcheck disable=SC2207
   package_paths=($(node -e "console.log((require('${repo_package_path}').workspaces || []).join(' '))"))
 
@@ -141,7 +155,6 @@ y2c_generate_workspace_packages() {
 
   { while read -r package_name; do package_names+=("${package_name}"); done; } < <(node -e "${node_commands}")
 
-  workspace_packagaes_var_name=$(y2c_get_var_name "${repo_path}" "${Y2C_WORKSPACE_PACKAGES_PREFIX}")
   if [[ $IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
     declare -n store_map_ref="${workspace_packagaes_var_name}"
     # shellcheck disable=2034
@@ -263,12 +276,9 @@ y2c_is_yarn_2() {
 }
 
 y2c_generate_yarn_command_list() {
-  local yarn_version="$1"
-  local base64_yarn_version=""
   local yarn_command_tokens_list_var_name
 
-  yarn_command_tokens_list_var_name="$(y2c_get_var_name "${yarn_version}" "${Y2C_COMMAND_TOKENS_LIST_VERSION_REF_PREFIX}")"
-  base64_yarn_version="${yarn_command_tokens_list_var_name#$Y2C_COMMAND_TOKENS_LIST_VERSION_REF_PREFIX}"
+  yarn_command_tokens_list_var_name="${Y2C_COMMAND_TOKENS_LIST_VERSION_REF_PREFIX}${Y2C_YARN_BASE64_VERSION}"
 
   if [[ -n ${!yarn_command_tokens_list_var_name} ]]; then
     return 0
@@ -380,7 +390,7 @@ y2c_generate_yarn_command_list() {
       fi
     done
 
-    store_yarn_command_var_name="$(get_yarn_command_tokens_var_name "${base64_yarn_version}" "${store_yarn_command_index}")"
+    store_yarn_command_var_name="$(get_yarn_command_tokens_var_name "${Y2C_YARN_BASE64_VERSION}" "${store_yarn_command_index}")"
     store_yarn_command_index+=1
 
     if [[ IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
@@ -500,7 +510,6 @@ y2c_run_yarn_completion() {
   fi
 
   local completing_word="$1"
-  local yarn_version="$2"
   local word_num="${#COMP_WORDS[@]}"
   local last_word_index=$((--word_num))
   local expanded_var
@@ -514,7 +523,7 @@ y2c_run_yarn_completion() {
 
   COMPREPLY=()
 
-  yarn_command_tokens_list_var_name="$(y2c_get_var_name "${yarn_version}" "${Y2C_COMMAND_TOKENS_LIST_VERSION_REF_PREFIX}")"
+  yarn_command_tokens_list_var_name="${Y2C_COMMAND_TOKENS_LIST_VERSION_REF_PREFIX}${Y2C_YARN_BASE64_VERSION}"
 
   if [[ $IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
     declare -n yarn_command_tokens_list="${yarn_command_tokens_list_var_name}"
@@ -580,7 +589,7 @@ y2c_yarn_completion_for_complete() {
     return 0
   fi
 
-  y2c_run_yarn_completion "$2" "${Y2C_YARN_VERSION}"
+  y2c_run_yarn_completion "$2"
 }
 
 y2c_get_var_name() {

@@ -629,6 +629,7 @@ validate_yarn_command_words() {
 
   [ $Y2C_SETUP_HIT_CACHE -eq 0 ]
   [ $Y2C_REPO_YARN_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx == "2.4.2" ]
+  [ $Y2C_REPO_YARN_BASE64_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx == "Mi40LjI_" ]
   [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx -eq 1 ]
   [ $Y2C_CURRENT_ROOT_REPO_PATH = "${PWD}" ]
   [ $Y2C_IS_YARN_2_REPO -eq 1 ]
@@ -640,8 +641,10 @@ validate_yarn_command_words() {
   [ $is_y2c_failed ]
   [ $Y2C_SETUP_HIT_CACHE -eq 0 ]
   [ $Y2C_REPO_YARN_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx == "2.4.2" ]
+  [ $Y2C_REPO_YARN_BASE64_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx == "Mi40LjI_" ]
   [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx -eq 1 ]
   [ $Y2C_REPO_YARN_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qy == "1.22.10" ]
+  [ $Y2C_REPO_YARN_BASE64_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qy == "MS4yMi4xMA__" ]
   [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qy -eq 0 ]
   [ $Y2C_CURRENT_ROOT_REPO_PATH = "${PWD}" ]
   [ $Y2C_IS_YARN_2_REPO -eq 0 ]
@@ -651,8 +654,10 @@ validate_yarn_command_words() {
 
   [ $Y2C_SETUP_HIT_CACHE -eq 1 ]
   [ $Y2C_REPO_YARN_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx == "2.4.2" ]
+  [ $Y2C_REPO_YARN_BASE64_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx == "Mi40LjI_" ]
   [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx -eq 1 ]
   [ $Y2C_REPO_YARN_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qy == "1.22.10" ]
+  [ $Y2C_REPO_YARN_BASE64_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qy == "MS4yMi4xMA__" ]
   [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qy -eq 0 ]
   [ $Y2C_CURRENT_ROOT_REPO_PATH = "${PWD%/workspace-b}" ]
   [ $Y2C_IS_YARN_2_REPO -eq 1 ]
@@ -662,10 +667,13 @@ validate_yarn_command_words() {
 
   [ $Y2C_SETUP_HIT_CACHE -eq 0 ]
   [ $Y2C_REPO_YARN_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx == "2.4.2" ]
+  [ $Y2C_REPO_YARN_BASE64_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx == "Mi40LjI_" ]
   [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx -eq 1 ]
   [ $Y2C_REPO_YARN_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qy == "1.22.10" ]
+  [ $Y2C_REPO_YARN_BASE64_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qy == "MS4yMi4xMA__" ]
   [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qy -eq 0 ]
   [ $Y2C_REPO_YARN_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz == "2.1.0" ]
+  [ $Y2C_REPO_YARN_BASE64_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz == "Mi4xLjA_" ]
   [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz -eq 1 ]
   [ $Y2C_CURRENT_ROOT_REPO_PATH = "${PWD%/packages/workspace-a}" ]
   [ $Y2C_IS_YARN_2_REPO -eq 1 ]
@@ -673,7 +681,6 @@ validate_yarn_command_words() {
 }
 
 @test "y2c_generate_yarn_command_list" {
-  local yarn_version=""
   . lib.sh
 
   expand_yarn_workspace_command_list() {
@@ -688,7 +695,8 @@ validate_yarn_command_words() {
   y2c_detect_environment
 
   Y2C_YARN_VERSION=$(y2c_is_yarn_2)
-  y2c_generate_yarn_command_list "${Y2C_YARN_VERSION}"
+  Y2C_YARN_BASE64_VERSION=$(y2c_get_var_name "${Y2C_YARN_VERSION}")
+  y2c_generate_yarn_command_list
   generate_yarn_expected_command_words "${Y2C_YARN_VERSION}"
 
   [ $YARN_COMMAND_TOKENS_LIST_VER_Mi40LjI_ ]
@@ -698,7 +706,8 @@ validate_yarn_command_words() {
   cd ../test3
 
   Y2C_YARN_VERSION=$(y2c_is_yarn_2)
-  y2c_generate_yarn_command_list "${Y2C_YARN_VERSION}"
+  Y2C_YARN_BASE64_VERSION=$(y2c_get_var_name "${Y2C_YARN_VERSION}")
+  y2c_generate_yarn_command_list
   generate_yarn_expected_command_words "${Y2C_YARN_VERSION}"
 
   [ $YARN_COMMAND_TOKENS_LIST_VER_Mi40LjI_ ]
@@ -1045,32 +1054,36 @@ validate_yarn_command_words() {
   done
 
   COMP_WORDS=("yarn" "config" "")
+  Y2C_YARN_BASE64_VERSION="Mi40LjI_"
   result=()
   set +e
-  y2c_run_yarn_completion "" "${yarn_version}"
+  y2c_run_yarn_completion ""
   set -e
   [ "${result[*]}" == "[-v|--verbose,--why,--json  get  set " ]
 
   COMP_WORDS=("yarn" "add" "--json" "-D" "--optional" "--")
+  Y2C_YARN_BASE64_VERSION="Mi40LjI_"
   result=()
   set +e
-  y2c_run_yarn_completion "--" "${yarn_version}"
+  y2c_run_yarn_completion "--"
   set -e
   [ "${result[*]}" == "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached --" ]
 
   COMP_WORDS=("yarn" "workspace" "@test" "")
+  Y2C_YARN_BASE64_VERSION="Mi40LjI_"
   result=()
   Y2C_TMP_EXPANDED_VAR_RESULT=("@test")
   set +e
-  y2c_run_yarn_completion "" "${yarn_version}"
+  y2c_run_yarn_completion ""
   set -e
   [ "${result[*]}" == "<commandName  add  bin  cache  config  dedupe  dlx  exec  explain  info  init  install  link  node  npm  pack  patch  patch-commit  rebuild  remove  run  set  unplug  up  why  plugin " ]
 
   COMP_WORDS=("yarn" "workspace" "@test" "plugin" "i")
+  Y2C_YARN_BASE64_VERSION="Mi40LjI_"
   result=()
   Y2C_TMP_EXPANDED_VAR_RESULT=("@test")
   set +e
-  y2c_run_yarn_completion "i" "${yarn_version}"
+  y2c_run_yarn_completion "i"
   set -e
   [ "${result[*]}" == "import i list i remove i runtime i" ]
 }
