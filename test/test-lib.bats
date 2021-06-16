@@ -1071,3 +1071,67 @@ validate_yarn_command_words() {
   set -e
   [ "${result[*]}" == "import i import i list i remove i runtime i" ]
 }
+
+@test "y2c_yarn_completion_for_complete" {
+  . lib.sh
+
+  declare -i y2c_run_yarn_completion_has_been_called=0
+  y2c_run_yarn_completion() {
+    y2c_run_yarn_completion_has_been_called=1
+  }
+
+  y2c_run_yarn_completion_has_been_called=0
+  Y2C_IS_YARN_2_REPO=0
+  y2c_yarn_completion_for_complete
+  [ $y2c_run_yarn_completion_has_been_called -eq 0 ]
+
+  y2c_run_yarn_completion_has_been_called=0
+  Y2C_IS_YARN_2_REPO=1
+  y2c_yarn_completion_for_complete
+  [ $y2c_run_yarn_completion_has_been_called -eq 1 ]
+}
+
+@test "y2c_yarn_completion_main" {
+  . lib.sh
+
+  declare -i y2c_detect_environment_called=0
+  declare -i y2c_setup_called=0
+  declare -i complete_called=0
+  declare -i set_y2c_detect_environment_status=0
+  declare -i y2c_yarn_completion_main_failed=0
+
+  y2c_detect_environment() {
+    y2c_detect_environment_called=1
+    return ${set_y2c_detect_environment_status}
+  }
+
+  y2c_setup() {
+    y2c_setup_called=1
+  }
+
+  complete() {
+    complete_called=1
+  }
+
+  y2c_detect_environment_called=0
+  y2c_setup_called=0
+  complete_called=0
+  set_y2c_detect_environment_status=1
+  y2c_yarn_completion_main_failed=0
+  y2c_yarn_completion_main || y2c_yarn_completion_main_failed=1
+  [ $y2c_yarn_completion_main_failed -eq 1 ]
+  [ ${y2c_detect_environment_called} -eq 1 ]
+  [ ${y2c_setup_called} -eq 0 ]
+  [ ${complete_called} -eq 0 ]
+
+  y2c_detect_environment_called=0
+  y2c_setup_called=0
+  complete_called=0
+  set_y2c_detect_environment_status=0
+  y2c_yarn_completion_main_failed=0
+  y2c_yarn_completion_main || y2c_yarn_completion_main_failed=1
+  [ $y2c_yarn_completion_main_failed -eq 0 ]
+  [ ${y2c_detect_environment_called} -eq 1 ]
+  [ ${y2c_setup_called} -eq 1 ]
+  [ ${complete_called} -eq 1 ]
+}
