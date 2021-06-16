@@ -30,6 +30,8 @@ docker_iterate() {
   local invoke_func="$1"
   local script_dir=""
 
+  shift 1
+
   if ! declare -f "${invoke_func}" >/dev/null 2>&1; then
     return 1
   fi
@@ -45,7 +47,7 @@ docker_iterate() {
     docker_tag_name=$(get_docker_tag "${docker_file}")
     docker_image_id=$(get_docker_image_id "${docker_tag_name}")
 
-    $invoke_func "${docker_file}" "${docker_tag_name}" "${docker_image_id}"
+    $invoke_func "${docker_file}" "${docker_tag_name}" "${docker_image_id}" "$@"
   done
 
   return 0
