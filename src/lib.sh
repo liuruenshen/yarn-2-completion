@@ -38,6 +38,11 @@ Y2C_YARN_VERSION=
 Y2C_YARN_BASE64_VERSION=
 Y2C_CURRENT_ROOT_REPO_PATH=
 Y2C_CURRENT_ROOT_REPO_BASE64_PATH=
+Y2C_VERBOSE=0
+
+is_verbose_output() {
+  return $((Y2C_VERBOSE ^ 1))
+}
 
 y2c_setup() {
   declare -i is_yarn_2=0
@@ -60,6 +65,8 @@ y2c_setup() {
     is_yarn_2_var_name="${Y2C_REPO_ROOT_IS_YARN_2_VAR_NAME_PREFIX}${Y2C_CURRENT_ROOT_REPO_BASE64_PATH}"
 
     if [[ -n ${!yarn_version_var_name} ]]; then
+      is_verbose_output && echo "[Y2C] Found the cache, restoring it" 1>&2
+
       Y2C_YARN_VERSION="${!yarn_version_var_name}"
       Y2C_IS_YARN_2_REPO=${!is_yarn_2_var_name}
       Y2C_YARN_BASE64_VERSION="${!yarn_base64_version_var_name}"
@@ -67,6 +74,8 @@ y2c_setup() {
       [[ $Y2C_TESTING_MODE -eq 1 ]] && Y2C_SETUP_HIT_CACHE=1
 
     elif command -v yarn >/dev/null 2>&1; then
+      is_verbose_output && echo "[Y2C] Found the repository hosted by yarn" 1>&2
+
       Y2C_YARN_VERSION=$(y2c_is_yarn_2)
       is_yarn_2=$(($? ^ 1))
       Y2C_YARN_BASE64_VERSION=$(y2c_get_var_name "${Y2C_YARN_VERSION}")
@@ -93,6 +102,8 @@ y2c_setup() {
     if [[ Y2C_IS_YARN_2_REPO -eq 1 ]]; then
       y2c_generate_yarn_command_list
       y2c_generate_workspace_packages
+    else
+      is_verbose_output && echo "[Y2C] yarn-2-completion won't run on this repository(yarn 2+ is required)" 1>&2
     fi
 
     return 0
@@ -138,8 +149,11 @@ y2c_generate_workspace_packages() {
 
   workspace_packagaes_var_name="${Y2C_WORKSPACE_PACKAGES_PREFIX}${Y2C_CURRENT_ROOT_REPO_BASE64_PATH}"
   if [[ -n ${!workspace_packagaes_var_name} ]]; then
+    is_verbose_output && echo "[Y2C] Found the cache of workspace packges" 1>&2
     return 0
   fi
+
+  is_verbose_output && echo "[Y2C] Finding all the workspace's packages and cache them" 1>&2
 
   # shellcheck disable=SC2207
   package_paths=($(node -e "console.log((require('${repo_package_path}').workspaces || []).join(' '))"))
@@ -280,8 +294,11 @@ y2c_generate_yarn_command_list() {
   yarn_command_tokens_list_var_name="${Y2C_COMMAND_TOKENS_LIST_VERSION_REF_PREFIX}${Y2C_YARN_BASE64_VERSION}"
 
   if [[ -n ${!yarn_command_tokens_list_var_name} ]]; then
+    is_verbose_output && echo "[Y2C] Found the cache of yarn commands of verson ${Y2C_YARN_VERSION}" 1>&2
     return 0
   fi
+
+  is_verbose_output && echo "[Y2C] Creating yarn commands of version ${Y2C_YARN_VERSION} for speeding up completion" 1>&2
 
   if [[ $IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
     declare -n yarn_command_tokens_list_ref="${yarn_command_tokens_list_var_name}"
