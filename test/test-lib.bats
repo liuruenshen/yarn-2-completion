@@ -743,7 +743,7 @@ validate_yarn_command_words() {
   [ "${Y2C_WORKSPACE_PACKAGES_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz[*]}" == "wrk-a wrk-b wrk-c" ]
 }
 
-@test "y2c_get_identified_word" {
+@test "y2c_get_identified_token" {
   declare -i status=0
   local delimiter=""
   local word=""
@@ -753,7 +753,7 @@ validate_yarn_command_words() {
 
   generate_yarn_expected_command_words "2.4.2"
 
-  y2c_get_identified_word "${EXPECTED_YARN_COMMAND_TOKENS_242_0[2]}" || status=$?
+  y2c_get_identified_token "${EXPECTED_YARN_COMMAND_TOKENS_242_0[2]}" || status=$?
   [ $status -eq "$Y2C_YARN_WORD_IS_OPTION" ]
 
   result=""
@@ -764,11 +764,11 @@ validate_yarn_command_words() {
   [ "$result" == "${Y2C_TMP_IDENTIFIED_TOKENS}" ]
 
   status=0
-  y2c_get_identified_word "${EXPECTED_YARN_COMMAND_TOKENS_242_120[1]}" || status=$?
+  y2c_get_identified_token "${EXPECTED_YARN_COMMAND_TOKENS_242_120[1]}" || status=$?
   [ $status -eq "$Y2C_YARN_WORD_IS_ORDER" ]
 
   status=0
-  y2c_get_identified_word "${EXPECTED_YARN_COMMAND_TOKENS_242_22[6]}" || status=$?
+  y2c_get_identified_token "${EXPECTED_YARN_COMMAND_TOKENS_242_22[6]}" || status=$?
   [ $status -eq "$Y2C_YARN_WORD_IS_VARIABLE" ]
 }
 
@@ -937,5 +937,71 @@ validate_yarn_command_words() {
   add_word_to_comreply "--option" "-"
   add_word_to_comreply "-i" "-"
   [ "${COMPREPLY[*]}" == "-D --dev -O --option -i" ]
+}
 
+@test "y2c_add_word_candidates" {
+  . lib.sh
+
+  local result=()
+  COMPREPLY=()
+  add_word_to_comreply() {
+    result+=("$1" "$2")
+  }
+
+  y2c_set_expand_var() {
+    Y2C_TMP_EXPANDED_VAR_RESULT=("@test1" "@test2" "@test3")
+  }
+
+  COMP_WORDS=("yarn" "a")
+
+  set +e
+  y2c_add_word_candidates "add" "a"
+  set -e
+
+  [ "${result[0]}" == "add" ]
+  [ "${result[1]}" == "a" ]
+
+  set +e
+  COMP_WORDS=("yarn" "add" "")
+  COMPREPLY=()
+  result=()
+  y2c_add_word_candidates "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" ""
+  set -e
+
+  [ "${COMPREPLY[*]}" == "--json -E --exact -T --tilde -C --caret -D --dev -P --peer -O --optional --prefer-dev -i --interactive --cached" ]
+
+  set +e
+  COMP_WORDS=("yarn" "add" "--")
+  COMPREPLY=()
+  y2c_add_word_candidates "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" "--"
+  set -e
+
+  [ "${COMPREPLY[*]}" == "--json --exact --tilde --caret --dev --peer --optional --prefer-dev --interactive --cached" ]
+
+  set +e
+  COMP_WORDS=("yarn" "add" "-E" "--tilde" "--dev" "-")
+  COMPREPLY=()
+  result=()
+  y2c_add_word_candidates "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" "-"
+  set -e
+
+  [ "${COMPREPLY[*]}" == "--json -C --caret -P --peer -O --optional --prefer-dev -i --interactive --cached" ]
+
+  set +e
+  COMP_WORDS=("yarn" "add" "--json" "--dev" "-T" "--caret" "--optional" "--prefer-dev" "-i" "--")
+  COMPREPLY=()
+  result=()
+  y2c_add_word_candidates "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" "--"
+  set -e
+
+  [ "${COMPREPLY[*]}" == "--exact --peer --cached" ]
+
+  set +e
+  COMP_WORDS=("yarn" "workspace" "@")
+  COMPREPLY=()
+  result=()
+  y2c_add_word_candidates "<workspaceName" "@"
+  set -e
+
+  [ "${result[*]}" == "@test1 @ @test2 @ @test3 @" ]
 }

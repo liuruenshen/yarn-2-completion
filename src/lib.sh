@@ -401,7 +401,7 @@ y2c_generate_yarn_command_list() {
   expand_yarn_workspace_command_list "${yarn_command_workspace_var_name}" "${yarn_command_tokens_list_var_name}" "${base64_yarn_version}"
 }
 
-y2c_get_identified_word() {
+y2c_get_identified_token() {
   local token="$1"
 
   if [[ $token = \[* ]]; then
@@ -436,23 +436,23 @@ add_word_to_comreply() {
 }
 
 y2c_add_word_candidates() {
-  declare -i yarn_command_words_index=$1
+  local token="$1"
   local completing_word="$2"
 
   local current_command="${COMP_WORDS[*]}"
   local word_type
   local processing_word
-  local copied_identified_words
+  local copied_identified_tokens
   local copied_flags
   local flag
   local flag_remaining_chars
 
-  y2c_get_identified_word "${yarn_command_words[$yarn_command_words_index]}"
+  y2c_get_identified_token "${token}"
   word_type=$?
 
-  copied_identified_words=("${Y2C_TMP_IDENTIFIED_TOKENS[@]}")
+  copied_identified_tokens=("${Y2C_TMP_IDENTIFIED_TOKENS[@]}")
 
-  for processing_word in "${copied_identified_words[@]}"; do
+  for processing_word in "${copied_identified_tokens[@]}"; do
 
     case "$word_type" in
     "$Y2C_YARN_WORD_IS_ORDER")
@@ -503,7 +503,7 @@ y2c_run_yarn_completion() {
   local expanded_var
   local word_type
   local processing_word
-  local copied_identified_words=()
+  local copied_identified_tokens=()
 
   COMPREPLY=()
 
@@ -514,12 +514,12 @@ y2c_run_yarn_completion() {
     fi
 
     for ((comp_word_index = 0; comp_word_index < last_word_index; ++comp_word_index)); do
-      y2c_get_identified_word "${yarn_command_words[$comp_word_index]}"
+      y2c_get_identified_token "${yarn_command_words[$comp_word_index]}"
       word_type=$?
 
-      copied_identified_words=("${Y2C_TMP_IDENTIFIED_TOKENS[@]}")
+      copied_identified_tokens=("${Y2C_TMP_IDENTIFIED_TOKENS[@]}")
 
-      for processing_word in "${copied_identified_words[@]}"; do
+      for processing_word in "${copied_identified_tokens[@]}"; do
         case "$word_type" in
         "$Y2C_YARN_WORD_IS_ORDER")
           if [[ ${COMP_WORDS[$comp_word_index]} = "${processing_word}" ]]; then
@@ -549,7 +549,7 @@ y2c_run_yarn_completion() {
       continue 2
     done
 
-    y2c_add_word_candidates $last_word_index "${completing_word}"
+    y2c_add_word_candidates "${yarn_command_words[$last_word_index]}" "${completing_word}"
   done
 
   return 0
