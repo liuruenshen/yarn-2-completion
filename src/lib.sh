@@ -502,7 +502,7 @@ y2c_run_yarn_completion() {
   local last_word_index=$((--word_num))
   local expanded_var
   local token_type
-  local processing_word
+  local processing_token
   local copied_identified_tokens=()
   local option=""
 
@@ -531,15 +531,15 @@ y2c_run_yarn_completion() {
 
       copied_identified_tokens=("${Y2C_TMP_IDENTIFIED_TOKENS[@]}")
 
-      for processing_word in "${copied_identified_tokens[@]}"; do
+      for processing_token in "${copied_identified_tokens[@]}"; do
         case "$token_type" in
         "$Y2C_YARN_WORD_IS_ORDER")
-          if [[ ${COMP_WORDS[$comp_word_index]} = "${processing_word}" ]]; then
+          if [[ ${COMP_WORDS[$comp_word_index]} = "${processing_token}" ]]; then
             continue 2
           fi
           ;;
         "$Y2C_YARN_WORD_IS_OPTION")
-          y2c_set_yarn_options "${processing_word}"
+          y2c_set_yarn_options "${processing_token}"
           for option in "${Y2C_TMP_OPTIONS[@]}"; do
             if [[ ${COMP_WORDS[$comp_word_index]} = "${option}" ]]; then
               continue 3
@@ -547,7 +547,7 @@ y2c_run_yarn_completion() {
           done
           ;;
         "$Y2C_YARN_WORD_IS_VARIABLE")
-          y2c_set_expand_var "${processing_word}" "${completing_word}"
+          y2c_set_expand_var "${processing_token}" "${completing_word}"
 
           for expanded_var in "${Y2C_TMP_EXPANDED_VAR_RESULT[@]}"; do
             if [[ ${COMP_WORDS[$comp_word_index]} = "${expanded_var}" ]]; then

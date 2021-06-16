@@ -326,7 +326,7 @@ run_mocked_yarn_command() {
 
 generate_yarn_expected_command_words() {
   local version="$1"
-  local index=0
+  declare -i index=0
 
   case "${version}" in
     2.4.2)
@@ -427,6 +427,7 @@ generate_yarn_expected_command_words() {
 
 generate_expected_workspace_commands() {
   local version="$1"
+  declare -i index=0
 
   case "${version}" in
     2.4.2)
@@ -471,6 +472,11 @@ generate_expected_workspace_commands() {
     EXPECTED_WORKSPACE_COMMAND_TOKENS_242_38=([0]="yarn" [1]="workspace" [2]="<workspaceName" [3]="plugin" [4]="list" [5]="[--json" [6]="[--json")
     EXPECTED_WORKSPACE_COMMAND_TOKENS_242_39=([0]="yarn" [1]="workspace" [2]="<workspaceName" [3]="plugin" [4]="remove" [5]="<name")
     EXPECTED_WORKSPACE_COMMAND_TOKENS_242_40=([0]="yarn" [1]="workspace" [2]="<workspaceName" [3]="plugin" [4]="runtime" [5]="[--json" [6]="[--json")
+
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_LIST_242=()
+    for (( index=0; index<41; ++index )); do
+      EXPECTED_WORKSPACE_COMMAND_TOKENS_LIST_242+=("EXPECTED_WORKSPACE_COMMAND_TOKENS_242_${index}")
+    done
     ;;
     2.1.0)
     EXPECTED_WORKSPACE_COMMAND_TOKENS_210_0=([0]="yarn" [1]="workspace" [2]="<workspaceName" [3]="add" [4]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [5]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [6]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [7]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [8]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [9]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [10]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [11]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [12]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [13]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [14]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [15]="...")
@@ -1004,4 +1010,63 @@ validate_yarn_command_words() {
   set -e
 
   [ "${result[*]}" == "@test1 @ @test2 @ @test3 @" ]
+}
+
+@test "y2c_run_yarn_completion" {
+  . lib.sh
+
+  y2c_detect_environment
+
+  local yarn_version="2.4.2"
+  local result=()
+  declare -i index=0
+
+  y2c_add_word_candidates() {
+    result+=("$1" "$2")
+  }
+
+  y2c_set_expand_var() {
+    :
+  }
+
+  generate_yarn_expected_command_words "${yarn_version}"
+  generate_expected_workspace_commands "${yarn_version}"
+
+  YARN_COMMAND_TOKENS_LIST_VER_Mi40LjI_=()
+  for (( index=0; index<${#EXPECTED_YARN_COMMAND_TOKENS_LIST_242[@]}; ++index )); do
+    YARN_COMMAND_TOKENS_LIST_VER_Mi40LjI_+=("${EXPECTED_YARN_COMMAND_TOKENS_LIST_242[$index]}")
+  done
+  for (( index=0; index<${#EXPECTED_WORKSPACE_COMMAND_TOKENS_LIST_242[@]}; ++index )); do
+    YARN_COMMAND_TOKENS_LIST_VER_Mi40LjI_+=("${EXPECTED_WORKSPACE_COMMAND_TOKENS_LIST_242[$index]}")
+  done
+
+  COMP_WORDS=("yarn" "config" "")
+  result=()
+  set +e
+  y2c_run_yarn_completion "" "${yarn_version}"
+  set -e
+  [ "${result[*]}" == "[-v|--verbose,--why,--json  get  set " ]
+
+  COMP_WORDS=("yarn" "add" "--json" "-D" "--optional" "--")
+  result=()
+  set +e
+  y2c_run_yarn_completion "--" "${yarn_version}"
+  set -e
+  [ "${result[*]}" == "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached --" ]
+
+  COMP_WORDS=("yarn" "workspace" "@test" "")
+  result=()
+  Y2C_TMP_EXPANDED_VAR_RESULT=("@test")
+  set +e
+  y2c_run_yarn_completion "" "${yarn_version}"
+  set -e
+  [ "${result[*]}" == "<commandName  add  bin  cache  config  config  config  dedupe  dlx  exec  explain  info  init  install  link  node  npm  pack  patch  patch-commit  rebuild  remove  run  set  set  set  unplug  up  why  npm  npm  npm  npm  npm  npm  npm  npm  plugin  plugin  plugin  plugin  plugin " ]
+
+  COMP_WORDS=("yarn" "workspace" "@test" "plugin" "i")
+  result=()
+  Y2C_TMP_EXPANDED_VAR_RESULT=("@test")
+  set +e
+  y2c_run_yarn_completion "i" "${yarn_version}"
+  set -e
+  [ "${result[*]}" == "import i import i list i remove i runtime i" ]
 }
