@@ -429,7 +429,8 @@ add_word_to_comreply() {
   local current_command="${COMP_WORDS[*]}"
 
   if ! [[ " ${current_command} " = *" ${processing_word} "* ]] &&
-    [[ ${processing_word} = "${completing_word}"* ]]; then
+    [[ ${processing_word} = "${completing_word}"* ]] &&
+    ! [[ " ${COMPREPLY[*]} " = *" ${processing_word} "* ]]; then
     COMPREPLY+=("${processing_word}")
   fi
 }
