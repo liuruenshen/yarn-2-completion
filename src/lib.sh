@@ -35,6 +35,7 @@ declare -i Y2C_SETUP_HIT_CACHE=0
 
 Y2C_YARN_VERSION=
 Y2C_CURRENT_ROOT_REPO_PATH=
+Y2C_CURRENT_ROOT_REPO_PATH_BASE64=
 
 y2c_setup() {
   declare -i is_yarn_2=0
@@ -50,8 +51,9 @@ y2c_setup() {
 
   if [[ -f "${root_repo_path}/yarn.lock" ]]; then
     Y2C_CURRENT_ROOT_REPO_PATH="${root_repo_path}"
-    yarn_version_var_name="$(y2c_get_var_name "$root_repo_path" "${Y2C_REPO_ROOT_YARN_VERSION_VAR_NAME_PREFIX}")"
-    is_yarn_2_var_name="${yarn_version_var_name/$Y2C_REPO_ROOT_YARN_VERSION_VAR_NAME_PREFIX/$Y2C_REPO_ROOT_IS_YARN_2_VAR_NAME_PREFIX}"
+    Y2C_CURRENT_ROOT_REPO_PATH_BASE64=$(y2c_get_var_name "${Y2C_CURRENT_ROOT_REPO_PATH}")
+    yarn_version_var_name="${Y2C_REPO_ROOT_YARN_VERSION_VAR_NAME_PREFIX}${Y2C_CURRENT_ROOT_REPO_PATH_BASE64}"
+    is_yarn_2_var_name="${Y2C_REPO_ROOT_IS_YARN_2_VAR_NAME_PREFIX}${Y2C_CURRENT_ROOT_REPO_PATH_BASE64}"
 
     if [[ -n ${!yarn_version_var_name} ]]; then
       Y2C_YARN_VERSION="${!yarn_version_var_name}"
@@ -154,7 +156,7 @@ y2c_generate_workspace_packages() {
 expand_workspaceName_variable() {
   local var_name=""
 
-  var_name="$(y2c_get_var_name "${Y2C_CURRENT_ROOT_REPO_PATH}" "${Y2C_WORKSPACE_PACKAGES_PREFIX}")[@]"
+  var_name="${Y2C_WORKSPACE_PACKAGES_PREFIX}${Y2C_CURRENT_ROOT_REPO_PATH_BASE64}[@]"
   Y2C_TMP_EXPANDED_VAR_RESULT=("${!var_name}")
 }
 
@@ -506,6 +508,7 @@ y2c_run_yarn_completion() {
   local processing_token
   local copied_identified_tokens=()
   local option=""
+  local added_words=()
 
   declare -i comp_word_index=0
 
@@ -562,6 +565,10 @@ y2c_run_yarn_completion() {
       continue 2
     done
 
+    if [[ " ${added_words[*]} " = *" ${yarn_command_tokens[$last_word_index]} "* ]]; then
+      continue
+    fi
+    added_words+=("${yarn_command_tokens[$last_word_index]}")
     y2c_add_word_candidates "${yarn_command_tokens[$last_word_index]}" "${completing_word}"
   done
 
@@ -573,7 +580,7 @@ y2c_yarn_completion_for_complete() {
     return 0
   fi
 
-  y2c_run_yarn_completion "$2"
+  y2c_run_yarn_completion "$2" "${Y2C_YARN_VERSION}"
 }
 
 y2c_get_var_name() {

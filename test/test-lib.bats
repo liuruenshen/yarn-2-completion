@@ -791,6 +791,7 @@ validate_yarn_command_words() {
   y2c_generate_workspace_packages "${PWD}"
 
   Y2C_CURRENT_ROOT_REPO_PATH="${PWD}"
+  Y2C_CURRENT_ROOT_REPO_PATH_BASE64=$(y2c_get_var_name "${Y2C_CURRENT_ROOT_REPO_PATH}")
   expand_workspaceName_variable
 
   [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" == "${Y2C_WORKSPACE_PACKAGES_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx[*]}" ]
@@ -800,6 +801,7 @@ validate_yarn_command_words() {
   y2c_generate_workspace_packages "${PWD}"
 
   Y2C_CURRENT_ROOT_REPO_PATH="${PWD}"
+  Y2C_CURRENT_ROOT_REPO_PATH_BASE64=$(y2c_get_var_name "${Y2C_CURRENT_ROOT_REPO_PATH}")
   expand_workspaceName_variable
 
   [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" == "${Y2C_WORKSPACE_PACKAGES_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz[*]}" ]
@@ -818,6 +820,7 @@ validate_yarn_command_words() {
   y2c_generate_workspace_packages "${PWD}"
 
   Y2C_CURRENT_ROOT_REPO_PATH="${PWD}"
+  Y2C_CURRENT_ROOT_REPO_PATH_BASE64=$(y2c_get_var_name "${Y2C_CURRENT_ROOT_REPO_PATH}")
   y2c_set_expand_var "<workspaceName"
 
   [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" == "${Y2C_WORKSPACE_PACKAGES_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx[*]}" ]
@@ -1061,7 +1064,7 @@ validate_yarn_command_words() {
   set +e
   y2c_run_yarn_completion "" "${yarn_version}"
   set -e
-  [ "${result[*]}" == "<commandName  add  bin  cache  config  config  config  dedupe  dlx  exec  explain  info  init  install  link  node  npm  pack  patch  patch-commit  rebuild  remove  run  set  set  set  unplug  up  why  npm  npm  npm  npm  npm  npm  npm  npm  plugin  plugin  plugin  plugin  plugin " ]
+  [ "${result[*]}" == "<commandName  add  bin  cache  config  dedupe  dlx  exec  explain  info  init  install  link  node  npm  pack  patch  patch-commit  rebuild  remove  run  set  unplug  up  why  plugin " ]
 
   COMP_WORDS=("yarn" "workspace" "@test" "plugin" "i")
   result=()
@@ -1069,7 +1072,7 @@ validate_yarn_command_words() {
   set +e
   y2c_run_yarn_completion "i" "${yarn_version}"
   set -e
-  [ "${result[*]}" == "import i import i list i remove i runtime i" ]
+  [ "${result[*]}" == "import i list i remove i runtime i" ]
 }
 
 @test "y2c_yarn_completion_for_complete" {
