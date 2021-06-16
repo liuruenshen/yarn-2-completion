@@ -24,7 +24,6 @@ declare -i Y2C_FUNC_ARG_IS_ARR=1
 
 declare -a Y2C_TMP_IDENTIFIED_TOKENS=()
 declare -a Y2C_TMP_OPTIONS=()
-declare -a Y2C_COMMAND_TOKENS_REF=()
 
 Y2C_TMP_EXPANDED_VAR_RESULT=
 
@@ -440,47 +439,47 @@ y2c_add_word_candidates() {
   local completing_word="$2"
 
   local current_command="${COMP_WORDS[*]}"
-  local word_type
-  local processing_word
+  local token_type
+  local processing_token
   local copied_identified_tokens
-  local copied_flags
-  local flag
-  local flag_remaining_chars
+  local copied_options
+  local option
+  local option_remaining_chars
 
   y2c_get_identified_token "${token}"
-  word_type=$?
+  token_type=$?
 
   copied_identified_tokens=("${Y2C_TMP_IDENTIFIED_TOKENS[@]}")
 
-  for processing_word in "${copied_identified_tokens[@]}"; do
+  for processing_token in "${copied_identified_tokens[@]}"; do
 
-    case "$word_type" in
+    case "$token_type" in
     "$Y2C_YARN_WORD_IS_ORDER")
-      add_word_to_comreply "${processing_word}" "${completing_word}"
+      add_word_to_comreply "${processing_token}" "${completing_word}"
       ;;
     "$Y2C_YARN_WORD_IS_OPTION")
-      y2c_set_yarn_options "${processing_word}"
-      copied_flags=("${Y2C_TMP_OPTIONS[@]}")
+      y2c_set_yarn_options "${processing_token}"
+      copied_options=("${Y2C_TMP_OPTIONS[@]}")
 
-      for flag in "${copied_flags[@]}"; do
-        if [[ $current_command = *" $flag"* ]]; then
+      for option in "${copied_options[@]}"; do
+        if [[ $current_command = *" $option"* ]]; then
           continue 2
         fi
       done
 
       if [[ -z $completing_word ]]; then
-        COMPREPLY+=("${copied_flags[@]}")
+        COMPREPLY+=("${copied_options[@]}")
       else
-        for flag in "${copied_flags[@]}"; do
-          flag_remaining_chars="${flag#$completing_word}"
-          if ! [[ ${flag} = "$flag_remaining_chars" ]]; then
-            COMPREPLY+=("${flag}")
+        for option in "${copied_options[@]}"; do
+          option_remaining_chars="${option#$completing_word}"
+          if ! [[ ${option} = "$option_remaining_chars" ]]; then
+            COMPREPLY+=("${option}")
           fi
         done
       fi
       ;;
     "$Y2C_YARN_WORD_IS_VARIABLE")
-      y2c_set_expand_var "${processing_word}" "${completing_word}"
+      y2c_set_expand_var "${processing_token}" "${completing_word}"
 
       for expanded_var in "${Y2C_TMP_EXPANDED_VAR_RESULT[@]}"; do
         add_word_to_comreply "${expanded_var}" "${completing_word}"
@@ -492,35 +491,48 @@ y2c_add_word_candidates() {
 
 y2c_run_yarn_completion() {
   if [[ $IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
-    declare -n yarn_command_words
+    declare -n yarn_command_tokens
   else
-    local yarn_command_words
+    local yarn_command_tokens
   fi
 
   local completing_word="$1"
+  local yarn_version="$2"
   local word_num="${#COMP_WORDS[@]}"
   local last_word_index=$((--word_num))
   local expanded_var
-  local word_type
+  local token_type
   local processing_word
   local copied_identified_tokens=()
+  local option=""
+
+  declare -i comp_word_index=0
 
   COMPREPLY=()
 
-  for yarn_command_words in "${Y2C_COMMAND_TOKENS_REF[@]}"; do
+  yarn_command_tokens_list_var_name="$(y2c_get_var_name "${yarn_version}" "${Y2C_COMMAND_TOKENS_LIST_VERSION_REF_PREFIX}")"
+
+  if [[ $IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
+    declare -n yarn_command_tokens_list="${yarn_command_tokens_list_var_name}"
+  else
+    local yarn_command_tokens_list_name="${yarn_command_tokens_list_var_name}[@]"
+    local yarn_command_tokens_list=("${!yarn_command_tokens_list_name}")
+  fi
+
+  for yarn_command_tokens in "${yarn_command_tokens_list[@]}"; do
     if [[ $IS_SUPPORT_DECLARE_N_FLAG -eq 0 ]]; then
-      yarn_command_words+="[@]"
-      yarn_command_words=("${!yarn_command_words}")
+      yarn_command_tokens+="[@]"
+      yarn_command_tokens=("${!yarn_command_tokens}")
     fi
 
     for ((comp_word_index = 0; comp_word_index < last_word_index; ++comp_word_index)); do
-      y2c_get_identified_token "${yarn_command_words[$comp_word_index]}"
-      word_type=$?
+      y2c_get_identified_token "${yarn_command_tokens[$comp_word_index]}"
+      token_type=$?
 
       copied_identified_tokens=("${Y2C_TMP_IDENTIFIED_TOKENS[@]}")
 
       for processing_word in "${copied_identified_tokens[@]}"; do
-        case "$word_type" in
+        case "$token_type" in
         "$Y2C_YARN_WORD_IS_ORDER")
           if [[ ${COMP_WORDS[$comp_word_index]} = "${processing_word}" ]]; then
             continue 2
@@ -528,8 +540,8 @@ y2c_run_yarn_completion() {
           ;;
         "$Y2C_YARN_WORD_IS_OPTION")
           y2c_set_yarn_options "${processing_word}"
-          for flag in "${Y2C_TMP_OPTIONS[@]}"; do
-            if [[ ${COMP_WORDS[$comp_word_index]} = "${flag}" ]]; then
+          for option in "${Y2C_TMP_OPTIONS[@]}"; do
+            if [[ ${COMP_WORDS[$comp_word_index]} = "${option}" ]]; then
               continue 3
             fi
           done
@@ -549,7 +561,7 @@ y2c_run_yarn_completion() {
       continue 2
     done
 
-    y2c_add_word_candidates "${yarn_command_words[$last_word_index]}" "${completing_word}"
+    y2c_add_word_candidates "${yarn_command_tokens[$last_word_index]}" "${completing_word}"
   done
 
   return 0
