@@ -312,11 +312,11 @@ y2c_generate_yarn_command_list() {
     return 1
   fi
 
-  declare -i word_is_flag=0
-  declare -i previous_word_is_flag=0
+  declare -i word_is_option=0
+  declare -i previous_word_is_option=0
   declare -i store_yarn_command_index=0
 
-  local assembling_flag=""
+  local assembling_option=""
   local yarn_command_broken_words=()
   local yarn_command_words=()
   local store_yarn_command_var_name=""
@@ -330,7 +330,7 @@ y2c_generate_yarn_command_list() {
   while IFS='' read -r line; do instructions+=("$line"); done <<<"$(yarn --help | grep -E '^[[:space:]]+yarn')"
 
   for instruction in "${instructions[@]}"; do
-    previous_word_is_flag=0
+    previous_word_is_option=0
 
     instruction+=" ${Y2C_COMMAND_END_MARK}"
     IFS=" " read -r -a yarn_command_broken_words <<<"$instruction"
@@ -338,46 +338,46 @@ y2c_generate_yarn_command_list() {
     yarn_command_words=()
 
     for broken_word in "${yarn_command_broken_words[@]}"; do
-      if [[ $broken_word = \[* ]] || [[ -n $assembling_flag ]]; then
-        word_is_flag=1
+      if [[ $broken_word = \[* ]] || [[ -n $assembling_option ]]; then
+        word_is_option=1
       else
-        word_is_flag=0
+        word_is_option=0
       fi
 
       broken_word=${broken_word//,/$Y2C_OPTION_SYMBOL}
 
-      if [[ word_is_flag -eq 1 ]]; then
-        if [[ $previous_word_is_flag -eq 1 ]]; then
+      if [[ word_is_option -eq 1 ]]; then
+        if [[ $previous_word_is_option -eq 1 ]]; then
           broken_word="${broken_word#[}"
         fi
 
-        if [[ -n $assembling_flag ]]; then
-          assembling_flag+=" ${broken_word}"
+        if [[ -n $assembling_option ]]; then
+          assembling_option+=" ${broken_word}"
         else
-          assembling_flag="${broken_word}"
+          assembling_option="${broken_word}"
         fi
 
         if [[ $broken_word = *$'\x5d' ]]; then
-          assembling_flag="${assembling_flag%]}"
-          assembling_flag="${assembling_flag%>}"
+          assembling_option="${assembling_option%]}"
+          assembling_option="${assembling_option%>}"
 
-          if [[ $previous_word_is_flag -eq 1 ]]; then
+          if [[ $previous_word_is_option -eq 1 ]]; then
             # shellcheck disable=SC2015
             [[ $IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT -eq 1 ]] && subscript=-1 || {
               subscript=${#yarn_command_words[@]}
               : $((subscript--))
             }
-            yarn_command_words[subscript]+="${Y2C_FLAG_GROUP_CONCAT_SYMBOL}${assembling_flag}"
+            yarn_command_words[subscript]+="${Y2C_FLAG_GROUP_CONCAT_SYMBOL}${assembling_option}"
 
           else
-            yarn_command_words+=("${assembling_flag}")
+            yarn_command_words+=("${assembling_option}")
           fi
 
-          previous_word_is_flag=$word_is_flag
-          assembling_flag=
+          previous_word_is_option=$word_is_option
+          assembling_option=
         fi
       else
-        if [[ $previous_word_is_flag -eq 1 ]]; then
+        if [[ $previous_word_is_option -eq 1 ]]; then
           # shellcheck disable=SC2015
           [[ $IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT -eq 1 ]] && subscript=-1 || {
             subscript=${#yarn_command_words[@]}
@@ -401,7 +401,7 @@ y2c_generate_yarn_command_list() {
           broken_word="${broken_word%>}"
 
           yarn_command_words+=("${broken_word}")
-          previous_word_is_flag=$word_is_flag
+          previous_word_is_option=$word_is_option
         fi
       fi
     done
