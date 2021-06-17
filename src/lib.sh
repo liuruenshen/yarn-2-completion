@@ -1,5 +1,19 @@
 #!/usr/bin/env bash
 
+# Variable and function naming rules:
+# 1. All the global environment variables should be preceded with the string literal "Y2C_".
+# 2. All the function names should be preceded with "y2c_" string literal.
+# 3. The word command in this script means a series of tokens that can be identified
+#     and recognized by yarn executable to perform a specific action.
+#     For example, "yarn add --json react" is a command.
+#
+# 4. A token is a unit consumed by the script to do word completion; it is of one of three following categories:
+#    4-1: Order: the single word, like add, workspace, config, etc.
+#    4-2: Option: The square brackets wrap around the token indicates that this is an option,
+#                 which means a user can skip it.
+#    4-3: Variable: The angle brackets enclose the token suggests that it is a variable,
+#                   which a valid value depends on the command.
+
 Y2C_COMPLETION_SCRIPT_LOCATION=$(dirname "${BASH_SOURCE[0]}")
 
 Y2C_COMMAND_TOKENS_VARNAME_PREFIX="YARN_COMMAND_TOKENS_"
@@ -11,7 +25,7 @@ Y2C_REPO_ROOT_YARN_BASE64_VERSION_VAR_NAME_PREFIX="Y2C_REPO_YARN_BASE64_VERSION_
 Y2C_REPO_ROOT_IS_YARN_2_VAR_NAME_PREFIX="Y2C_REPO_IS_YARN_2_"
 Y2C_WORKSPACE_PACKAGES_PREFIX="Y2C_WORKSPACE_PACKAGES_"
 
-Y2C_COMMAND_END_MARK="yarn_command_end_mark_for_prorcesing_last_word"
+Y2C_COMMAND_END_MARK="yarn_command_end_mark_for_prorcesing_last_token"
 Y2C_OPTION_SYMBOL="|"
 Y2C_FLAG_GROUP_CONCAT_SYMBOL=","
 Y2C_VARIABLE_SYMBOL='<'
