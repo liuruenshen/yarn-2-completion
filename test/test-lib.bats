@@ -744,7 +744,10 @@ validate_yarn_command_words() {
   . lib.sh
 
   set_package_name_path_map() {
-    :
+    local package_names=("${!1}")
+    local package_paths=("${!2}")
+
+    [ ${#package_names[@]} -eq ${#package_paths[@]} ]
   }
 
   y2c_detect_environment
