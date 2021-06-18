@@ -39,6 +39,7 @@ declare -i Y2C_FUNC_ARG_IS_ARR=1
 
 declare -a Y2C_TMP_IDENTIFIED_TOKENS=()
 declare -a Y2C_TMP_OPTIONS=()
+declare -a Y2C_SYSTEM_EXECUTABLES=()
 
 Y2C_TMP_EXPANDED_VAR_RESULT=
 
@@ -53,6 +54,7 @@ Y2C_YARN_BASE64_VERSION=
 Y2C_CURRENT_ROOT_REPO_PATH=
 Y2C_CURRENT_ROOT_REPO_BASE64_PATH=
 Y2C_VERBOSE=0
+Y2C_SYSTEM_EXECUTABLE_BY_PATH_ENV=1
 
 is_verbose_output() {
   return $((Y2C_VERBOSE ^ 1))
@@ -116,6 +118,7 @@ y2c_setup() {
     if [[ Y2C_IS_YARN_2_REPO -eq 1 ]]; then
       y2c_generate_yarn_command_list
       y2c_generate_workspace_packages
+      y2c_generate_system_executables "${PATH}"
     else
       is_verbose_output && echo "[Y2C] yarn-2-completion won't run on this repository(yarn 2+ is required)" 1>&2
     fi
@@ -195,6 +198,29 @@ y2c_generate_workspace_packages() {
   set_package_name_path_map "package_names[@]" "existed_package_paths[@]"
 }
 
+y2c_generate_system_executables() {
+  if [[ $Y2C_SYSTEM_EXECUTABLE_BY_PATH_ENV -eq 0 ]] || [[ ${#Y2C_SYSTEM_EXECUTABLES[@]} -ne 0 ]]; then
+    return 0
+  fi
+
+  local path_to_be_expanding="${1}:"
+  local expanded_path=()
+  local system_executable=""
+  local executable_name=""
+
+  IFS=":" read -r -a expanded_path <<<"${path_to_be_expanding//:/\/*:}"
+
+  Y2C_SYSTEM_EXECUTABLES=()
+
+  # shellcheck disable=SC2068
+  for system_executable in ${expanded_path[@]}; do
+    if [[ -x $system_executable ]]; then
+      executable_name="${system_executable##*/}"
+      Y2C_SYSTEM_EXECUTABLES+=("${executable_name}")
+    fi
+  done
+}
+
 expand_commandName_variable() {
   local current_command="${COMP_WORDS[*]}"
   local prior_token=""
@@ -202,7 +228,8 @@ expand_commandName_variable() {
   local package_json_path=""
   local node_command=""
 
-  if [[ $current_command = "yarn workspace"* ]]; then
+  case "${current_command}" in
+  "yarn workspace"*)
     if [[ $IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT -eq 1 ]]; then
       prior_token="${COMP_WORDS[-2]}"
     else
@@ -219,7 +246,11 @@ expand_commandName_variable() {
       node_command="console.log(Object.keys(require('${package_json_path}').scripts).join(' '))"
       read -r -a Y2C_TMP_EXPANDED_VAR_RESULT < <(node -e "${node_command}")
     fi
-  fi
+    ;;
+  "yarn exec"*)
+    Y2C_TMP_EXPANDED_VAR_RESULT=("${Y2C_SYSTEM_EXECUTABLES[@]}")
+    ;;
+  esac
 }
 
 expand_workspaceName_variable() {

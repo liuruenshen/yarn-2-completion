@@ -619,6 +619,10 @@ validate_yarn_command_words() {
     :
   }
 
+  y2c_generate_system_executables() {
+    [ "$1" = "${PATH}" ]
+  }
+
   yarn() {
     run_mocked_yarn_command "$@"
   }
@@ -1209,4 +1213,18 @@ validate_yarn_command_words() {
   y2c_detect_environment
   expand_commandName_variable
   [ ${#Y2C_TMP_EXPANDED_VAR_RESULT[@]} -eq 0 ]
+}
+
+@test "y2c_generate_system_executables" {
+  . lib.sh
+
+  Y2C_SYSTEM_EXECUTABLE_BY_PATH_ENV=0
+  y2c_generate_system_executables "/usr/local/bin"
+
+  [ ${#Y2C_SYSTEM_EXECUTABLES[@]} -eq 0 ]
+
+  Y2C_SYSTEM_EXECUTABLE_BY_PATH_ENV=1
+  y2c_generate_system_executables "/usr/local/bin"
+
+  [ "${Y2C_SYSTEM_EXECUTABLES[*]}" = "bash bashbug docker-entrypoint.sh" ]
 }
