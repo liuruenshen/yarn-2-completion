@@ -4,5 +4,11 @@
   "dependencies": {
     "cross-env": "5.0.5",
     "wrk-b": "1.0.0"
+  },
+  "scripts": {
+    "build": "",
+    "setup": "",
+    "test": "",
+    "deploy": ""
   }
 }

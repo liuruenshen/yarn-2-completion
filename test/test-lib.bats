@@ -728,16 +728,17 @@ validate_yarn_command_words() {
 
   y2c_detect_environment
 
+  Y2C_CURRENT_ROOT_REPO_BASE64_PATH="FAKEBASE64"
   package_names=("workspace-a" "workspace-b")
   package_paths=("/yarn-repo/packages/workspace-a" "/yarn-repo/packages/workspace-b")
   set_package_name_path_map "package_names[@]" "package_paths[@]"
-  [ "$Y2C_PACKAGE_NAME_PATH_d29ya3NwYWNlLWE_" == "/yarn-repo/packages/workspace-a" ]
-  [ "$Y2C_PACKAGE_NAME_PATH_d29ya3NwYWNlLWI_" == "/yarn-repo/packages/workspace-b" ]
+  [ "$Y2C_PACKAGE_NAME_PATH_FAKEBASE64_d29ya3NwYWNlLWE_" == "/yarn-repo/packages/workspace-a" ]
+  [ "$Y2C_PACKAGE_NAME_PATH_FAKEBASE64_d29ya3NwYWNlLWI_" == "/yarn-repo/packages/workspace-b" ]
 
   package_names=("@package1")
   package_paths=("/yarn-repo/packages/package-1")
   set_package_name_path_map "package_names[@]" "package_paths[@]"
-  [ "$Y2C_PACKAGE_NAME_PATH_QHBhY2thZ2Ux" = "/yarn-repo/packages/package-1" ]
+  [ "$Y2C_PACKAGE_NAME_PATH_FAKEBASE64_QHBhY2thZ2Ux" = "/yarn-repo/packages/package-1" ]
 }
 
 @test "y2c_generate_workspace_packages" {
@@ -1155,4 +1156,57 @@ validate_yarn_command_words() {
   [ ${y2c_detect_environment_called} -eq 1 ]
   [ ${y2c_setup_called} -eq 1 ]
   [ ${complete_called} -eq 1 ]
+}
+
+@test "expand_commandName_variable" {
+  . lib.sh
+
+  Y2C_PACKAGE_NAME_PATH_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx_d3JrLWE_="./workspace-a/package.json"
+  Y2C_PACKAGE_NAME_PATH_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx_d3JrLWI_="./workspace-b/package.json"
+  Y2C_PACKAGE_NAME_PATH_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz_d3JrLWE_="./packages/workspace-a/package.json"
+  Y2C_PACKAGE_NAME_PATH_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz_d3JrLWQ_="./packages/workspace-d/package.json"
+  cd test1
+
+  COMP_WORDS=("yarn" "add")
+  Y2C_TMP_EXPANDED_VAR_RESULT=()
+  y2c_detect_environment
+  expand_commandName_variable
+  [ ${#Y2C_TMP_EXPANDED_VAR_RESULT[@]} -eq 0 ]
+
+  Y2C_CURRENT_ROOT_REPO_BASE64_PATH="L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx"
+  COMP_WORDS=("yarn" "workspace" "wrk-a" "")
+  Y2C_TMP_EXPANDED_VAR_RESULT=()
+  y2c_detect_environment
+  expand_commandName_variable
+  [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" = "build setup test deploy" ]
+
+  Y2C_CURRENT_ROOT_REPO_BASE64_PATH="L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx"
+  COMP_WORDS=("yarn" "workspace" "wrk-b" "")
+  Y2C_TMP_EXPANDED_VAR_RESULT=()
+  y2c_detect_environment
+  expand_commandName_variable
+  [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" = "dev run start build" ]
+
+  Y2C_CURRENT_ROOT_REPO_BASE64_PATH="L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx"
+  COMP_WORDS=("yarn" "workspace" "wrk-b" "")
+  Y2C_TMP_EXPANDED_VAR_RESULT=()
+  y2c_detect_environment
+  expand_commandName_variable
+  [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" = "dev run start build" ]
+
+  cd ../test3
+
+  Y2C_CURRENT_ROOT_REPO_BASE64_PATH="L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz"
+  COMP_WORDS=("yarn" "workspace" "wrk-a" "")
+  Y2C_TMP_EXPANDED_VAR_RESULT=()
+  y2c_detect_environment
+  expand_commandName_variable
+  [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" = "install uninstall" ]
+
+  Y2C_CURRENT_ROOT_REPO_BASE64_PATH="L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz"
+  COMP_WORDS=("yarn" "workspace" "wrk-d" "")
+  Y2C_TMP_EXPANDED_VAR_RESULT=()
+  y2c_detect_environment
+  expand_commandName_variable
+  [ ${#Y2C_TMP_EXPANDED_VAR_RESULT[@]} -eq 0 ]
 }

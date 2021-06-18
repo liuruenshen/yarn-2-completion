@@ -195,6 +195,33 @@ y2c_generate_workspace_packages() {
   set_package_name_path_map "package_names[@]" "existed_package_paths[@]"
 }
 
+expand_commandName_variable() {
+  local current_command="${COMP_WORDS[*]}"
+  local prior_token=""
+  local package_path_var_name=""
+  local package_json_path=""
+  local node_command=""
+
+  if [[ $current_command = "yarn workspace"* ]]; then
+    if [[ $IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT -eq 1 ]]; then
+      prior_token="${COMP_WORDS[-2]}"
+    else
+      declare -i index="${#COMP_WORDS[@]}"
+      : $((index -= 2))
+      prior_token="${COMP_WORDS[index]}"
+    fi
+
+    package_path_var_name=$(y2c_get_var_name "${prior_token}" "${Y2C_PACKAGE_NAME_PATH_PREFIX}${Y2C_CURRENT_ROOT_REPO_BASE64_PATH}_")
+
+    package_json_path="${PWD}/${!package_path_var_name}"
+
+    if [[ -f "${package_json_path}" ]]; then
+      node_command="console.log(Object.keys(require('${package_json_path}').scripts).join(' '))"
+      read -r -a Y2C_TMP_EXPANDED_VAR_RESULT < <(node -e "${node_command}")
+    fi
+  fi
+}
+
 expand_workspaceName_variable() {
   local var_name=""
 
@@ -659,7 +686,7 @@ set_package_name_path_map() {
   local var_names_for_package_names=()
 
   # shellcheck disable=SC2207
-  var_names_for_package_names=($(y2c_get_var_name "${package_names_ref}" "${Y2C_PACKAGE_NAME_PATH_PREFIX}" $Y2C_FUNC_ARG_IS_ARR))
+  var_names_for_package_names=($(y2c_get_var_name "${package_names_ref}" "${Y2C_PACKAGE_NAME_PATH_PREFIX}${Y2C_CURRENT_ROOT_REPO_BASE64_PATH}_" $Y2C_FUNC_ARG_IS_ARR))
 
   if [[ IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
     for index in "${!var_names_for_package_names[@]}"; do
