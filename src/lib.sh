@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Variable and function naming rules:
-# 1. All the global environment variables should be preceded with the string literal "Y2C_".
+# 1. All the global variables should be preceded with the string literal "Y2C_".
 # 2. All the function names should be preceded with "y2c_" string literal.
 # 3. The word command in this script means a series of tokens that can be identified
 #     and recognized by yarn executable to perform a specific action.
@@ -570,7 +570,6 @@ y2c_add_word_candidates() {
   copied_identified_tokens=("${Y2C_TMP_IDENTIFIED_TOKENS[@]}")
 
   for processing_token in "${copied_identified_tokens[@]}"; do
-
     case "$token_type" in
     "$Y2C_YARN_WORD_IS_ORDER")
       y2c_add_word_to_comreply "${processing_token}" "${completing_word}"
@@ -580,7 +579,7 @@ y2c_add_word_candidates() {
       copied_options=("${Y2C_TMP_OPTIONS[@]}")
 
       for option in "${copied_options[@]}"; do
-        if [[ $current_command = *" $option"* ]]; then
+        if [[ " ${current_command} " = *" $option "* ]]; then
           continue 2
         fi
       done

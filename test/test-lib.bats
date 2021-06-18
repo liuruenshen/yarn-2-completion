@@ -1055,7 +1055,6 @@ validate_yarn_command_words() {
   result=()
   y2c_add_word_candidates "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" ""
   set -e
-
   [ "${COMPREPLY[*]}" == "--json -E --exact -T --tilde -C --caret -D --dev -P --peer -O --optional --prefer-dev -i --interactive --cached" ]
 
   set +e
@@ -1063,7 +1062,6 @@ validate_yarn_command_words() {
   COMPREPLY=()
   y2c_add_word_candidates "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" "--"
   set -e
-
   [ "${COMPREPLY[*]}" == "--json --exact --tilde --caret --dev --peer --optional --prefer-dev --interactive --cached" ]
 
   set +e
@@ -1072,7 +1070,6 @@ validate_yarn_command_words() {
   result=()
   y2c_add_word_candidates "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" "-"
   set -e
-
   [ "${COMPREPLY[*]}" == "--json -C --caret -P --peer -O --optional --prefer-dev -i --interactive --cached" ]
 
   set +e
@@ -1081,7 +1078,6 @@ validate_yarn_command_words() {
   result=()
   y2c_add_word_candidates "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" "--"
   set -e
-
   [ "${COMPREPLY[*]}" == "--exact --peer --cached" ]
 
   set +e
@@ -1090,8 +1086,15 @@ validate_yarn_command_words() {
   result=()
   y2c_add_word_candidates "<workspaceName" "@"
   set -e
-
   [ "${result[*]}" == "@test1 @ @test2 @ @test3 @" ]
+
+  set +e
+  COMP_WORDS=("yarn" "run" "--inspect-brk" "-")
+  COMPREPLY=()
+  result=()
+  y2c_add_word_candidates "[--inspect-brk,--inspect" "-"
+  set -e
+  [ "${COMPREPLY[*]}" == "--inspect" ]
 }
 
 @test "y2c_run_yarn_completion" {
