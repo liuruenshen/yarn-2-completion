@@ -408,7 +408,7 @@ y2c_generate_yarn_command_list() {
   local subscript
   local instructions=()
 
-  local flags=()
+  local options=()
 
   while IFS='' read -r line; do instructions+=("$line"); done <<<"$(yarn --help | grep -E '^[[:space:]]+yarn')"
 
@@ -467,9 +467,8 @@ y2c_generate_yarn_command_list() {
             : $((subscript--))
           }
 
-          IFS=',' read -r -a flags <<<"${yarn_command_words[subscript]}"
-
-          for ((i = 0; i < ${#flags[@]}; ++i)); do
+          IFS=',' read -r -a options <<<"${yarn_command_words[subscript]}"
+          for ((i = 0; i < ${#options[@]} - 1; ++i)); do
             # shellcheck disable=SC2015
             [[ $IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT -eq 1 ]] && subscript=-1 || {
               subscript=${#yarn_command_words[@]}
