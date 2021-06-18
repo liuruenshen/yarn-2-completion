@@ -1304,3 +1304,24 @@ validate_yarn_command_words() {
 
   [ "${Y2C_SYSTEM_EXECUTABLES[*]}" = "bash bashbug docker-entrypoint.sh" ]
 }
+
+@test "y2c_expand_scriptName_variable" {
+ . lib.sh
+
+  cd test1
+
+  y2c_expand_scriptName_variable
+  [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" = "dev test" ]
+
+  cd ./workspace-a
+  y2c_expand_scriptName_variable
+  [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" = "build setup test deploy" ]
+
+  cd ../workspace-c
+  y2c_expand_scriptName_variable
+  [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" = "" ]
+
+  cd ../
+  y2c_expand_scriptName_variable
+  [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" = "dev test" ]
+}

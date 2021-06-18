@@ -9,5 +9,9 @@
     "workspace-a",
     "workspace-b",
     "workspace-c"
-  ]
+  ],
+  "scripts": {
+    "dev": "",
+    "test": ""
+  }
 }

@@ -230,12 +230,21 @@ y2c_generate_system_executables() {
   done
 }
 
+y2c_get_package_json_scripts_keys() {
+  local package_json_path="$1"
+  local node_command="console.log(Object.keys(require('${package_json_path}').scripts || {}).join(' '))"
+
+  if [[ -f $package_json_path ]]; then
+    node -e "${node_command}"
+  else
+    echo ""
+  fi
+}
+
 y2c_expand_commandName_variable() {
   local current_command="${COMP_WORDS[*]}"
   local prior_token=""
   local package_path_var_name=""
-  local package_json_path=""
-  local node_command=""
 
   case "${current_command}" in
   "yarn workspace"*)
@@ -248,13 +257,7 @@ y2c_expand_commandName_variable() {
     fi
 
     package_path_var_name=$(y2c_get_var_name "${prior_token}" "${Y2C_PACKAGE_NAME_PATH_PREFIX}${Y2C_CURRENT_ROOT_REPO_BASE64_PATH}_")
-
-    package_json_path="${PWD}/${!package_path_var_name}"
-
-    if [[ -f "${package_json_path}" ]]; then
-      node_command="console.log(Object.keys(require('${package_json_path}').scripts).join(' '))"
-      read -r -a Y2C_TMP_EXPANDED_VAR_RESULT < <(node -e "${node_command}")
-    fi
+    read -r -a Y2C_TMP_EXPANDED_VAR_RESULT < <(y2c_get_package_json_scripts_keys "${PWD}/${!package_path_var_name}")
     ;;
   "yarn exec"*)
     Y2C_TMP_EXPANDED_VAR_RESULT=("${Y2C_SYSTEM_EXECUTABLES[@]}")
@@ -267,6 +270,10 @@ y2c_expand_workspaceName_variable() {
 
   var_name="${Y2C_WORKSPACE_PACKAGES_PREFIX}${Y2C_CURRENT_ROOT_REPO_BASE64_PATH}[@]"
   Y2C_TMP_EXPANDED_VAR_RESULT=("${!var_name}")
+}
+
+y2c_expand_scriptName_variable() {
+  read -r -a Y2C_TMP_EXPANDED_VAR_RESULT < <(y2c_get_package_json_scripts_keys "${PWD}/package.json")
 }
 
 y2c_set_expand_var() {
