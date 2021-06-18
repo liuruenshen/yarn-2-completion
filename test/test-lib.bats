@@ -687,7 +687,7 @@ validate_yarn_command_words() {
 @test "y2c_generate_yarn_command_list" {
   . lib.sh
 
-  expand_yarn_workspace_command_list() {
+  y2c_expand_yarn_workspace_command_list() {
     :
   }
 
@@ -720,7 +720,7 @@ validate_yarn_command_words() {
   validate_yarn_command_words "YARN_COMMAND_TOKENS_LIST_VER_Mi4xLjA_[@]" "EXPECTED_YARN_COMMAND_TOKENS_210_" 36
 }
 
-@test "set_package_name_path_map" {
+@test "y2c_set_package_name_path_map" {
   . lib.sh
 
   local package_names=()
@@ -735,20 +735,20 @@ validate_yarn_command_words() {
   Y2C_CURRENT_ROOT_REPO_BASE64_PATH="FAKEBASE64"
   package_names=("workspace-a" "workspace-b")
   package_paths=("/yarn-repo/packages/workspace-a" "/yarn-repo/packages/workspace-b")
-  set_package_name_path_map "package_names[@]" "package_paths[@]"
+  y2c_set_package_name_path_map "package_names[@]" "package_paths[@]"
   [ "$Y2C_PACKAGE_NAME_PATH_FAKEBASE64_d29ya3NwYWNlLWE_" == "/yarn-repo/packages/workspace-a" ]
   [ "$Y2C_PACKAGE_NAME_PATH_FAKEBASE64_d29ya3NwYWNlLWI_" == "/yarn-repo/packages/workspace-b" ]
 
   package_names=("@package1")
   package_paths=("/yarn-repo/packages/package-1")
-  set_package_name_path_map "package_names[@]" "package_paths[@]"
+  y2c_set_package_name_path_map "package_names[@]" "package_paths[@]"
   [ "$Y2C_PACKAGE_NAME_PATH_FAKEBASE64_QHBhY2thZ2Ux" = "/yarn-repo/packages/package-1" ]
 }
 
 @test "y2c_generate_workspace_packages" {
   . lib.sh
 
-  set_package_name_path_map() {
+  y2c_set_package_name_path_map() {
     local package_names=("${!1}")
     local package_paths=("${!2}")
 
@@ -799,10 +799,10 @@ validate_yarn_command_words() {
   [ $status -eq "$Y2C_YARN_WORD_IS_VARIABLE" ]
 }
 
-@test "expand_workspaceName_variable" {
+@test "y2c_expand_workspaceName_variable" {
   . lib.sh
 
-  set_package_name_path_map() {
+  y2c_set_package_name_path_map() {
     :
   }
 
@@ -812,7 +812,7 @@ validate_yarn_command_words() {
   Y2C_CURRENT_ROOT_REPO_PATH="${PWD}"
   Y2C_CURRENT_ROOT_REPO_BASE64_PATH=$(y2c_get_var_name "${Y2C_CURRENT_ROOT_REPO_PATH}")
   y2c_generate_workspace_packages
-  expand_workspaceName_variable
+  y2c_expand_workspaceName_variable
 
   [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" == "${Y2C_WORKSPACE_PACKAGES_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx[*]}" ]
 
@@ -821,7 +821,7 @@ validate_yarn_command_words() {
   Y2C_CURRENT_ROOT_REPO_PATH="${PWD}"
   Y2C_CURRENT_ROOT_REPO_BASE64_PATH=$(y2c_get_var_name "${Y2C_CURRENT_ROOT_REPO_PATH}")
   y2c_generate_workspace_packages
-  expand_workspaceName_variable
+  y2c_expand_workspaceName_variable
 
   [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" == "${Y2C_WORKSPACE_PACKAGES_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz[*]}" ]
 }
@@ -829,7 +829,7 @@ validate_yarn_command_words() {
 @test "y2c_set_expand_var" {
   . lib.sh
 
-  set_package_name_path_map() {
+  y2c_set_package_name_path_map() {
     :
   }
 
@@ -862,7 +862,7 @@ validate_yarn_command_words() {
   [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" == "${Y2C_WORKSPACE_PACKAGES_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz[*]}" ]
 }
 
-@test "expand_yarn_workspace_command_list" {
+@test "y2c_expand_yarn_workspace_command_list" {
   . lib.sh
   local workspace_commands=()
   declare -i next_index=0
@@ -880,7 +880,7 @@ validate_yarn_command_words() {
   generate_expected_workspace_commands "2.4.2"
 
   next_index=${#EXPECTED_YARN_COMMAND_TOKENS_LIST_242[@]}
-  expand_yarn_workspace_command_list "EXPECTED_YARN_COMMAND_TOKENS_242_41" "EXPECTED_YARN_COMMAND_TOKENS_LIST_242" "Mi40LjIK"
+  y2c_expand_yarn_workspace_command_list "EXPECTED_YARN_COMMAND_TOKENS_242_41" "EXPECTED_YARN_COMMAND_TOKENS_LIST_242" "Mi40LjIK"
   total_len=${#EXPECTED_YARN_COMMAND_TOKENS_LIST_242[@]}
   expanded_workspace_commands_len=$(( total_len - next_index ))
 
@@ -897,7 +897,7 @@ validate_yarn_command_words() {
   generate_expected_workspace_commands "2.1.0"
 
   next_index=${#EXPECTED_YARN_COMMAND_TOKENS_LIST_210[@]}
-  expand_yarn_workspace_command_list "EXPECTED_YARN_COMMAND_TOKENS_210_34" "EXPECTED_YARN_COMMAND_TOKENS_LIST_210" "Mi4xLjAK"
+  y2c_expand_yarn_workspace_command_list "EXPECTED_YARN_COMMAND_TOKENS_210_34" "EXPECTED_YARN_COMMAND_TOKENS_LIST_210" "Mi4xLjAK"
   total_len=${#EXPECTED_YARN_COMMAND_TOKENS_LIST_210[@]}
   expanded_workspace_commands_len=$(( total_len - next_index ))
 
@@ -920,51 +920,51 @@ validate_yarn_command_words() {
   [ "${Y2C_TMP_OPTIONS[1]}" == "--dev" ]
 }
 
-@test "add_word_to_comreply" {
+@test "y2c_add_word_to_comreply" {
   . lib.sh
 
   COMPREPLY=()
   COMP_WORDS=("yarn" "add" "--json")
-  add_word_to_comreply "--json" "--"
+  y2c_add_word_to_comreply "--json" "--"
   [ "${COMPREPLY[*]}" == "" ]
 
   COMPREPLY=()
   COMP_WORDS=("yarn" "add" "--json")
-  add_word_to_comreply "--interactive" "--"
+  y2c_add_word_to_comreply "--interactive" "--"
   [ "${COMPREPLY[*]}" == "--interactive" ]
 
   COMPREPLY=()
   COMP_WORDS=("yarn" "config" "g")
-  add_word_to_comreply "add" "g"
-  add_word_to_comreply "get" "g"
-  add_word_to_comreply "get" "g"
-  add_word_to_comreply "gets" "g"
-  add_word_to_comreply "set" "g"
+  y2c_add_word_to_comreply "add" "g"
+  y2c_add_word_to_comreply "get" "g"
+  y2c_add_word_to_comreply "get" "g"
+  y2c_add_word_to_comreply "gets" "g"
+  y2c_add_word_to_comreply "set" "g"
   [ "${COMPREPLY[*]}" == "get get gets" ]
 
   COMPREPLY=()
   COMP_WORDS=("yarn" "workspace" "@test" "add" "-i" "--json" "")
-  add_word_to_comreply "workspace" ""
-  add_word_to_comreply "--interactive" ""
-  add_word_to_comreply "-i" ""
-  add_word_to_comreply "--json" ""
+  y2c_add_word_to_comreply "workspace" ""
+  y2c_add_word_to_comreply "--interactive" ""
+  y2c_add_word_to_comreply "-i" ""
+  y2c_add_word_to_comreply "--json" ""
   [ "${COMPREPLY[*]}" == "--interactive" ]
 
   COMPREPLY=()
   COMP_WORDS=("yarn" "workspace" "@test" "add" "-i" "--json" "--")
-  add_word_to_comreply "-D" "--"
-  add_word_to_comreply "--dev" "--"
-  add_word_to_comreply "-O" "--"
-  add_word_to_comreply "--option" "--"
+  y2c_add_word_to_comreply "-D" "--"
+  y2c_add_word_to_comreply "--dev" "--"
+  y2c_add_word_to_comreply "-O" "--"
+  y2c_add_word_to_comreply "--option" "--"
   [ "${COMPREPLY[*]}" == "--dev --option" ]
 
   COMPREPLY=()
   COMP_WORDS=("yarn" "workspace" "@test" "add" "--interactive" "-")
-  add_word_to_comreply "-D" "-"
-  add_word_to_comreply "--dev" "-"
-  add_word_to_comreply "-O" "-"
-  add_word_to_comreply "--option" "-"
-  add_word_to_comreply "-i" "-"
+  y2c_add_word_to_comreply "-D" "-"
+  y2c_add_word_to_comreply "--dev" "-"
+  y2c_add_word_to_comreply "-O" "-"
+  y2c_add_word_to_comreply "--option" "-"
+  y2c_add_word_to_comreply "-i" "-"
   [ "${COMPREPLY[*]}" == "-D --dev -O --option -i" ]
 }
 
@@ -973,7 +973,7 @@ validate_yarn_command_words() {
 
   local result=()
   COMPREPLY=()
-  add_word_to_comreply() {
+  y2c_add_word_to_comreply() {
     result+=("$1" "$2")
   }
 
@@ -1162,7 +1162,7 @@ validate_yarn_command_words() {
   [ ${complete_called} -eq 1 ]
 }
 
-@test "expand_commandName_variable" {
+@test "y2c_expand_commandName_variable" {
   . lib.sh
 
   Y2C_PACKAGE_NAME_PATH_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx_d3JrLWE_="./workspace-a/package.json"
@@ -1174,28 +1174,28 @@ validate_yarn_command_words() {
   COMP_WORDS=("yarn" "add")
   Y2C_TMP_EXPANDED_VAR_RESULT=()
   y2c_detect_environment
-  expand_commandName_variable
+  y2c_expand_commandName_variable
   [ ${#Y2C_TMP_EXPANDED_VAR_RESULT[@]} -eq 0 ]
 
   Y2C_CURRENT_ROOT_REPO_BASE64_PATH="L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx"
   COMP_WORDS=("yarn" "workspace" "wrk-a" "")
   Y2C_TMP_EXPANDED_VAR_RESULT=()
   y2c_detect_environment
-  expand_commandName_variable
+  y2c_expand_commandName_variable
   [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" = "build setup test deploy" ]
 
   Y2C_CURRENT_ROOT_REPO_BASE64_PATH="L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx"
   COMP_WORDS=("yarn" "workspace" "wrk-b" "")
   Y2C_TMP_EXPANDED_VAR_RESULT=()
   y2c_detect_environment
-  expand_commandName_variable
+  y2c_expand_commandName_variable
   [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" = "dev run start build" ]
 
   Y2C_CURRENT_ROOT_REPO_BASE64_PATH="L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx"
   COMP_WORDS=("yarn" "workspace" "wrk-b" "")
   Y2C_TMP_EXPANDED_VAR_RESULT=()
   y2c_detect_environment
-  expand_commandName_variable
+  y2c_expand_commandName_variable
   [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" = "dev run start build" ]
 
   cd ../test3
@@ -1204,14 +1204,14 @@ validate_yarn_command_words() {
   COMP_WORDS=("yarn" "workspace" "wrk-a" "")
   Y2C_TMP_EXPANDED_VAR_RESULT=()
   y2c_detect_environment
-  expand_commandName_variable
+  y2c_expand_commandName_variable
   [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" = "install uninstall" ]
 
   Y2C_CURRENT_ROOT_REPO_BASE64_PATH="L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz"
   COMP_WORDS=("yarn" "workspace" "wrk-d" "")
   Y2C_TMP_EXPANDED_VAR_RESULT=()
   y2c_detect_environment
-  expand_commandName_variable
+  y2c_expand_commandName_variable
   [ ${#Y2C_TMP_EXPANDED_VAR_RESULT[@]} -eq 0 ]
 }
 

@@ -56,7 +56,7 @@ Y2C_CURRENT_ROOT_REPO_BASE64_PATH=
 Y2C_VERBOSE=0
 Y2C_SYSTEM_EXECUTABLE_BY_PATH_ENV=1
 
-is_verbose_output() {
+y2c_is_verbose_output() {
   return $((Y2C_VERBOSE ^ 1))
 }
 
@@ -81,7 +81,7 @@ y2c_setup() {
     is_yarn_2_var_name="${Y2C_REPO_ROOT_IS_YARN_2_VAR_NAME_PREFIX}${Y2C_CURRENT_ROOT_REPO_BASE64_PATH}"
 
     if [[ -n ${!yarn_version_var_name} ]]; then
-      is_verbose_output && echo "[Y2C] Found the cache, restoring it" 1>&2
+      y2c_is_verbose_output && echo "[Y2C] Found the cache, restoring it" 1>&2
 
       Y2C_YARN_VERSION="${!yarn_version_var_name}"
       Y2C_IS_YARN_2_REPO=${!is_yarn_2_var_name}
@@ -90,7 +90,7 @@ y2c_setup() {
       [[ $Y2C_TESTING_MODE -eq 1 ]] && Y2C_SETUP_HIT_CACHE=1
 
     elif command -v yarn >/dev/null 2>&1; then
-      is_verbose_output && echo "[Y2C] Found the repository hosted by yarn" 1>&2
+      y2c_is_verbose_output && echo "[Y2C] Found the repository hosted by yarn" 1>&2
 
       Y2C_YARN_VERSION=$(y2c_is_yarn_2)
       is_yarn_2=$(($? ^ 1))
@@ -120,7 +120,7 @@ y2c_setup() {
       y2c_generate_workspace_packages
       y2c_generate_system_executables "${PATH}"
     else
-      is_verbose_output && echo "[Y2C] yarn-2-completion won't run on this repository(yarn 2+ is required)" 1>&2
+      y2c_is_verbose_output && echo "[Y2C] yarn-2-completion won't run on this repository(yarn 2+ is required)" 1>&2
     fi
 
     return 0
@@ -167,11 +167,11 @@ y2c_generate_workspace_packages() {
 
   workspace_packagaes_var_name="${Y2C_WORKSPACE_PACKAGES_PREFIX}${Y2C_CURRENT_ROOT_REPO_BASE64_PATH}"
   if [[ -n ${!workspace_packagaes_var_name} ]]; then
-    is_verbose_output && echo "[Y2C] Found the cache of workspace packges" 1>&2
+    y2c_is_verbose_output && echo "[Y2C] Found the cache of workspace packges" 1>&2
     return 0
   fi
 
-  is_verbose_output && echo "[Y2C] Finding all the workspace's packages and cache them" 1>&2
+  y2c_is_verbose_output && echo "[Y2C] Finding all the workspace's packages and cache them" 1>&2
 
   # shellcheck disable=SC2207
   package_paths=($(node -e "console.log((require('${repo_package_path}').workspaces || []).join(' '))"))
@@ -195,7 +195,7 @@ y2c_generate_workspace_packages() {
     eval "$workspace_packagaes_var_name=(\"\${package_names[@]}\")"
   fi
 
-  set_package_name_path_map "package_names[@]" "existed_package_paths[@]"
+  y2c_set_package_name_path_map "package_names[@]" "existed_package_paths[@]"
 }
 
 y2c_generate_system_executables() {
@@ -221,7 +221,7 @@ y2c_generate_system_executables() {
   done
 }
 
-expand_commandName_variable() {
+y2c_expand_commandName_variable() {
   local current_command="${COMP_WORDS[*]}"
   local prior_token=""
   local package_path_var_name=""
@@ -253,7 +253,7 @@ expand_commandName_variable() {
   esac
 }
 
-expand_workspaceName_variable() {
+y2c_expand_workspaceName_variable() {
   local var_name=""
 
   var_name="${Y2C_WORKSPACE_PACKAGES_PREFIX}${Y2C_CURRENT_ROOT_REPO_BASE64_PATH}[@]"
@@ -273,7 +273,7 @@ y2c_set_expand_var() {
     return 0
   fi
 
-  function_name="expand_${var_name#$Y2C_VARIABLE_SYMBOL}_variable"
+  function_name="y2c_expand_${var_name#$Y2C_VARIABLE_SYMBOL}_variable"
 
   if declare -f "${function_name}" >/dev/null 2>&1; then
     $function_name "$@"
@@ -282,13 +282,13 @@ y2c_set_expand_var() {
   fi
 }
 
-get_yarn_command_tokens_var_name() {
+y2c_get_command_tokens_var_name() {
   local base64_yarn_version="$1"
   local index="$2"
   echo "${Y2C_COMMAND_TOKENS_VARNAME_PREFIX}${base64_yarn_version}_${index}"
 }
 
-expand_yarn_workspace_command_list() {
+y2c_expand_yarn_workspace_command_list() {
   local yarn_command_workspace_var_name="${1}"
   local yarn_command_tokens_list_var_name="${2}"
   local yarn_command_workspace_ref="${yarn_command_workspace_var_name}[@]"
@@ -368,11 +368,11 @@ y2c_generate_yarn_command_list() {
   yarn_command_tokens_list_var_name="${Y2C_COMMAND_TOKENS_LIST_VERSION_REF_PREFIX}${Y2C_YARN_BASE64_VERSION}"
 
   if [[ -n ${!yarn_command_tokens_list_var_name} ]]; then
-    is_verbose_output && echo "[Y2C] Found the cache of yarn commands of verson ${Y2C_YARN_VERSION}" 1>&2
+    y2c_is_verbose_output && echo "[Y2C] Found the cache of yarn commands of verson ${Y2C_YARN_VERSION}" 1>&2
     return 0
   fi
 
-  is_verbose_output && echo "[Y2C] Creating yarn commands of version ${Y2C_YARN_VERSION} for speeding up completion" 1>&2
+  y2c_is_verbose_output && echo "[Y2C] Creating yarn commands of version ${Y2C_YARN_VERSION} for speeding up completion" 1>&2
 
   if [[ $IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
     declare -n yarn_command_tokens_list_ref="${yarn_command_tokens_list_var_name}"
@@ -480,7 +480,7 @@ y2c_generate_yarn_command_list() {
       fi
     done
 
-    store_yarn_command_var_name="$(get_yarn_command_tokens_var_name "${Y2C_YARN_BASE64_VERSION}" "${store_yarn_command_index}")"
+    store_yarn_command_var_name="$(y2c_get_command_tokens_var_name "${Y2C_YARN_BASE64_VERSION}" "${store_yarn_command_index}")"
     store_yarn_command_index+=1
 
     if [[ IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
@@ -499,7 +499,7 @@ y2c_generate_yarn_command_list() {
     fi
   done
 
-  expand_yarn_workspace_command_list "${yarn_command_workspace_var_name}" "${yarn_command_tokens_list_var_name}" "${base64_yarn_version}"
+  y2c_expand_yarn_workspace_command_list "${yarn_command_workspace_var_name}" "${yarn_command_tokens_list_var_name}" "${base64_yarn_version}"
 }
 
 y2c_get_identified_token() {
@@ -525,7 +525,7 @@ y2c_set_yarn_options() {
   IFS="${Y2C_OPTION_SYMBOL}" read -r -a Y2C_TMP_OPTIONS <<<"$token"
 }
 
-add_word_to_comreply() {
+y2c_add_word_to_comreply() {
   local processing_word="$1"
   local completing_word="$2"
   local current_command="${COMP_WORDS[*]}"
@@ -558,7 +558,7 @@ y2c_add_word_candidates() {
 
     case "$token_type" in
     "$Y2C_YARN_WORD_IS_ORDER")
-      add_word_to_comreply "${processing_token}" "${completing_word}"
+      y2c_add_word_to_comreply "${processing_token}" "${completing_word}"
       ;;
     "$Y2C_YARN_WORD_IS_OPTION")
       y2c_set_yarn_options "${processing_token}"
@@ -585,7 +585,7 @@ y2c_add_word_candidates() {
       y2c_set_expand_var "${processing_token}" "${completing_word}"
 
       for expanded_var in "${Y2C_TMP_EXPANDED_VAR_RESULT[@]}"; do
-        add_word_to_comreply "${expanded_var}" "${completing_word}"
+        y2c_add_word_to_comreply "${expanded_var}" "${completing_word}"
       done
       ;;
     esac
@@ -711,7 +711,7 @@ y2c_get_var_name() {
   echo "${encoded_list//"/"/_B}"
 }
 
-set_package_name_path_map() {
+y2c_set_package_name_path_map() {
   local package_names_ref="$1"
   local package_paths=("${!2}")
   local var_names_for_package_names=()
