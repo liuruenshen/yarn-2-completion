@@ -606,6 +606,60 @@ validate_yarn_command_words() {
   [ "$result" == "L3Rlc3QvMTIzL2ZvbGRlcjEgXFthXF0_"$'\n'"L3Rlc3QvMTIzL2ZvbGRlcjEgXFtiXF0_"$'\n'"L3Rlc3QvMTIzL2ZvbGRlcjEgXFtiXF0_" ]
 }
 
+@test "y2c_setup (init at workspace's package folder)" {
+  local is_y2c_failed=1
+
+  . lib.sh
+
+  y2c_generate_yarn_command_list() {
+    :
+  }
+
+  y2c_generate_workspace_packages() {
+    :
+  }
+
+  y2c_generate_system_executables() {
+    :
+  }
+
+  yarn() {
+    run_mocked_yarn_command "$@"
+  }
+
+  y2c_detect_environment
+
+  cd test3/packages/workspace-a
+  y2c_setup || is_y2c_failed=0
+
+  [ $Y2C_REPO_YARN_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz == "2.1.0" ]
+  [ $Y2C_REPO_YARN_BASE64_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz == "Mi4xLjA_" ]
+  [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz -eq 1 ]
+  [ $Y2C_CURRENT_ROOT_REPO_PATH = "${PWD%/packages/workspace-a}" ]
+  [ $Y2C_IS_YARN_2_REPO -eq 1 ]
+  [ $Y2C_IS_IN_WORKSPACE_PACKAGE -eq 1 ]
+
+  cd ../../
+  y2c_setup || is_y2c_failed=0
+
+  [ $Y2C_REPO_YARN_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz == "2.1.0" ]
+  [ $Y2C_REPO_YARN_BASE64_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz == "Mi4xLjA_" ]
+  [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz -eq 1 ]
+  [ $Y2C_CURRENT_ROOT_REPO_PATH = "${PWD%/packages/workspace-a}" ]
+  [ $Y2C_IS_YARN_2_REPO -eq 1 ]
+  [ $Y2C_IS_IN_WORKSPACE_PACKAGE -eq 0 ]
+
+  cd packages/workspace-a
+  y2c_setup || is_y2c_failed=0
+
+  [ $Y2C_REPO_YARN_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz == "2.1.0" ]
+  [ $Y2C_REPO_YARN_BASE64_VERSION_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz == "Mi4xLjA_" ]
+  [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz -eq 1 ]
+  [ $Y2C_CURRENT_ROOT_REPO_PATH = "${PWD%/packages/workspace-a}" ]
+  [ $Y2C_IS_YARN_2_REPO -eq 1 ]
+  [ $Y2C_IS_IN_WORKSPACE_PACKAGE -eq 1 ]
+}
+
 @test "y2c_setup" {
   . lib.sh
 
@@ -637,6 +691,7 @@ validate_yarn_command_words() {
   [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx -eq 1 ]
   [ $Y2C_CURRENT_ROOT_REPO_PATH = "${PWD}" ]
   [ $Y2C_IS_YARN_2_REPO -eq 1 ]
+  [ $Y2C_IS_IN_WORKSPACE_PACKAGE -eq 0 ]
 
   cd ../test2
 
@@ -652,6 +707,7 @@ validate_yarn_command_words() {
   [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qy -eq 0 ]
   [ $Y2C_CURRENT_ROOT_REPO_PATH = "${PWD}" ]
   [ $Y2C_IS_YARN_2_REPO -eq 0 ]
+  [ $Y2C_IS_IN_WORKSPACE_PACKAGE -eq 0 ]
 
   cd ../test1/workspace-b
   y2c_setup
@@ -665,6 +721,7 @@ validate_yarn_command_words() {
   [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qy -eq 0 ]
   [ $Y2C_CURRENT_ROOT_REPO_PATH = "${PWD%/workspace-b}" ]
   [ $Y2C_IS_YARN_2_REPO -eq 1 ]
+  [ $Y2C_IS_IN_WORKSPACE_PACKAGE -eq 1 ]
 
   cd ../../test3/packages/workspace-a
   y2c_setup
@@ -681,7 +738,7 @@ validate_yarn_command_words() {
   [ $Y2C_REPO_IS_YARN_2_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz -eq 1 ]
   [ $Y2C_CURRENT_ROOT_REPO_PATH = "${PWD%/packages/workspace-a}" ]
   [ $Y2C_IS_YARN_2_REPO -eq 1 ]
-
+  [ $Y2C_IS_IN_WORKSPACE_PACKAGE -eq 1 ]
 }
 
 @test "y2c_generate_yarn_command_list" {
@@ -1096,6 +1153,23 @@ validate_yarn_command_words() {
   y2c_run_yarn_completion "i"
   set -e
   [ "${result[*]}" == "import i list i remove i runtime i" ]
+
+  COMP_WORDS=("yarn" "")
+  Y2C_YARN_BASE64_VERSION="Mi40LjI_"
+  result=()
+  set +e
+  y2c_run_yarn_completion ""
+  set -e
+  [ "${result[*]}" == "add  bin  cache  config  dedupe  dlx  exec  explain  info  init  install  link  node  npm  pack  patch  patch-commit  rebuild  remove  run  set  unplug  up  why  plugin  workspace  workspaces " ]
+
+  COMP_WORDS=("yarn" "")
+  Y2C_YARN_BASE64_VERSION="Mi40LjI_"
+  Y2C_IS_IN_WORKSPACE_PACKAGE=1
+  result=()
+  set +e
+  y2c_run_yarn_completion ""
+  set -e
+  [ "${result[*]}" == "add  bin  cache  config  dedupe  dlx  exec  explain  info  init  install  link  node  npm  pack  patch  patch-commit  rebuild  remove  run  set  unplug  up  why  plugin " ]
 }
 
 @test "y2c_yarn_completion_for_complete" {

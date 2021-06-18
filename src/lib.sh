@@ -55,6 +55,7 @@ Y2C_CURRENT_ROOT_REPO_PATH=
 Y2C_CURRENT_ROOT_REPO_BASE64_PATH=
 Y2C_VERBOSE=0
 Y2C_SYSTEM_EXECUTABLE_BY_PATH_ENV=1
+Y2C_IS_IN_WORKSPACE_PACKAGE=0
 
 y2c_is_verbose_output() {
   return $((Y2C_VERBOSE ^ 1))
@@ -72,6 +73,8 @@ y2c_setup() {
   local checking_path=""
 
   [[ $Y2C_TESTING_MODE -eq 1 ]] && Y2C_SETUP_HIT_CACHE=0
+
+  Y2C_IS_IN_WORKSPACE_PACKAGE=0
 
   if [[ -f "${root_repo_path}/yarn.lock" ]]; then
     Y2C_CURRENT_ROOT_REPO_PATH="${root_repo_path}"
@@ -124,27 +127,33 @@ y2c_setup() {
     fi
 
     return 0
-  elif [[ -z $1 ]] && [[ -f "./package.json" ]] && ! [[ $PWD = "${Y2C_CURRENT_ROOT_REPO_PATH}"* ]]; then
-    checking_path="${PWD}"
-    while [[ -n $checking_path ]]; do
-      checking_path="${checking_path%/*}"
-      available_paths+=("${checking_path}")
-    done
+  elif [[ -z $1 ]] && [[ -f "./package.json" ]]; then
+    if [[ -n "${Y2C_CURRENT_ROOT_REPO_PATH}" ]] && [[ $PWD = "${Y2C_CURRENT_ROOT_REPO_PATH}"* ]]; then
+      Y2C_IS_IN_WORKSPACE_PACKAGE=1
+      return 0
+    else
+      checking_path="${PWD}"
+      while [[ -n $checking_path ]]; do
+        checking_path="${checking_path%/*}"
+        available_paths+=("${checking_path}")
+      done
 
-    # shellcheck disable=SC2015
-    [[ $IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT -eq 1 ]] && subscript=-1 || {
-      subscript=${#available_paths[@]}
-      : $((subscript--))
-    }
-    unset "available_paths[$subscript]"
+      # shellcheck disable=SC2015
+      [[ $IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT -eq 1 ]] && subscript=-1 || {
+        subscript=${#available_paths[@]}
+        : $((subscript--))
+      }
+      unset "available_paths[$subscript]"
 
-    for checking_path in "${available_paths[@]}"; do
-      if y2c_setup "${checking_path}"; then
-        return 0
-      fi
-    done
+      for checking_path in "${available_paths[@]}"; do
+        if y2c_setup "${checking_path}"; then
+          Y2C_IS_IN_WORKSPACE_PACKAGE=1
+          return 0
+        fi
+      done
 
-    return 1
+      return 1
+    fi
   fi
 
   return 1
@@ -626,6 +635,10 @@ y2c_run_yarn_completion() {
     if [[ $IS_SUPPORT_DECLARE_N_FLAG -eq 0 ]]; then
       yarn_command_tokens+="[@]"
       yarn_command_tokens=("${!yarn_command_tokens}")
+    fi
+
+    if [[ $Y2C_IS_IN_WORKSPACE_PACKAGE -eq 1 ]] && [[ ${yarn_command_tokens[1]} = 'workspace'* ]]; then
+      continue
     fi
 
     for ((comp_word_index = 0; comp_word_index < last_word_index; ++comp_word_index)); do
