@@ -936,7 +936,7 @@ validate_yarn_command_words() {
   add_word_to_comreply "get" "g"
   add_word_to_comreply "gets" "g"
   add_word_to_comreply "set" "g"
-  [ "${COMPREPLY[*]}" == "get gets" ]
+  [ "${COMPREPLY[*]}" == "get get gets" ]
 
   COMPREPLY=()
   COMP_WORDS=("yarn" "workspace" "@test" "add" "-i" "--json" "")

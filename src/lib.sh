@@ -500,8 +500,7 @@ add_word_to_comreply() {
   local current_command="${COMP_WORDS[*]}"
 
   if ! [[ " ${current_command} " = *" ${processing_word} "* ]] &&
-    [[ ${processing_word} = "${completing_word}"* ]] &&
-    ! [[ " ${COMPREPLY[*]} " = *" ${processing_word} "* ]]; then
+    [[ ${processing_word} = "${completing_word}"* ]]; then
     COMPREPLY+=("${processing_word}")
   fi
 }
@@ -517,6 +516,7 @@ y2c_add_word_candidates() {
   local copied_options
   local option
   local option_remaining_chars
+  local expanded_var
 
   y2c_get_identified_token "${token}"
   token_type=$?
