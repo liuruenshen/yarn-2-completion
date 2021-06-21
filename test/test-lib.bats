@@ -1097,6 +1097,37 @@ validate_yarn_command_words() {
   [ "${COMPREPLY[*]}" == "--inspect" ]
 }
 
+@test "y2c_is_commandline_word_match_option" {
+  . lib.sh
+  declare -i status=0
+
+  COMP_WORDS=("yarn" "npm" "logout" "-s" "")
+  COMPREPLY=()
+  y2c_is_commandline_word_match_option "-s" "-s|--scope #0" 3
+  [ $Y2C_TMP_OPTION_WORDS_NUM -eq 1 ]
+
+  COMP_WORDS=("yarn" "npm" "logout" "--scope" "")
+  COMPREPLY=()
+  y2c_is_commandline_word_match_option "--scope" "-s|--scope #0" 3 || status=$?
+  [ $Y2C_TMP_OPTION_WORDS_NUM -eq 2 ]
+  [ $status -eq $Y2C_COMMAND_WORDS_MISS_WHOLE_OPTION ]
+  [ "${COMPREPLY[*]}" == "#0" ]
+
+  COMP_WORDS=("yarn" "npm" "logout" "--option" "test" "")
+  COMPREPLY=()
+  y2c_is_commandline_word_match_option "--option" "-o|--option #0 #1" 3 || status=$?
+  [ $Y2C_TMP_OPTION_WORDS_NUM -eq 3 ]
+  [ $status -eq $Y2C_COMMAND_WORDS_MISS_WHOLE_OPTION ]
+  [ "${COMPREPLY[*]}" == "#1" ]
+
+  COMP_WORDS=("yarn" "npm" "logout" "--invalid" "")
+  COMPREPLY=()
+  y2c_is_commandline_word_match_option "--invalid" "--branch #0" 3 || status=$?
+  [ $Y2C_TMP_OPTION_WORDS_NUM -eq 0 ]
+  [ $status -eq $Y2C_COMMAND_WORDS_NOT_MATCH_OPTION ]
+  [ "${COMPREPLY[*]}" == "" ]
+}
+
 @test "y2c_run_yarn_completion" {
   . lib.sh
 
