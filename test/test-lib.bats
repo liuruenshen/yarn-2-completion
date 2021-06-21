@@ -970,13 +970,13 @@ validate_yarn_command_words() {
   validate_yarn_command_words "workspace_commands[@]" "EXPECTED_WORKSPACE_COMMAND_TOKENS_210_" 34
 }
 
-@test "y2c_set_yarn_options" {
+@test "y2c_set_alternative_options" {
   . lib.sh
 
-  y2c_set_yarn_options "-D|--dev"
+  y2c_set_alternative_options "-D|--dev"
 
-  [ "${Y2C_TMP_OPTIONS[0]}" == "-D" ]
-  [ "${Y2C_TMP_OPTIONS[1]}" == "--dev" ]
+  [ "${Y2C_TMP_ALTERNATIVE_OPTIONS[0]}" == "-D" ]
+  [ "${Y2C_TMP_ALTERNATIVE_OPTIONS[1]}" == "--dev" ]
 }
 
 @test "y2c_add_word_to_comreply" {

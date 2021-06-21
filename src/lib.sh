@@ -1,18 +1,19 @@
 #!/usr/bin/env bash
 
 # Variable and function naming rules:
-# 1. All the global variables should be preceded with the "Y2C_".
+# 1. All the global variables should be preceded with "Y2C_".
 # 2. All the function names should be preceded with "y2c_".
-# 3. The word command in this script means a series of tokens that can be identified
+# 3. The word command in this script means a series of tokens identified
 #     and recognized by yarn executable to perform a specific action.
 #     For example, "yarn add --json react" is a command.
 #
-# 4. A token is a unit consumed by the script to do word completion; it belongs to one of the following categories:
+# 4. A token is a unit consumed by the script to do word completion;
+#     it belongs to one of the following categories:
 #    4-1: Order: the single word, like add, workspace, config, etc.
-#    4-2: Option: The square brackets wrap around the token indicates that this is an option,
+#    4-2: Option: The square brackets wrap around the token indicate that it is an option,
 #                 which means a user can skip it.
 #    4-3: Variable: The angle brackets enclose the token suggests that it is a variable,
-#                   which a valid value depends on the command.
+#                   which the value depends on the command, the environment, or the repository itself.
 
 Y2C_COMPLETION_SCRIPT_LOCATION=$(dirname "${BASH_SOURCE[0]}")
 
@@ -26,8 +27,8 @@ Y2C_REPO_ROOT_IS_YARN_2_VAR_NAME_PREFIX="Y2C_REPO_IS_YARN_2_"
 Y2C_WORKSPACE_PACKAGES_PREFIX="Y2C_WORKSPACE_PACKAGES_"
 
 Y2C_COMMAND_END_MARK="yarn_command_end_mark_for_prorcesing_last_token"
-Y2C_OPTION_SYMBOL="|"
-Y2C_FLAG_GROUP_CONCAT_SYMBOL=","
+Y2C_ALTERNATIVE_OPTIONS_SEPARATOR="|"
+Y2C_OPTION_SEPARATOR=","
 Y2C_VARIABLE_SYMBOL='<'
 
 declare -i Y2C_YARN_WORD_IS_ORDER=1
@@ -42,11 +43,11 @@ declare -i Y2C_FUNC_ARG_IS_STR=0
 declare -i Y2C_FUNC_ARG_IS_ARR=1
 
 declare -a Y2C_TMP_IDENTIFIED_TOKENS=()
-declare -a Y2C_TMP_OPTIONS=()
+declare -a Y2C_TMP_ALTERNATIVE_OPTIONS=()
 declare -a Y2C_SYSTEM_EXECUTABLES=()
 declare -i Y2C_TMP_OPTION_WORDS_NUM=0
 
-Y2C_TMP_EXPANDED_VAR_RESULT=
+Y2C_TMP_EXPANDED_VAR_RESULT=()
 
 IS_SUPPORT_DECLARE_N_FLAG=1
 IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT=1
@@ -54,10 +55,10 @@ IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT=1
 declare -i Y2C_IS_YARN_2_REPO=0
 declare -i Y2C_SETUP_HIT_CACHE=0
 
-Y2C_YARN_VERSION=
-Y2C_YARN_BASE64_VERSION=
-Y2C_CURRENT_ROOT_REPO_PATH=
-Y2C_CURRENT_ROOT_REPO_BASE64_PATH=
+Y2C_YARN_VERSION=""
+Y2C_YARN_BASE64_VERSION=""
+Y2C_CURRENT_ROOT_REPO_PATH=""
+Y2C_CURRENT_ROOT_REPO_BASE64_PATH=""
 Y2C_VERBOSE=0
 Y2C_SYSTEM_EXECUTABLE_BY_PATH_ENV=1
 Y2C_IS_IN_WORKSPACE_PACKAGE=0
@@ -435,7 +436,7 @@ y2c_generate_yarn_command_list() {
         word_is_option=0
       fi
 
-      broken_word=${broken_word//,/$Y2C_OPTION_SYMBOL}
+      broken_word=${broken_word//,/$Y2C_ALTERNATIVE_OPTIONS_SEPARATOR}
 
       if [[ word_is_option -eq 1 ]]; then
         if [[ $previous_word_is_option -eq 1 ]]; then
@@ -455,7 +456,7 @@ y2c_generate_yarn_command_list() {
           if [[ $previous_word_is_option -eq 1 ]]; then
             # shellcheck disable=SC2015
             [[ $IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT -eq 1 ]] && subscript=-1 || subscript=${#yarn_command_words[@]}-1
-            yarn_command_words[subscript]+="${Y2C_FLAG_GROUP_CONCAT_SYMBOL}${assembling_option}"
+            yarn_command_words[subscript]+="${Y2C_OPTION_SEPARATOR}${assembling_option}"
 
           else
             yarn_command_words+=("${assembling_option}")
@@ -514,7 +515,7 @@ y2c_get_identified_token() {
 
   if [[ $token = \[* ]]; then
     token="${token#[}"
-    IFS="${Y2C_FLAG_GROUP_CONCAT_SYMBOL}" read -r -a Y2C_TMP_IDENTIFIED_TOKENS <<<"$token"
+    IFS="${Y2C_OPTION_SEPARATOR}" read -r -a Y2C_TMP_IDENTIFIED_TOKENS <<<"$token"
 
     return $Y2C_YARN_WORD_IS_OPTION
   elif [[ $token = \<* ]]; then
@@ -526,10 +527,10 @@ y2c_get_identified_token() {
   fi
 }
 
-y2c_set_yarn_options() {
+y2c_set_alternative_options() {
   local token="$1"
 
-  IFS="${Y2C_OPTION_SYMBOL}" read -r -a Y2C_TMP_OPTIONS <<<"$token"
+  IFS="${Y2C_ALTERNATIVE_OPTIONS_SEPARATOR}" read -r -a Y2C_TMP_ALTERNATIVE_OPTIONS <<<"$token"
 }
 
 y2c_add_word_to_comreply() {
@@ -551,9 +552,8 @@ y2c_add_word_candidates() {
   local token_type
   local processing_token
   local copied_identified_tokens
-  local copied_options
+  local alternative_options
   local option
-  local option_remaining_chars
   local expanded_var
 
   y2c_get_identified_token "${token}"
@@ -567,21 +567,20 @@ y2c_add_word_candidates() {
       y2c_add_word_to_comreply "${processing_token}" "${completing_word}"
       ;;
     "$Y2C_YARN_WORD_IS_OPTION")
-      y2c_set_yarn_options "${processing_token}"
-      copied_options=("${Y2C_TMP_OPTIONS[@]}")
+      y2c_set_alternative_options "${processing_token}"
+      alternative_options=("${Y2C_TMP_ALTERNATIVE_OPTIONS[@]}")
 
-      for option in "${copied_options[@]}"; do
+      for option in "${alternative_options[@]}"; do
         if [[ " ${current_command} " = *" $option "* ]]; then
           continue 2
         fi
       done
 
       if [[ -z $completing_word ]]; then
-        COMPREPLY+=("${copied_options[@]}")
+        COMPREPLY+=("${alternative_options[@]}")
       else
-        for option in "${copied_options[@]}"; do
-          option_remaining_chars="${option#$completing_word}"
-          if ! [[ ${option} = "$option_remaining_chars" ]]; then
+        for option in "${alternative_options[@]}"; do
+          if [[ ${option} = "$completing_word"* ]]; then
             COMPREPLY+=("${option}")
           fi
         done
@@ -600,7 +599,8 @@ y2c_add_word_candidates() {
 
 y2c_is_commandline_word_match_option() {
   local commandline_word="$1"
-  local token="$2"
+  local option="$2"
+  local exclusive_option=""
 
   declare -i comp_word_index=$3
   declare -i comp_words_num=${#COMP_WORDS[@]}
@@ -610,12 +610,11 @@ y2c_is_commandline_word_match_option() {
 
   Y2C_TMP_OPTION_WORDS_NUM=0
 
-  y2c_set_yarn_options "${token}"
-  for option in "${Y2C_TMP_OPTIONS[@]}"; do
-    IFS=" " read -r -a option_words <<<"${option}"
+  y2c_set_alternative_options "${option}"
+  for exclusive_option in "${Y2C_TMP_ALTERNATIVE_OPTIONS[@]}"; do
+    IFS=" " read -r -a option_words <<<"${exclusive_option}"
     if [[ ${commandline_word} = "${option_words[0]}" ]]; then
       Y2C_TMP_OPTION_WORDS_NUM=${#option_words[@]}
-
       if [[ $Y2C_TMP_OPTION_WORDS_NUM -ne 1 ]]; then
         for ((index = 1; index < Y2C_TMP_OPTION_WORDS_NUM; ++index)); do
           checking_comp_word_index=$comp_word_index+$index
