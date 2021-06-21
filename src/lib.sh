@@ -139,10 +139,7 @@ y2c_setup() {
       done
 
       # shellcheck disable=SC2015
-      [[ $IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT -eq 1 ]] && subscript=-1 || {
-        subscript=${#available_paths[@]}
-        : $((subscript--))
-      }
+      [[ $IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT -eq 1 ]] && subscript=-1 || subscript=${#available_paths[@]}-1
       unset "available_paths[$subscript]"
 
       for checking_path in "${available_paths[@]}"; do
@@ -251,8 +248,7 @@ y2c_expand_commandName_variable() {
     if [[ $IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT -eq 1 ]]; then
       prior_token="${COMP_WORDS[-2]}"
     else
-      declare -i index="${#COMP_WORDS[@]}"
-      : $((index -= 2))
+      declare -i index=${#COMP_WORDS[@]}-2
       prior_token="${COMP_WORDS[index]}"
     fi
 
@@ -405,6 +401,7 @@ y2c_generate_yarn_command_list() {
   declare -i word_is_option=0
   declare -i previous_word_is_option=0
   declare -i store_yarn_command_index=0
+  declare -i subscript=0
 
   local assembling_option=""
   local yarn_command_broken_words=()
@@ -412,7 +409,6 @@ y2c_generate_yarn_command_list() {
   local store_yarn_command_var_name=""
   local broken_word=""
   local yarn_command_workspace_var_name=""
-  local subscript
   local instructions=()
 
   local options=()
@@ -453,10 +449,7 @@ y2c_generate_yarn_command_list() {
 
           if [[ $previous_word_is_option -eq 1 ]]; then
             # shellcheck disable=SC2015
-            [[ $IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT -eq 1 ]] && subscript=-1 || {
-              subscript=${#yarn_command_words[@]}
-              : $((subscript--))
-            }
+            [[ $IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT -eq 1 ]] && subscript=-1 || subscript=${#yarn_command_words[@]}-1
             yarn_command_words[subscript]+="${Y2C_FLAG_GROUP_CONCAT_SYMBOL}${assembling_option}"
 
           else
@@ -469,18 +462,12 @@ y2c_generate_yarn_command_list() {
       else
         if [[ $previous_word_is_option -eq 1 ]]; then
           # shellcheck disable=SC2015
-          [[ $IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT -eq 1 ]] && subscript=-1 || {
-            subscript=${#yarn_command_words[@]}
-            : $((subscript--))
-          }
+          [[ $IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT -eq 1 ]] && subscript=-1 || subscript=${#yarn_command_words[@]}-1
 
           IFS=',' read -r -a options <<<"${yarn_command_words[subscript]}"
           for ((i = 0; i < ${#options[@]} - 1; ++i)); do
             # shellcheck disable=SC2015
-            [[ $IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT -eq 1 ]] && subscript=-1 || {
-              subscript=${#yarn_command_words[@]}
-              : $((subscript--))
-            }
+            [[ $IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT -eq 1 ]] && subscript=-1 || subscript=${#yarn_command_words[@]}-1
             yarn_command_words+=("${yarn_command_words[subscript]}")
           done
         fi
