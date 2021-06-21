@@ -1103,11 +1103,11 @@ validate_yarn_command_words() {
   y2c_detect_environment
 
   local yarn_version="2.4.2"
-  local result=()
+  local result=""
   declare -i index=0
 
   y2c_add_word_candidates() {
-    result+=("$1" "$2")
+    result+="[$1;$2]"
   }
 
   y2c_set_expand_var() {
@@ -1127,54 +1127,134 @@ validate_yarn_command_words() {
 
   COMP_WORDS=("yarn" "config" "")
   Y2C_YARN_BASE64_VERSION="Mi40LjI_"
-  result=()
+  result=""
   set +e
   y2c_run_yarn_completion ""
   set -e
-  [ "${result[*]}" == "[-v|--verbose,--why,--json  get  set " ]
+  [ "$result" == "[[-v|--verbose,--why,--json;][get;][set;]" ]
 
   COMP_WORDS=("yarn" "add" "--json" "-D" "--optional" "--")
   Y2C_YARN_BASE64_VERSION="Mi40LjI_"
-  result=()
+  result=""
   set +e
   y2c_run_yarn_completion "--"
   set -e
-  [ "${result[*]}" == "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached --" ]
+  [ "$result" == "[[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached;--][...;--]" ]
 
   COMP_WORDS=("yarn" "workspace" "@test" "")
   Y2C_YARN_BASE64_VERSION="Mi40LjI_"
-  result=()
+  result=""
   Y2C_TMP_EXPANDED_VAR_RESULT=("@test")
   set +e
   y2c_run_yarn_completion ""
   set -e
-  [ "${result[*]}" == "<commandName  add  bin  cache  config  dedupe  dlx  exec  explain  info  init  install  link  node  npm  pack  patch  patch-commit  rebuild  remove  run  set  unplug  up  why  plugin " ]
+  [ "$result" == "[<commandName;][add;][bin;][cache;][config;][dedupe;][dlx;][exec;][explain;][info;][init;][install;][link;][node;][npm;][pack;][patch;][patch-commit;][rebuild;][remove;][run;][set;][unplug;][up;][why;][plugin;]" ]
 
   COMP_WORDS=("yarn" "workspace" "@test" "plugin" "i")
   Y2C_YARN_BASE64_VERSION="Mi40LjI_"
-  result=()
+  result=""
   Y2C_TMP_EXPANDED_VAR_RESULT=("@test")
   set +e
   y2c_run_yarn_completion "i"
   set -e
-  [ "${result[*]}" == "import i list i remove i runtime i" ]
+  [ "$result" == "[import;i][list;i][remove;i][runtime;i]" ]
 
   COMP_WORDS=("yarn" "")
   Y2C_YARN_BASE64_VERSION="Mi40LjI_"
-  result=()
+  result=""
   set +e
   y2c_run_yarn_completion ""
   set -e
-  [ "${result[*]}" == "add  bin  cache  config  dedupe  dlx  exec  explain  info  init  install  link  node  npm  pack  patch  patch-commit  rebuild  remove  run  set  unplug  up  why  plugin  workspace  workspaces " ]
+  [ "$result" == "[add;][bin;][cache;][config;][dedupe;][dlx;][exec;][explain;][info;][init;][install;][link;][node;][npm;][pack;][patch;][patch-commit;][rebuild;][remove;][run;][set;][unplug;][up;][why;][plugin;][workspace;][workspaces;]" ]
 
   COMP_WORDS=("yarn" "")
   Y2C_YARN_BASE64_VERSION="Mi40LjI_"
   Y2C_IS_IN_WORKSPACE_PACKAGE=1
-  result=()
+  result=""
   set +e
   y2c_run_yarn_completion ""
   set -e
-  [ "${result[*]}" == "add  bin  cache  config  dedupe  dlx  exec  explain  info  init  install  link  node  npm  pack  patch  patch-commit  rebuild  remove  run  set  unplug  up  why  plugin " ]
+  [ "$result" == "[add;][bin;][cache;][config;][dedupe;][dlx;][exec;][explain;][info;][init;][install;][link;][node;][npm;][pack;][patch;][patch-commit;][rebuild;][remove;][run;][set;][unplug;][up;][why;][plugin;]" ]
+}
+
+@test "y2c_run_yarn_completion(show next non-optional token)" {
+  . lib.sh
+
+  y2c_detect_environment
+
+  local yarn_version="2.4.2"
+  local result=""
+  declare -i index=0
+
+  y2c_add_word_candidates() {
+    result+="[$1;$2]"
+  }
+
+  y2c_set_expand_var() {
+    :
+  }
+
+  generate_yarn_expected_command_words "${yarn_version}"
+  YARN_COMMAND_TOKENS_LIST_VER_Mi40LjI_=()
+  for (( index=0; index<${#EXPECTED_YARN_COMMAND_TOKENS_LIST_242[@]}; ++index )); do
+    YARN_COMMAND_TOKENS_LIST_VER_Mi40LjI_+=("${EXPECTED_YARN_COMMAND_TOKENS_LIST_242[$index]}")
+  done
+
+  COMP_WORDS=("yarn" "run" "")
+  Y2C_YARN_BASE64_VERSION="Mi40LjI_"
+  result=""
+  set +e
+  y2c_run_yarn_completion ""
+  set -e
+  [ "$result" == "[[--inspect,--inspect-brk;][<scriptName;]" ]
+
+  COMP_WORDS=("yarn" "run" "--inspect" "-")
+  Y2C_YARN_BASE64_VERSION="Mi40LjI_"
+  result=""
+  set +e
+  y2c_run_yarn_completion "-"
+  set -e
+  [ "$result" == "[[--inspect,--inspect-brk;-][<scriptName;-]" ]
+
+  COMP_WORDS=("yarn" "run" "--inspect-brk" "--inspect" "")
+  Y2C_YARN_BASE64_VERSION="Mi40LjI_"
+  result=""
+  set +e
+  y2c_run_yarn_completion ""
+  set -e
+  [ "$result" == "[<scriptName;]" ]
+
+  COMP_WORDS=("yarn" "plugin" "import" "from" "sources" "")
+  Y2C_YARN_BASE64_VERSION="Mi40LjI_"
+  result=""
+   set +e
+  y2c_run_yarn_completion ""
+  set -e
+  [ "$result" == "[[--path #0,--repository #0,--branch #0,--no-minify,-f|--force;][<name;]" ]
+
+  COMP_WORDS=("yarn" "plugin" "import" "from" "sources" "--path #0" "--repository #0" "")
+  Y2C_YARN_BASE64_VERSION="Mi40LjI_"
+  result=""
+  set +e
+  y2c_run_yarn_completion ""
+  set -e
+  [ "$result" == "[[--path #0,--repository #0,--branch #0,--no-minify,-f|--force;][<name;]" ]
+
+  COMP_WORDS=("yarn" "plugin" "import" "from" "sources" "--path #0" "--repository #0" "--branch #0" "--no-minify" "")
+  Y2C_YARN_BASE64_VERSION="Mi40LjI_"
+  result=""
+  set +e
+  y2c_run_yarn_completion ""
+  set -e
+  [ "$result" == "[[--path #0,--repository #0,--branch #0,--no-minify,-f|--force;][<name;]" ]
+
+  COMP_WORDS=("yarn" "plugin" "import" "from" "sources" "--path #0" "--repository #0" "--branch #0" "--no-minify" "-f" "")
+  Y2C_YARN_BASE64_VERSION="Mi40LjI_"
+  result=""
+  set +e
+  y2c_run_yarn_completion ""
+  set -e
+  [ "$result" == "[<name;]" ]
 }
 
 @test "y2c_yarn_completion_for_complete" {

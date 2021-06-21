@@ -613,17 +613,32 @@ y2c_run_yarn_completion() {
     local yarn_command_tokens
   fi
 
+  declare -i word_num=${#COMP_WORDS[@]}
+
   local completing_word="$1"
-  local word_num="${#COMP_WORDS[@]}"
-  local last_word_index=$((--word_num))
-  local expanded_var
-  local token_type
-  local processing_token
+  local last_word_index=$word_num-1
+  local expanded_var=""
+  local token_type=""
+  local token=""
   local copied_identified_tokens=()
   local option=""
-  local added_words=()
+  local processed_tokens=()
+  local candidate_token=""
+  local next_candidate_token=""
 
   declare -i comp_word_index=0
+  declare -i options_start_index=0
+  declare -i yarn_command_tokens_index=0
+
+  y2c_process_token_once() {
+    local token="$1"
+    if [[ " ${processed_tokens[*]} " = *" ${token} "* ]]; then
+      return 0
+    fi
+
+    processed_tokens+=("${token}")
+    y2c_add_word_candidates "${token}" "${completing_word}"
+  }
 
   COMPREPLY=()
 
@@ -637,6 +652,9 @@ y2c_run_yarn_completion() {
   fi
 
   for yarn_command_tokens in "${yarn_command_tokens_list[@]}"; do
+    options_start_index=0
+    yarn_command_tokens_index=0
+
     if [[ $IS_SUPPORT_DECLARE_N_FLAG -eq 0 ]]; then
       yarn_command_tokens+="[@]"
       yarn_command_tokens=("${!yarn_command_tokens}")
@@ -647,20 +665,26 @@ y2c_run_yarn_completion() {
     fi
 
     for ((comp_word_index = 0; comp_word_index < last_word_index; ++comp_word_index)); do
-      y2c_get_identified_token "${yarn_command_tokens[$comp_word_index]}"
+      y2c_get_identified_token "${yarn_command_tokens[yarn_command_tokens_index++]}"
       token_type=$?
 
       copied_identified_tokens=("${Y2C_TMP_IDENTIFIED_TOKENS[@]}")
 
-      for processing_token in "${copied_identified_tokens[@]}"; do
+      if [[ $token_type -eq $Y2C_YARN_WORD_IS_OPTION ]]; then
+        [[ $options_start_index -eq 0 ]] && options_start_index=$comp_word_index
+      else
+        options_start_index=0
+      fi
+
+      for token in "${copied_identified_tokens[@]}"; do
         case "$token_type" in
         "$Y2C_YARN_WORD_IS_ORDER")
-          if [[ ${COMP_WORDS[$comp_word_index]} = "${processing_token}" ]]; then
+          if [[ ${COMP_WORDS[$comp_word_index]} = "${token}" ]]; then
             continue 2
           fi
           ;;
         "$Y2C_YARN_WORD_IS_OPTION")
-          y2c_set_yarn_options "${processing_token}"
+          y2c_set_yarn_options "${token}"
           for option in "${Y2C_TMP_OPTIONS[@]}"; do
             if [[ ${COMP_WORDS[$comp_word_index]} = "${option}" ]]; then
               continue 3
@@ -668,7 +692,7 @@ y2c_run_yarn_completion() {
           done
           ;;
         "$Y2C_YARN_WORD_IS_VARIABLE")
-          y2c_set_expand_var "${processing_token}" "${completing_word}"
+          y2c_set_expand_var "${token}" "${completing_word}"
 
           for expanded_var in "${Y2C_TMP_EXPANDED_VAR_RESULT[@]}"; do
             if [[ ${COMP_WORDS[$comp_word_index]} = "${expanded_var}" ]]; then
@@ -679,14 +703,36 @@ y2c_run_yarn_completion() {
         esac
       done
 
+      if [[ $token_type -eq $Y2C_YARN_WORD_IS_OPTION ]]; then
+        yarn_command_tokens_index=$options_start_index+${#copied_identified_tokens[@]}
+        comp_word_index+=-1
+        continue
+      fi
+
       continue 2
     done
 
-    if [[ " ${added_words[*]} " = *" ${yarn_command_tokens[$last_word_index]} "* ]]; then
+    candidate_token="${yarn_command_tokens[yarn_command_tokens_index]}"
+    y2c_process_token_once "${candidate_token}"
+
+    #region When the candidates are options for the completing word,
+    # it is essential to provide non-option words as candidates for
+    # the user to choose from. For example, "yarn run" command accepts
+    # two options named "--inspect" and "--inspect-brk";
+    # the user can skip those two options and type the script name
+    # defined in the package.json directly.
+    y2c_get_identified_token "${candidate_token}"
+    if [[ $? -ne "${Y2C_YARN_WORD_IS_OPTION}" ]]; then
       continue
     fi
-    added_words+=("${yarn_command_tokens[$last_word_index]}")
-    y2c_add_word_candidates "${yarn_command_tokens[$last_word_index]}" "${completing_word}"
+
+    [[ $options_start_index -eq 0 ]] && options_start_index=$yarn_command_tokens_index
+    next_candidate_token="${yarn_command_tokens[$options_start_index + ${#Y2C_TMP_IDENTIFIED_TOKENS[@]}]}"
+    if [[ -z "${next_candidate_token}" ]]; then
+      continue
+    fi
+    y2c_process_token_once "${next_candidate_token}"
+    #endregion
   done
 
   return 0
