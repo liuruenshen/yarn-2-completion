@@ -330,96 +330,96 @@ generate_yarn_expected_command_words() {
 
   case "${version}" in
     2.4.2)
-    EXPECTED_YARN_COMMAND_TOKENS_242_0=([0]="yarn" [1]="add" [2]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [3]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [4]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [5]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [6]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [7]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [8]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [9]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [10]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [11]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [12]="...")
-    EXPECTED_YARN_COMMAND_TOKENS_242_1=([0]="yarn" [1]="bin" [2]="[-v|--verbose,--json,name" [3]="[-v|--verbose,--json,name" [4]="[-v|--verbose,--json,name")
-    EXPECTED_YARN_COMMAND_TOKENS_242_2=([0]="yarn" [1]="cache" [2]="clean" [3]="[--mirror,--all" [4]="[--mirror,--all")
-    EXPECTED_YARN_COMMAND_TOKENS_242_3=([0]="yarn" [1]="config" [2]="[-v|--verbose,--why,--json" [3]="[-v|--verbose,--why,--json" [4]="[-v|--verbose,--why,--json")
-    EXPECTED_YARN_COMMAND_TOKENS_242_4=([0]="yarn" [1]="config" [2]="get" [3]="[--json,--no-redacted" [4]="[--json,--no-redacted" [5]="<name")
-    EXPECTED_YARN_COMMAND_TOKENS_242_5=([0]="yarn" [1]="config" [2]="set" [3]="[--json,-H|--home" [4]="[--json,-H|--home" [5]="<name" [6]="<value")
-    EXPECTED_YARN_COMMAND_TOKENS_242_6=([0]="yarn" [1]="dedupe" [2]="[-s|--strategy #0,-c|--check,--json" [3]="[-s|--strategy #0,-c|--check,--json" [4]="[-s|--strategy #0,-c|--check,--json" [5]="...")
-    EXPECTED_YARN_COMMAND_TOKENS_242_7=([0]="yarn" [1]="dlx" [2]="[-p|--package #0,-q|--quiet" [3]="[-p|--package #0,-q|--quiet" [4]="<command" [5]="...")
-    EXPECTED_YARN_COMMAND_TOKENS_242_8=([0]="yarn" [1]="exec" [2]="<commandName" [3]="...")
-    EXPECTED_YARN_COMMAND_TOKENS_242_9=([0]="yarn" [1]="explain" [2]="peer-requirements" [3]="[hash")
-    EXPECTED_YARN_COMMAND_TOKENS_242_10=([0]="yarn" [1]="info" [2]="[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" [3]="[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" [4]="[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" [5]="[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" [6]="[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" [7]="[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" [8]="[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" [9]="[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" [10]="[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" [11]="...")
-    EXPECTED_YARN_COMMAND_TOKENS_242_11=([0]="yarn" [1]="init" [2]="[-p|--private,-w|--workspace,-i|--install" [3]="[-p|--private,-w|--workspace,-i|--install" [4]="[-p|--private,-w|--workspace,-i|--install")
-    EXPECTED_YARN_COMMAND_TOKENS_242_12=([0]="yarn" [1]="install" [2]="[--json,--immutable,--immutable-cache,--check-cache,--inline-builds,--skip-builds" [3]="[--json,--immutable,--immutable-cache,--check-cache,--inline-builds,--skip-builds" [4]="[--json,--immutable,--immutable-cache,--check-cache,--inline-builds,--skip-builds" [5]="[--json,--immutable,--immutable-cache,--check-cache,--inline-builds,--skip-builds" [6]="[--json,--immutable,--immutable-cache,--check-cache,--inline-builds,--skip-builds" [7]="[--json,--immutable,--immutable-cache,--check-cache,--inline-builds,--skip-builds")
-    EXPECTED_YARN_COMMAND_TOKENS_242_13=([0]="yarn" [1]="link" [2]="[-A|--all,-p|--private,-r|--relative" [3]="[-A|--all,-p|--private,-r|--relative" [4]="[-A|--all,-p|--private,-r|--relative" [5]="<destination")
-    EXPECTED_YARN_COMMAND_TOKENS_242_14=([0]="yarn" [1]="node" [2]="...")
-    EXPECTED_YARN_COMMAND_TOKENS_242_15=([0]="yarn" [1]="npm" [2]="audit" [3]="[-A|--all,-R|--recursive,--environment #0,--json,--severity #0" [4]="[-A|--all,-R|--recursive,--environment #0,--json,--severity #0" [5]="[-A|--all,-R|--recursive,--environment #0,--json,--severity #0" [6]="[-A|--all,-R|--recursive,--environment #0,--json,--severity #0" [7]="[-A|--all,-R|--recursive,--environment #0,--json,--severity #0")
-    EXPECTED_YARN_COMMAND_TOKENS_242_16=([0]="yarn" [1]="pack" [2]="[--install-if-needed,-n|--dry-run,--json,-o|--out #0,--filename #0" [3]="[--install-if-needed,-n|--dry-run,--json,-o|--out #0,--filename #0" [4]="[--install-if-needed,-n|--dry-run,--json,-o|--out #0,--filename #0" [5]="[--install-if-needed,-n|--dry-run,--json,-o|--out #0,--filename #0" [6]="[--install-if-needed,-n|--dry-run,--json,-o|--out #0,--filename #0")
-    EXPECTED_YARN_COMMAND_TOKENS_242_17=([0]="yarn" [1]="patch" [2]="<package")
-    EXPECTED_YARN_COMMAND_TOKENS_242_18=([0]="yarn" [1]="patch-commit" [2]="<patchFolder")
-    EXPECTED_YARN_COMMAND_TOKENS_242_19=([0]="yarn" [1]="rebuild" [2]="...")
-    EXPECTED_YARN_COMMAND_TOKENS_242_20=([0]="yarn" [1]="remove" [2]="[-A|--all" [3]="...")
-    EXPECTED_YARN_COMMAND_TOKENS_242_21=([0]="yarn" [1]="run" [2]="[--inspect,--inspect-brk" [3]="[--inspect,--inspect-brk" [4]="<scriptName" [5]="...")
-    EXPECTED_YARN_COMMAND_TOKENS_242_22=([0]="yarn" [1]="set" [2]="resolution" [3]="[-s|--save" [4]="<descriptor" [5]="<resolution")
-    EXPECTED_YARN_COMMAND_TOKENS_242_23=([0]="yarn" [1]="set" [2]="version" [3]="[--only-if-needed" [4]="<version")
-    EXPECTED_YARN_COMMAND_TOKENS_242_24=([0]="yarn" [1]="set" [2]="version" [3]="from" [4]="sources" [5]="[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force" [6]="[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force" [7]="[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force" [8]="[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force" [9]="[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force" [10]="[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force")
-    EXPECTED_YARN_COMMAND_TOKENS_242_25=([0]="yarn" [1]="unplug" [2]="[-A|--all,-R|--recursive,--json" [3]="[-A|--all,-R|--recursive,--json" [4]="[-A|--all,-R|--recursive,--json" [5]="...")
-    EXPECTED_YARN_COMMAND_TOKENS_242_26=([0]="yarn" [1]="up" [2]="[-i|--interactive,-E|--exact,-T|--tilde,-C|--caret" [3]="[-i|--interactive,-E|--exact,-T|--tilde,-C|--caret" [4]="[-i|--interactive,-E|--exact,-T|--tilde,-C|--caret" [5]="[-i|--interactive,-E|--exact,-T|--tilde,-C|--caret" [6]="...")
-    EXPECTED_YARN_COMMAND_TOKENS_242_27=([0]="yarn" [1]="why" [2]="[-R|--recursive,--json,--peers" [3]="[-R|--recursive,--json,--peers" [4]="[-R|--recursive,--json,--peers" [5]="<package")
-    EXPECTED_YARN_COMMAND_TOKENS_242_28=([0]="yarn" [1]="npm" [2]="info" [3]="[-f|--fields #0,--json" [4]="[-f|--fields #0,--json" [5]="...")
-    EXPECTED_YARN_COMMAND_TOKENS_242_29=([0]="yarn" [1]="npm" [2]="login" [3]="[-s|--scope #0,--publish" [4]="[-s|--scope #0,--publish")
-    EXPECTED_YARN_COMMAND_TOKENS_242_30=([0]="yarn" [1]="npm" [2]="logout" [3]="[-s|--scope #0,--publish,-A|--all" [4]="[-s|--scope #0,--publish,-A|--all" [5]="[-s|--scope #0,--publish,-A|--all")
-    EXPECTED_YARN_COMMAND_TOKENS_242_31=([0]="yarn" [1]="npm" [2]="publish" [3]="[--access #0,--tag #0,--tolerate-republish" [4]="[--access #0,--tag #0,--tolerate-republish" [5]="[--access #0,--tag #0,--tolerate-republish")
-    EXPECTED_YARN_COMMAND_TOKENS_242_32=([0]="yarn" [1]="npm" [2]="tag" [3]="add" [4]="<package" [5]="<tag")
-    EXPECTED_YARN_COMMAND_TOKENS_242_33=([0]="yarn" [1]="npm" [2]="tag" [3]="list" [4]="[--json,package" [5]="[--json,package")
-    EXPECTED_YARN_COMMAND_TOKENS_242_34=([0]="yarn" [1]="npm" [2]="tag" [3]="remove" [4]="<package" [5]="<tag")
-    EXPECTED_YARN_COMMAND_TOKENS_242_35=([0]="yarn" [1]="npm" [2]="whoami" [3]="[-s|--scope #0,--publish" [4]="[-s|--scope #0,--publish")
-    EXPECTED_YARN_COMMAND_TOKENS_242_36=([0]="yarn" [1]="plugin" [2]="import" [3]="<name")
-    EXPECTED_YARN_COMMAND_TOKENS_242_37=([0]="yarn" [1]="plugin" [2]="import" [3]="from" [4]="sources" [5]="[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" [6]="[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" [7]="[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" [8]="[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" [9]="[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" [10]="<name")
-    EXPECTED_YARN_COMMAND_TOKENS_242_38=([0]="yarn" [1]="plugin" [2]="list" [3]="[--json")
-    EXPECTED_YARN_COMMAND_TOKENS_242_39=([0]="yarn" [1]="plugin" [2]="remove" [3]="<name")
-    EXPECTED_YARN_COMMAND_TOKENS_242_40=([0]="yarn" [1]="plugin" [2]="runtime" [3]="[--json")
-    EXPECTED_YARN_COMMAND_TOKENS_242_41=([0]="yarn" [1]="workspace" [2]="<workspaceName" [3]="<commandName" [4]="...")
-    EXPECTED_YARN_COMMAND_TOKENS_242_42=([0]="yarn" [1]="workspaces" [2]="list" [3]="[-v|--verbose,--json" [4]="[-v|--verbose,--json")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_0=([0]="yarn" [1]="add" [2]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [3]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [4]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [5]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [6]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [7]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [8]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [9]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [10]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [11]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [12]="...")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_1=([0]="yarn" [1]="bin" [2]="[-v|--verbose,--json,name" [3]="[-v|--verbose,--json,name" [4]="[-v|--verbose,--json,name")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_2=([0]="yarn" [1]="cache" [2]="clean" [3]="[--mirror,--all" [4]="[--mirror,--all")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_3=([0]="yarn" [1]="config" [2]="[-v|--verbose,--why,--json" [3]="[-v|--verbose,--why,--json" [4]="[-v|--verbose,--why,--json")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_4=([0]="yarn" [1]="config" [2]="get" [3]="[--json,--no-redacted" [4]="[--json,--no-redacted" [5]="<name")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_5=([0]="yarn" [1]="config" [2]="set" [3]="[--json,-H|--home" [4]="[--json,-H|--home" [5]="<name" [6]="<value")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_6=([0]="yarn" [1]="dedupe" [2]="[-s|--strategy #0,-c|--check,--json" [3]="[-s|--strategy #0,-c|--check,--json" [4]="[-s|--strategy #0,-c|--check,--json" [5]="...")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_7=([0]="yarn" [1]="dlx" [2]="[-p|--package #0,-q|--quiet" [3]="[-p|--package #0,-q|--quiet" [4]="<command" [5]="...")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_8=([0]="yarn" [1]="exec" [2]="<commandName" [3]="...")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_9=([0]="yarn" [1]="explain" [2]="peer-requirements" [3]="[hash")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_10=([0]="yarn" [1]="info" [2]="[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" [3]="[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" [4]="[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" [5]="[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" [6]="[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" [7]="[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" [8]="[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" [9]="[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" [10]="[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" [11]="...")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_11=([0]="yarn" [1]="init" [2]="[-p|--private,-w|--workspace,-i|--install" [3]="[-p|--private,-w|--workspace,-i|--install" [4]="[-p|--private,-w|--workspace,-i|--install")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_12=([0]="yarn" [1]="install" [2]="[--json,--immutable,--immutable-cache,--check-cache,--inline-builds,--skip-builds" [3]="[--json,--immutable,--immutable-cache,--check-cache,--inline-builds,--skip-builds" [4]="[--json,--immutable,--immutable-cache,--check-cache,--inline-builds,--skip-builds" [5]="[--json,--immutable,--immutable-cache,--check-cache,--inline-builds,--skip-builds" [6]="[--json,--immutable,--immutable-cache,--check-cache,--inline-builds,--skip-builds" [7]="[--json,--immutable,--immutable-cache,--check-cache,--inline-builds,--skip-builds")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_13=([0]="yarn" [1]="link" [2]="[-A|--all,-p|--private,-r|--relative" [3]="[-A|--all,-p|--private,-r|--relative" [4]="[-A|--all,-p|--private,-r|--relative" [5]="<destination")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_14=([0]="yarn" [1]="node" [2]="...")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_15=([0]="yarn" [1]="npm" [2]="audit" [3]="[-A|--all,-R|--recursive,--environment #0,--json,--severity #0" [4]="[-A|--all,-R|--recursive,--environment #0,--json,--severity #0" [5]="[-A|--all,-R|--recursive,--environment #0,--json,--severity #0" [6]="[-A|--all,-R|--recursive,--environment #0,--json,--severity #0" [7]="[-A|--all,-R|--recursive,--environment #0,--json,--severity #0")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_16=([0]="yarn" [1]="pack" [2]="[--install-if-needed,-n|--dry-run,--json,-o|--out #0,--filename #0" [3]="[--install-if-needed,-n|--dry-run,--json,-o|--out #0,--filename #0" [4]="[--install-if-needed,-n|--dry-run,--json,-o|--out #0,--filename #0" [5]="[--install-if-needed,-n|--dry-run,--json,-o|--out #0,--filename #0" [6]="[--install-if-needed,-n|--dry-run,--json,-o|--out #0,--filename #0")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_17=([0]="yarn" [1]="patch" [2]="<package")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_18=([0]="yarn" [1]="patch-commit" [2]="<patchFolder")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_19=([0]="yarn" [1]="rebuild" [2]="...")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_20=([0]="yarn" [1]="remove" [2]="[-A|--all" [3]="...")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_21=([0]="yarn" [1]="run" [2]="[--inspect,--inspect-brk" [3]="[--inspect,--inspect-brk" [4]="<scriptName" [5]="...")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_22=([0]="yarn" [1]="set" [2]="resolution" [3]="[-s|--save" [4]="<descriptor" [5]="<resolution")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_23=([0]="yarn" [1]="set" [2]="version" [3]="[--only-if-needed" [4]="<version")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_24=([0]="yarn" [1]="set" [2]="version" [3]="from" [4]="sources" [5]="[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force" [6]="[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force" [7]="[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force" [8]="[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force" [9]="[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force" [10]="[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_25=([0]="yarn" [1]="unplug" [2]="[-A|--all,-R|--recursive,--json" [3]="[-A|--all,-R|--recursive,--json" [4]="[-A|--all,-R|--recursive,--json" [5]="...")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_26=([0]="yarn" [1]="up" [2]="[-i|--interactive,-E|--exact,-T|--tilde,-C|--caret" [3]="[-i|--interactive,-E|--exact,-T|--tilde,-C|--caret" [4]="[-i|--interactive,-E|--exact,-T|--tilde,-C|--caret" [5]="[-i|--interactive,-E|--exact,-T|--tilde,-C|--caret" [6]="...")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_27=([0]="yarn" [1]="why" [2]="[-R|--recursive,--json,--peers" [3]="[-R|--recursive,--json,--peers" [4]="[-R|--recursive,--json,--peers" [5]="<package")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_28=([0]="yarn" [1]="npm" [2]="info" [3]="[-f|--fields #0,--json" [4]="[-f|--fields #0,--json" [5]="...")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_29=([0]="yarn" [1]="npm" [2]="login" [3]="[-s|--scope #0,--publish" [4]="[-s|--scope #0,--publish")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_30=([0]="yarn" [1]="npm" [2]="logout" [3]="[-s|--scope #0,--publish,-A|--all" [4]="[-s|--scope #0,--publish,-A|--all" [5]="[-s|--scope #0,--publish,-A|--all")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_31=([0]="yarn" [1]="npm" [2]="publish" [3]="[--access #0,--tag #0,--tolerate-republish" [4]="[--access #0,--tag #0,--tolerate-republish" [5]="[--access #0,--tag #0,--tolerate-republish")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_32=([0]="yarn" [1]="npm" [2]="tag" [3]="add" [4]="<package" [5]="<tag")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_33=([0]="yarn" [1]="npm" [2]="tag" [3]="list" [4]="[--json,package" [5]="[--json,package")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_34=([0]="yarn" [1]="npm" [2]="tag" [3]="remove" [4]="<package" [5]="<tag")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_35=([0]="yarn" [1]="npm" [2]="whoami" [3]="[-s|--scope #0,--publish" [4]="[-s|--scope #0,--publish")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_36=([0]="yarn" [1]="plugin" [2]="import" [3]="<name")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_37=([0]="yarn" [1]="plugin" [2]="import" [3]="from" [4]="sources" [5]="[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" [6]="[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" [7]="[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" [8]="[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" [9]="[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" [10]="<name")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_38=([0]="yarn" [1]="plugin" [2]="list" [3]="[--json")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_39=([0]="yarn" [1]="plugin" [2]="remove" [3]="<name")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_40=([0]="yarn" [1]="plugin" [2]="runtime" [3]="[--json")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_41=([0]="yarn" [1]="workspace" [2]="<workspaceName" [3]="<commandName" [4]="...")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_42=([0]="yarn" [1]="workspaces" [2]="list" [3]="[-v|--verbose,--json" [4]="[-v|--verbose,--json")
 
-    EXPECTED_YARN_COMMAND_TOKENS_LIST_242=()
+    EXPECTED_Y2C_COMMAND_TOKENS_LIST_242=()
     for (( index=0; index<43; ++index )); do
-      EXPECTED_YARN_COMMAND_TOKENS_LIST_242+=("EXPECTED_YARN_COMMAND_TOKENS_242_${index}")
+      EXPECTED_Y2C_COMMAND_TOKENS_LIST_242+=("EXPECTED_Y2C_COMMAND_TOKENS_242_${index}")
     done
     ;;
     2.1.0)
-    EXPECTED_YARN_COMMAND_TOKENS_210_0=([0]="yarn" [1]="add" [2]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [3]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [4]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [5]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [6]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [7]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [8]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [9]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [10]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [11]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [12]="...")
-    EXPECTED_YARN_COMMAND_TOKENS_210_1=([0]="yarn" [1]="bin" [2]="[-v|--verbose,--json,name" [3]="[-v|--verbose,--json,name" [4]="[-v|--verbose,--json,name")
-    EXPECTED_YARN_COMMAND_TOKENS_210_2=([0]="yarn" [1]="cache" [2]="clean" [3]="[--mirror,--all" [4]="[--mirror,--all")
-    EXPECTED_YARN_COMMAND_TOKENS_210_3=([0]="yarn" [1]="config" [2]="[-v|--verbose,--why,--json" [3]="[-v|--verbose,--why,--json" [4]="[-v|--verbose,--why,--json")
-    EXPECTED_YARN_COMMAND_TOKENS_210_4=([0]="yarn" [1]="config" [2]="get" [3]="[--json,--no-redacted" [4]="[--json,--no-redacted" [5]="<name")
-    EXPECTED_YARN_COMMAND_TOKENS_210_5=([0]="yarn" [1]="config" [2]="set" [3]="[--json" [4]="<name" [5]="<value")
-    EXPECTED_YARN_COMMAND_TOKENS_210_6=([0]="yarn" [1]="dlx" [2]="[-p|--package #0,-q|--quiet" [3]="[-p|--package #0,-q|--quiet" [4]="<command" [5]="...")
-    EXPECTED_YARN_COMMAND_TOKENS_210_7=([0]="yarn" [1]="exec" [2]="<commandName" [3]="...")
-    EXPECTED_YARN_COMMAND_TOKENS_210_8=([0]="yarn" [1]="init" [2]="[-p|--private,-w|--workspace,-i|--install" [3]="[-p|--private,-w|--workspace,-i|--install" [4]="[-p|--private,-w|--workspace,-i|--install")
-    EXPECTED_YARN_COMMAND_TOKENS_210_9=([0]="yarn" [1]="install" [2]="[--json,--immutable,--immutable-cache,--check-cache,--inline-builds" [3]="[--json,--immutable,--immutable-cache,--check-cache,--inline-builds" [4]="[--json,--immutable,--immutable-cache,--check-cache,--inline-builds" [5]="[--json,--immutable,--immutable-cache,--check-cache,--inline-builds" [6]="[--json,--immutable,--immutable-cache,--check-cache,--inline-builds")
-    EXPECTED_YARN_COMMAND_TOKENS_210_10=([0]="yarn" [1]="link" [2]="[--all,-p|--private,-r|--relative" [3]="[--all,-p|--private,-r|--relative" [4]="[--all,-p|--private,-r|--relative" [5]="<destination")
-    EXPECTED_YARN_COMMAND_TOKENS_210_11=([0]="yarn" [1]="node" [2]="...")
-    EXPECTED_YARN_COMMAND_TOKENS_210_12=([0]="yarn" [1]="npm" [2]="info" [3]="[-f|--fields #0,--json" [4]="[-f|--fields #0,--json" [5]="...")
-    EXPECTED_YARN_COMMAND_TOKENS_210_13=([0]="yarn" [1]="pack" [2]="[--install-if-needed,-n|--dry-run,--json,-o|--out #0,--filename #0" [3]="[--install-if-needed,-n|--dry-run,--json,-o|--out #0,--filename #0" [4]="[--install-if-needed,-n|--dry-run,--json,-o|--out #0,--filename #0" [5]="[--install-if-needed,-n|--dry-run,--json,-o|--out #0,--filename #0" [6]="[--install-if-needed,-n|--dry-run,--json,-o|--out #0,--filename #0")
-    EXPECTED_YARN_COMMAND_TOKENS_210_14=([0]="yarn" [1]="patch" [2]="<package")
-    EXPECTED_YARN_COMMAND_TOKENS_210_15=([0]="yarn" [1]="patch-commit" [2]="<patchFolder")
-    EXPECTED_YARN_COMMAND_TOKENS_210_16=([0]="yarn" [1]="rebuild" [2]="...")
-    EXPECTED_YARN_COMMAND_TOKENS_210_17=([0]="yarn" [1]="remove" [2]="[-A|--all" [3]="...")
-    EXPECTED_YARN_COMMAND_TOKENS_210_18=([0]="yarn" [1]="run" [2]="[--inspect,--inspect-brk" [3]="[--inspect,--inspect-brk" [4]="<scriptName" [5]="...")
-    EXPECTED_YARN_COMMAND_TOKENS_210_19=([0]="yarn" [1]="set" [2]="resolution" [3]="[-s|--save" [4]="<descriptor" [5]="<resolution")
-    EXPECTED_YARN_COMMAND_TOKENS_210_20=([0]="yarn" [1]="set" [2]="version" [3]="[--only-if-needed" [4]="<version")
-    EXPECTED_YARN_COMMAND_TOKENS_210_21=([0]="yarn" [1]="set" [2]="version" [3]="from" [4]="sources" [5]="[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force" [6]="[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force" [7]="[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force" [8]="[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force" [9]="[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force" [10]="[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force")
-    EXPECTED_YARN_COMMAND_TOKENS_210_22=([0]="yarn" [1]="unplug" [2]="...")
-    EXPECTED_YARN_COMMAND_TOKENS_210_23=([0]="yarn" [1]="up" [2]="[-i|--interactive,-v|--verbose,-E|--exact,-T|--tilde,-C|--caret" [3]="[-i|--interactive,-v|--verbose,-E|--exact,-T|--tilde,-C|--caret" [4]="[-i|--interactive,-v|--verbose,-E|--exact,-T|--tilde,-C|--caret" [5]="[-i|--interactive,-v|--verbose,-E|--exact,-T|--tilde,-C|--caret" [6]="[-i|--interactive,-v|--verbose,-E|--exact,-T|--tilde,-C|--caret" [7]="...")
-    EXPECTED_YARN_COMMAND_TOKENS_210_24=([0]="yarn" [1]="why" [2]="[-R|--recursive,--peers" [3]="[-R|--recursive,--peers" [4]="<package")
-    EXPECTED_YARN_COMMAND_TOKENS_210_25=([0]="yarn" [1]="npm" [2]="login" [3]="[-s|--scope #0,--publish" [4]="[-s|--scope #0,--publish")
-    EXPECTED_YARN_COMMAND_TOKENS_210_26=([0]="yarn" [1]="npm" [2]="logout" [3]="[-s|--scope #0,--publish,-A|--all" [4]="[-s|--scope #0,--publish,-A|--all" [5]="[-s|--scope #0,--publish,-A|--all")
-    EXPECTED_YARN_COMMAND_TOKENS_210_27=([0]="yarn" [1]="npm" [2]="publish" [3]="[--access #0,--tag #0,--tolerate-republish" [4]="[--access #0,--tag #0,--tolerate-republish" [5]="[--access #0,--tag #0,--tolerate-republish")
-    EXPECTED_YARN_COMMAND_TOKENS_210_28=([0]="yarn" [1]="npm" [2]="whoami" [3]="[-s|--scope #0,--publish" [4]="[-s|--scope #0,--publish")
-    EXPECTED_YARN_COMMAND_TOKENS_210_29=([0]="yarn" [1]="plugin" [2]="import" [3]="<name")
-    EXPECTED_YARN_COMMAND_TOKENS_210_30=([0]="yarn" [1]="plugin" [2]="import" [3]="from" [4]="sources" [5]="[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" [6]="[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" [7]="[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" [8]="[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" [9]="[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" [10]="<name")
-    EXPECTED_YARN_COMMAND_TOKENS_210_31=([0]="yarn" [1]="plugin" [2]="list" [3]="[--json")
-    EXPECTED_YARN_COMMAND_TOKENS_210_32=([0]="yarn" [1]="plugin" [2]="remove" [3]="<name")
-    EXPECTED_YARN_COMMAND_TOKENS_210_33=([0]="yarn" [1]="plugin" [2]="runtime" [3]="[--json")
-    EXPECTED_YARN_COMMAND_TOKENS_210_34=([0]="yarn" [1]="workspace" [2]="<workspaceName" [3]="<commandName" [4]="...")
-    EXPECTED_YARN_COMMAND_TOKENS_210_35=([0]="yarn" [1]="workspaces" [2]="list" [3]="[-v|--verbose,--json" [4]="[-v|--verbose,--json")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_0=([0]="yarn" [1]="add" [2]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [3]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [4]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [5]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [6]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [7]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [8]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [9]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [10]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [11]="[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" [12]="...")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_1=([0]="yarn" [1]="bin" [2]="[-v|--verbose,--json,name" [3]="[-v|--verbose,--json,name" [4]="[-v|--verbose,--json,name")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_2=([0]="yarn" [1]="cache" [2]="clean" [3]="[--mirror,--all" [4]="[--mirror,--all")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_3=([0]="yarn" [1]="config" [2]="[-v|--verbose,--why,--json" [3]="[-v|--verbose,--why,--json" [4]="[-v|--verbose,--why,--json")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_4=([0]="yarn" [1]="config" [2]="get" [3]="[--json,--no-redacted" [4]="[--json,--no-redacted" [5]="<name")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_5=([0]="yarn" [1]="config" [2]="set" [3]="[--json" [4]="<name" [5]="<value")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_6=([0]="yarn" [1]="dlx" [2]="[-p|--package #0,-q|--quiet" [3]="[-p|--package #0,-q|--quiet" [4]="<command" [5]="...")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_7=([0]="yarn" [1]="exec" [2]="<commandName" [3]="...")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_8=([0]="yarn" [1]="init" [2]="[-p|--private,-w|--workspace,-i|--install" [3]="[-p|--private,-w|--workspace,-i|--install" [4]="[-p|--private,-w|--workspace,-i|--install")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_9=([0]="yarn" [1]="install" [2]="[--json,--immutable,--immutable-cache,--check-cache,--inline-builds" [3]="[--json,--immutable,--immutable-cache,--check-cache,--inline-builds" [4]="[--json,--immutable,--immutable-cache,--check-cache,--inline-builds" [5]="[--json,--immutable,--immutable-cache,--check-cache,--inline-builds" [6]="[--json,--immutable,--immutable-cache,--check-cache,--inline-builds")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_10=([0]="yarn" [1]="link" [2]="[--all,-p|--private,-r|--relative" [3]="[--all,-p|--private,-r|--relative" [4]="[--all,-p|--private,-r|--relative" [5]="<destination")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_11=([0]="yarn" [1]="node" [2]="...")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_12=([0]="yarn" [1]="npm" [2]="info" [3]="[-f|--fields #0,--json" [4]="[-f|--fields #0,--json" [5]="...")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_13=([0]="yarn" [1]="pack" [2]="[--install-if-needed,-n|--dry-run,--json,-o|--out #0,--filename #0" [3]="[--install-if-needed,-n|--dry-run,--json,-o|--out #0,--filename #0" [4]="[--install-if-needed,-n|--dry-run,--json,-o|--out #0,--filename #0" [5]="[--install-if-needed,-n|--dry-run,--json,-o|--out #0,--filename #0" [6]="[--install-if-needed,-n|--dry-run,--json,-o|--out #0,--filename #0")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_14=([0]="yarn" [1]="patch" [2]="<package")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_15=([0]="yarn" [1]="patch-commit" [2]="<patchFolder")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_16=([0]="yarn" [1]="rebuild" [2]="...")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_17=([0]="yarn" [1]="remove" [2]="[-A|--all" [3]="...")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_18=([0]="yarn" [1]="run" [2]="[--inspect,--inspect-brk" [3]="[--inspect,--inspect-brk" [4]="<scriptName" [5]="...")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_19=([0]="yarn" [1]="set" [2]="resolution" [3]="[-s|--save" [4]="<descriptor" [5]="<resolution")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_20=([0]="yarn" [1]="set" [2]="version" [3]="[--only-if-needed" [4]="<version")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_21=([0]="yarn" [1]="set" [2]="version" [3]="from" [4]="sources" [5]="[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force" [6]="[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force" [7]="[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force" [8]="[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force" [9]="[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force" [10]="[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_22=([0]="yarn" [1]="unplug" [2]="...")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_23=([0]="yarn" [1]="up" [2]="[-i|--interactive,-v|--verbose,-E|--exact,-T|--tilde,-C|--caret" [3]="[-i|--interactive,-v|--verbose,-E|--exact,-T|--tilde,-C|--caret" [4]="[-i|--interactive,-v|--verbose,-E|--exact,-T|--tilde,-C|--caret" [5]="[-i|--interactive,-v|--verbose,-E|--exact,-T|--tilde,-C|--caret" [6]="[-i|--interactive,-v|--verbose,-E|--exact,-T|--tilde,-C|--caret" [7]="...")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_24=([0]="yarn" [1]="why" [2]="[-R|--recursive,--peers" [3]="[-R|--recursive,--peers" [4]="<package")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_25=([0]="yarn" [1]="npm" [2]="login" [3]="[-s|--scope #0,--publish" [4]="[-s|--scope #0,--publish")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_26=([0]="yarn" [1]="npm" [2]="logout" [3]="[-s|--scope #0,--publish,-A|--all" [4]="[-s|--scope #0,--publish,-A|--all" [5]="[-s|--scope #0,--publish,-A|--all")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_27=([0]="yarn" [1]="npm" [2]="publish" [3]="[--access #0,--tag #0,--tolerate-republish" [4]="[--access #0,--tag #0,--tolerate-republish" [5]="[--access #0,--tag #0,--tolerate-republish")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_28=([0]="yarn" [1]="npm" [2]="whoami" [3]="[-s|--scope #0,--publish" [4]="[-s|--scope #0,--publish")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_29=([0]="yarn" [1]="plugin" [2]="import" [3]="<name")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_30=([0]="yarn" [1]="plugin" [2]="import" [3]="from" [4]="sources" [5]="[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" [6]="[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" [7]="[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" [8]="[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" [9]="[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" [10]="<name")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_31=([0]="yarn" [1]="plugin" [2]="list" [3]="[--json")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_32=([0]="yarn" [1]="plugin" [2]="remove" [3]="<name")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_33=([0]="yarn" [1]="plugin" [2]="runtime" [3]="[--json")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_34=([0]="yarn" [1]="workspace" [2]="<workspaceName" [3]="<commandName" [4]="...")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_35=([0]="yarn" [1]="workspaces" [2]="list" [3]="[-v|--verbose,--json" [4]="[-v|--verbose,--json")
 
-    EXPECTED_YARN_COMMAND_TOKENS_LIST_210=()
+    EXPECTED_Y2C_COMMAND_TOKENS_LIST_210=()
     for (( index=0; index<36; ++index )); do
-      EXPECTED_YARN_COMMAND_TOKENS_LIST_210+=("EXPECTED_YARN_COMMAND_TOKENS_210_${index}")
+      EXPECTED_Y2C_COMMAND_TOKENS_LIST_210+=("EXPECTED_Y2C_COMMAND_TOKENS_210_${index}")
     done
     ;;
   esac
@@ -762,9 +762,9 @@ validate_yarn_command_words() {
   y2c_generate_yarn_command_list
   generate_yarn_expected_command_words "${Y2C_YARN_VERSION}"
 
-  [ $YARN_COMMAND_TOKENS_LIST_VER_Mi40LjI_ ]
-  [ ! $YARN_COMMAND_TOKENS_LIST_VER_Mi4xLjA_ ]
-  validate_yarn_command_words "YARN_COMMAND_TOKENS_LIST_VER_Mi40LjI_[@]" "EXPECTED_YARN_COMMAND_TOKENS_242_" 43
+  [ $Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_ ]
+  [ ! $Y2C_COMMAND_TOKENS_LIST_VER_Mi4xLjA_ ]
+  validate_yarn_command_words "Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_[@]" "EXPECTED_Y2C_COMMAND_TOKENS_242_" 43
 
   cd ../test3
 
@@ -773,10 +773,10 @@ validate_yarn_command_words() {
   y2c_generate_yarn_command_list
   generate_yarn_expected_command_words "${Y2C_YARN_VERSION}"
 
-  [ $YARN_COMMAND_TOKENS_LIST_VER_Mi40LjI_ ]
-  [ $YARN_COMMAND_TOKENS_LIST_VER_Mi4xLjA_ ]
-  validate_yarn_command_words "YARN_COMMAND_TOKENS_LIST_VER_Mi40LjI_[@]" "EXPECTED_YARN_COMMAND_TOKENS_242_" 43
-  validate_yarn_command_words "YARN_COMMAND_TOKENS_LIST_VER_Mi4xLjA_[@]" "EXPECTED_YARN_COMMAND_TOKENS_210_" 36
+  [ $Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_ ]
+  [ $Y2C_COMMAND_TOKENS_LIST_VER_Mi4xLjA_ ]
+  validate_yarn_command_words "Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_[@]" "EXPECTED_Y2C_COMMAND_TOKENS_242_" 43
+  validate_yarn_command_words "Y2C_COMMAND_TOKENS_LIST_VER_Mi4xLjA_[@]" "EXPECTED_Y2C_COMMAND_TOKENS_210_" 36
 }
 
 @test "y2c_set_package_name_path_map" {
@@ -839,7 +839,7 @@ validate_yarn_command_words() {
 
   generate_yarn_expected_command_words "2.4.2"
 
-  y2c_get_identified_token "${EXPECTED_YARN_COMMAND_TOKENS_242_0[2]}" || status=$?
+  y2c_get_identified_token "${EXPECTED_Y2C_COMMAND_TOKENS_242_0[2]}" || status=$?
   [ $status -eq "$Y2C_YARN_WORD_IS_OPTION" ]
 
   result=""
@@ -850,11 +850,11 @@ validate_yarn_command_words() {
   [ "$result" == "${Y2C_TMP_IDENTIFIED_TOKENS}" ]
 
   status=0
-  y2c_get_identified_token "${EXPECTED_YARN_COMMAND_TOKENS_242_120[1]}" || status=$?
+  y2c_get_identified_token "${EXPECTED_Y2C_COMMAND_TOKENS_242_120[1]}" || status=$?
   [ $status -eq "$Y2C_YARN_WORD_IS_ORDER" ]
 
   status=0
-  y2c_get_identified_token "${EXPECTED_YARN_COMMAND_TOKENS_242_22[5]}" || status=$?
+  y2c_get_identified_token "${EXPECTED_Y2C_COMMAND_TOKENS_242_22[5]}" || status=$?
   [ $status -eq "$Y2C_YARN_WORD_IS_VARIABLE" ]
 }
 
@@ -938,16 +938,17 @@ validate_yarn_command_words() {
   generate_yarn_expected_command_words "2.4.2"
   generate_expected_workspace_commands "2.4.2"
 
-  next_index=${#EXPECTED_YARN_COMMAND_TOKENS_LIST_242[@]}
-  y2c_expand_yarn_workspace_command_list "EXPECTED_YARN_COMMAND_TOKENS_242_41" "EXPECTED_YARN_COMMAND_TOKENS_LIST_242" "Mi40LjIK"
-  total_len=${#EXPECTED_YARN_COMMAND_TOKENS_LIST_242[@]}
+  next_index=${#EXPECTED_Y2C_COMMAND_TOKENS_LIST_242[@]}
+  Y2C_YARN_BASE64_VERSION="Mi40LjIK"
+  y2c_expand_yarn_workspace_command_list "EXPECTED_Y2C_COMMAND_TOKENS_242_41" "EXPECTED_Y2C_COMMAND_TOKENS_LIST_242"
+  total_len=${#EXPECTED_Y2C_COMMAND_TOKENS_LIST_242[@]}
   expanded_workspace_commands_len=$(( total_len - next_index ))
 
   [ $expanded_workspace_commands_len -eq 41 ]
 
   workspace_commands=()
   for (( index=$next_index; index<$total_len; ++index )); do
-    workspace_commands+=("${EXPECTED_YARN_COMMAND_TOKENS_LIST_242[$index]}")
+    workspace_commands+=("${EXPECTED_Y2C_COMMAND_TOKENS_LIST_242[$index]}")
   done
 
   validate_yarn_command_words "workspace_commands[@]" "EXPECTED_WORKSPACE_COMMAND_TOKENS_242_" 41
@@ -955,16 +956,17 @@ validate_yarn_command_words() {
   generate_yarn_expected_command_words "2.1.0"
   generate_expected_workspace_commands "2.1.0"
 
-  next_index=${#EXPECTED_YARN_COMMAND_TOKENS_LIST_210[@]}
-  y2c_expand_yarn_workspace_command_list "EXPECTED_YARN_COMMAND_TOKENS_210_34" "EXPECTED_YARN_COMMAND_TOKENS_LIST_210" "Mi4xLjAK"
-  total_len=${#EXPECTED_YARN_COMMAND_TOKENS_LIST_210[@]}
+  next_index=${#EXPECTED_Y2C_COMMAND_TOKENS_LIST_210[@]}
+  Y2C_YARN_BASE64_VERSION="Mi4xLjAK"
+  y2c_expand_yarn_workspace_command_list "EXPECTED_Y2C_COMMAND_TOKENS_210_34" "EXPECTED_Y2C_COMMAND_TOKENS_LIST_210"
+  total_len=${#EXPECTED_Y2C_COMMAND_TOKENS_LIST_210[@]}
   expanded_workspace_commands_len=$(( total_len - next_index ))
 
   [ $expanded_workspace_commands_len -eq 34 ]
 
   workspace_commands=()
   for (( index=$next_index; index<$total_len; ++index )); do
-    workspace_commands+=("${EXPECTED_YARN_COMMAND_TOKENS_LIST_210[$index]}")
+    workspace_commands+=("${EXPECTED_Y2C_COMMAND_TOKENS_LIST_210[$index]}")
   done
 
   validate_yarn_command_words "workspace_commands[@]" "EXPECTED_WORKSPACE_COMMAND_TOKENS_210_" 34
@@ -1186,12 +1188,12 @@ validate_yarn_command_words() {
   generate_yarn_expected_command_words "${yarn_version}"
   generate_expected_workspace_commands "${yarn_version}"
 
-  YARN_COMMAND_TOKENS_LIST_VER_Mi40LjI_=()
-  for (( index=0; index<${#EXPECTED_YARN_COMMAND_TOKENS_LIST_242[@]}; ++index )); do
-    YARN_COMMAND_TOKENS_LIST_VER_Mi40LjI_+=("${EXPECTED_YARN_COMMAND_TOKENS_LIST_242[$index]}")
+  Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_=()
+  for (( index=0; index<${#EXPECTED_Y2C_COMMAND_TOKENS_LIST_242[@]}; ++index )); do
+    Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_+=("${EXPECTED_Y2C_COMMAND_TOKENS_LIST_242[$index]}")
   done
   for (( index=0; index<${#EXPECTED_WORKSPACE_COMMAND_TOKENS_LIST_242[@]}; ++index )); do
-    YARN_COMMAND_TOKENS_LIST_VER_Mi40LjI_+=("${EXPECTED_WORKSPACE_COMMAND_TOKENS_LIST_242[$index]}")
+    Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_+=("${EXPECTED_WORKSPACE_COMMAND_TOKENS_LIST_242[$index]}")
   done
 
   COMP_WORDS=("yarn" "config" "")
@@ -1264,9 +1266,9 @@ validate_yarn_command_words() {
   }
 
   generate_yarn_expected_command_words "${yarn_version}"
-  YARN_COMMAND_TOKENS_LIST_VER_Mi40LjI_=()
-  for (( index=0; index<${#EXPECTED_YARN_COMMAND_TOKENS_LIST_242[@]}; ++index )); do
-    YARN_COMMAND_TOKENS_LIST_VER_Mi40LjI_+=("${EXPECTED_YARN_COMMAND_TOKENS_LIST_242[$index]}")
+  Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_=()
+  for (( index=0; index<${#EXPECTED_Y2C_COMMAND_TOKENS_LIST_242[@]}; ++index )); do
+    Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_+=("${EXPECTED_Y2C_COMMAND_TOKENS_LIST_242[$index]}")
   done
 
   COMP_WORDS=("yarn" "run" "")
@@ -1344,9 +1346,9 @@ validate_yarn_command_words() {
   }
 
   generate_yarn_expected_command_words "${yarn_version}"
-  YARN_COMMAND_TOKENS_LIST_VER_Mi40LjI_=()
-  for (( index=0; index<${#EXPECTED_YARN_COMMAND_TOKENS_LIST_242[@]}; ++index )); do
-    YARN_COMMAND_TOKENS_LIST_VER_Mi40LjI_+=("${EXPECTED_YARN_COMMAND_TOKENS_LIST_242[$index]}")
+  Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_=()
+  for (( index=0; index<${#EXPECTED_Y2C_COMMAND_TOKENS_LIST_242[@]}; ++index )); do
+    Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_+=("${EXPECTED_Y2C_COMMAND_TOKENS_LIST_242[$index]}")
   done
 
 

@@ -17,9 +17,9 @@
 
 Y2C_COMPLETION_SCRIPT_LOCATION=$(dirname "${BASH_SOURCE[0]}")
 
-Y2C_COMMAND_TOKENS_VARNAME_PREFIX="YARN_COMMAND_TOKENS_"
-Y2C_WORKSPACE_COMMAND_TOKENS_VARNAME_PREFIX="YARN_WORKSPACE_COMMAND_TOKENS_"
-Y2C_COMMAND_TOKENS_LIST_VERSION_REF_PREFIX="YARN_COMMAND_TOKENS_LIST_VER_"
+Y2C_COMMAND_TOKENS_VARNAME_PREFIX="Y2C_COMMAND_TOKENS_"
+Y2C_WORKSPACE_COMMAND_TOKENS_VARNAME_PREFIX="Y2C_WORKSPACE_COMMAND_TOKENS_"
+Y2C_COMMAND_TOKENS_LIST_VERSION_REF_PREFIX="Y2C_COMMAND_TOKENS_LIST_VER_"
 Y2C_PACKAGE_NAME_PATH_PREFIX="Y2C_PACKAGE_NAME_PATH_"
 Y2C_REPO_ROOT_YARN_VERSION_VAR_NAME_PREFIX="Y2C_REPO_YARN_VERSION_"
 Y2C_REPO_ROOT_YARN_BASE64_VERSION_VAR_NAME_PREFIX="Y2C_REPO_YARN_BASE64_VERSION_"
@@ -314,8 +314,6 @@ y2c_expand_yarn_workspace_command_list() {
   local yarn_command_tokens_var_name=""
   local yarn_command_tokens_ref=""
 
-  local base64_yarn_version="$3"
-
   declare -i store_yarn_command_index=0
 
   local token=""
@@ -349,7 +347,7 @@ y2c_expand_yarn_workspace_command_list() {
       fi
     done
 
-    store_yarn_command_var_name="${Y2C_WORKSPACE_COMMAND_TOKENS_VARNAME_PREFIX}${base64_yarn_version}_${store_yarn_command_index}"
+    store_yarn_command_var_name="${Y2C_WORKSPACE_COMMAND_TOKENS_VARNAME_PREFIX}${Y2C_YARN_BASE64_VERSION}_${store_yarn_command_index}"
     store_yarn_command_index+=1
 
     #Y2C_COMMAND_TOKENS_REF[${#Y2C_COMMAND_TOKENS_REF[@]}]="${store_yarn_command_var_name}"
@@ -414,7 +412,8 @@ y2c_generate_yarn_command_list() {
   local yarn_command_words=()
   local store_yarn_command_var_name=""
   local broken_word=""
-  local yarn_command_workspace_var_name=""
+  local expand_command_name_var_names=()
+  local expand_command_name_var_name=""
   local instructions=()
 
   local options=()
