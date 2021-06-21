@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
 # Variable and function naming rules:
-# 1. All the global variables should be preceded with the string literal "Y2C_".
-# 2. All the function names should be preceded with "y2c_" string literal.
+# 1. All the global variables should be preceded with the "Y2C_".
+# 2. All the function names should be preceded with "y2c_".
 # 3. The word command in this script means a series of tokens that can be identified
 #     and recognized by yarn executable to perform a specific action.
 #     For example, "yarn add --json react" is a command.
 #
-# 4. A token is a unit consumed by the script to do word completion; it is of one of three following categories:
+# 4. A token is a unit consumed by the script to do word completion; it belongs to one of the following categories:
 #    4-1: Order: the single word, like add, workspace, config, etc.
 #    4-2: Option: The square brackets wrap around the token indicates that this is an option,
 #                 which means a user can skip it.
@@ -34,12 +34,17 @@ declare -i Y2C_YARN_WORD_IS_ORDER=1
 declare -i Y2C_YARN_WORD_IS_OPTION=2
 declare -i Y2C_YARN_WORD_IS_VARIABLE=3
 
+declare -i Y2C_COMMAND_WORDS_MATCH_OPTION=0
+declare -i Y2C_COMMAND_WORDS_NOT_MATCH_OPTION=1
+declare -i Y2C_COMMAND_WORDS_MISS_WHOLE_OPTION=2
+
 declare -i Y2C_FUNC_ARG_IS_STR=0
 declare -i Y2C_FUNC_ARG_IS_ARR=1
 
 declare -a Y2C_TMP_IDENTIFIED_TOKENS=()
 declare -a Y2C_TMP_OPTIONS=()
 declare -a Y2C_SYSTEM_EXECUTABLES=()
+declare -i Y2C_TMP_OPTION_WORDS_NUM=0
 
 Y2C_TMP_EXPANDED_VAR_RESULT=
 
@@ -593,6 +598,45 @@ y2c_add_word_candidates() {
   done
 }
 
+y2c_is_commandline_word_match_option() {
+  local commandline_word="$1"
+  local token="$2"
+
+  declare -i comp_word_index=$3
+  declare -i comp_words_num=${#COMP_WORDS[@]}
+  declare -i index=0
+  declare -i checking_comp_word_index=0
+  local option_words=()
+
+  Y2C_TMP_OPTION_WORDS_NUM=0
+
+  y2c_set_yarn_options "${token}"
+  for option in "${Y2C_TMP_OPTIONS[@]}"; do
+    IFS=" " read -r -a option_words <<<"${option}"
+    if [[ ${commandline_word} = "${option_words[0]}" ]]; then
+      Y2C_TMP_OPTION_WORDS_NUM=${#option_words[@]}
+
+      if [[ $Y2C_TMP_OPTION_WORDS_NUM -ne 1 ]]; then
+        for ((index = 1; index < Y2C_TMP_OPTION_WORDS_NUM; ++index)); do
+          checking_comp_word_index=$comp_word_index+$index
+          if [[ $checking_comp_word_index -ge $comp_words_num ]]; then
+            break
+          fi
+
+          if [[ -z "${COMP_WORDS[checking_comp_word_index]}" ]]; then
+            COMPREPLY=("${option_words[index]}")
+            return $Y2C_COMMAND_WORDS_MISS_WHOLE_OPTION
+          fi
+        done
+      fi
+
+      return $Y2C_COMMAND_WORDS_MATCH_OPTION
+    fi
+  done
+
+  return $Y2C_COMMAND_WORDS_NOT_MATCH_OPTION
+}
+
 y2c_run_yarn_completion() {
   if [[ $IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
     declare -n yarn_command_tokens
@@ -612,6 +656,7 @@ y2c_run_yarn_completion() {
   local processed_tokens=()
   local candidate_token=""
   local next_candidate_token=""
+  local option_words=()
 
   declare -i comp_word_index=0
   declare -i options_start_index=0
@@ -671,12 +716,12 @@ y2c_run_yarn_completion() {
           fi
           ;;
         "$Y2C_YARN_WORD_IS_OPTION")
-          y2c_set_yarn_options "${token}"
-          for option in "${Y2C_TMP_OPTIONS[@]}"; do
-            if [[ ${COMP_WORDS[$comp_word_index]} = "${option}" ]]; then
-              continue 3
-            fi
-          done
+          if y2c_is_commandline_word_match_option "${COMP_WORDS[$comp_word_index]}" "${token}" "${comp_word_index}"; then
+            comp_word_index+=$Y2C_TMP_OPTION_WORDS_NUM-1
+            continue 2
+          elif [[ $? -eq $Y2C_COMMAND_WORDS_MISS_WHOLE_OPTION ]]; then
+            return 0
+          fi
           ;;
         "$Y2C_YARN_WORD_IS_VARIABLE")
           y2c_set_expand_var "${token}" "${completing_word}"

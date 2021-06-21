@@ -1232,7 +1232,7 @@ validate_yarn_command_words() {
   set -e
   [ "$result" == "[[--path #0,--repository #0,--branch #0,--no-minify,-f|--force;][<name;]" ]
 
-  COMP_WORDS=("yarn" "plugin" "import" "from" "sources" "--path #0" "--repository #0" "")
+  COMP_WORDS=("yarn" "plugin" "import" "from" "sources" "--path" "#0" "--repository" "#0" "")
   Y2C_YARN_BASE64_VERSION="Mi40LjI_"
   result=""
   set +e
@@ -1240,7 +1240,7 @@ validate_yarn_command_words() {
   set -e
   [ "$result" == "[[--path #0,--repository #0,--branch #0,--no-minify,-f|--force;][<name;]" ]
 
-  COMP_WORDS=("yarn" "plugin" "import" "from" "sources" "--path #0" "--repository #0" "--branch #0" "--no-minify" "")
+  COMP_WORDS=("yarn" "plugin" "import" "from" "sources" "--path" "#0" "--repository" "#0" "--branch" "#0" "--no-minify" "")
   Y2C_YARN_BASE64_VERSION="Mi40LjI_"
   result=""
   set +e
@@ -1248,13 +1248,72 @@ validate_yarn_command_words() {
   set -e
   [ "$result" == "[[--path #0,--repository #0,--branch #0,--no-minify,-f|--force;][<name;]" ]
 
-  COMP_WORDS=("yarn" "plugin" "import" "from" "sources" "--path #0" "--repository #0" "--branch #0" "--no-minify" "-f" "")
+  COMP_WORDS=("yarn" "plugin" "import" "from" "sources" "--path" "#0" "--repository" "#0" "--branch" "#0" "--no-minify" "-f" "")
   Y2C_YARN_BASE64_VERSION="Mi40LjI_"
   result=""
   set +e
   y2c_run_yarn_completion ""
   set -e
   [ "$result" == "[<name;]" ]
+}
+
+@test "y2c_run_yarn_completion(optional token with variables)" {
+  . lib.sh
+
+  y2c_detect_environment
+
+  local yarn_version="2.4.2"
+  local result=""
+  declare -i index=0
+
+  y2c_add_word_candidates() {
+    result+="[$1;$2]"
+  }
+
+  y2c_set_expand_var() {
+    :
+  }
+
+  generate_yarn_expected_command_words "${yarn_version}"
+  YARN_COMMAND_TOKENS_LIST_VER_Mi40LjI_=()
+  for (( index=0; index<${#EXPECTED_YARN_COMMAND_TOKENS_LIST_242[@]}; ++index )); do
+    YARN_COMMAND_TOKENS_LIST_VER_Mi40LjI_+=("${EXPECTED_YARN_COMMAND_TOKENS_LIST_242[$index]}")
+  done
+
+
+  COMP_WORDS=("yarn" "plugin" "import" "from" "sources" "")
+  Y2C_YARN_BASE64_VERSION="Mi40LjI_"
+  result=""
+  set +e
+  y2c_run_yarn_completion ""
+  set -e
+  [ "$result" == "[[--path #0,--repository #0,--branch #0,--no-minify,-f|--force;][<name;]" ]
+
+  COMP_WORDS=("yarn" "plugin" "import" "from" "sources" "--branch" "")
+  Y2C_YARN_BASE64_VERSION="Mi40LjI_"
+  result=""
+  set +e
+  y2c_run_yarn_completion ""
+  set -e
+  [ "$result" == "" ]
+  [ "${COMPREPLY[*]}" == "#0" ]
+
+  COMP_WORDS=("yarn" "plugin" "import" "from" "sources" "--branch" "test" "")
+  Y2C_YARN_BASE64_VERSION="Mi40LjI_"
+  result=""
+  set +e
+  y2c_run_yarn_completion ""
+  set -e
+  [ "$result" == "[[--path #0,--repository #0,--branch #0,--no-minify,-f|--force;][<name;]" ]
+
+  COMP_WORDS=("yarn" "plugin" "import" "from" "sources" "--branch" "test" "--path" "")
+  Y2C_YARN_BASE64_VERSION="Mi40LjI_"
+  result=""
+  set +e
+  y2c_run_yarn_completion ""
+  set -e
+  [ "$result" == "" ]
+  [ "${COMPREPLY[*]}" == "#0" ]
 }
 
 @test "y2c_yarn_completion_for_complete" {
