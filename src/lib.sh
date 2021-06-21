@@ -549,12 +549,12 @@ y2c_add_word_candidates() {
   local completing_word="$2"
 
   local current_command="${COMP_WORDS[*]}"
-  local token_type
-  local processing_token
-  local copied_identified_tokens
-  local alternative_options
-  local option
-  local expanded_var
+  declare -i token_type
+  local processing_token=""
+  local copied_identified_tokens=()
+  local alternative_options=()
+  local option=""
+  local expanded_var=""
 
   y2c_get_identified_token "${token}"
   token_type=$?
@@ -571,7 +571,7 @@ y2c_add_word_candidates() {
       alternative_options=("${Y2C_TMP_ALTERNATIVE_OPTIONS[@]}")
 
       for option in "${alternative_options[@]}"; do
-        if [[ " ${current_command} " = *" $option "* ]]; then
+        if [[ " ${current_command} " = *" ${option%% *} "* ]]; then
           continue 2
         fi
       done

@@ -1097,6 +1097,44 @@ validate_yarn_command_words() {
   [ "${COMPREPLY[*]}" == "--inspect" ]
 }
 
+@test "y2c_add_word_candidates( option with #[number] )" {
+  . lib.sh
+
+  local result=()
+  COMPREPLY=()
+  y2c_add_word_to_comreply() {
+    result+=("$1" "$2")
+  }
+
+  y2c_set_expand_var() {
+    Y2C_TMP_EXPANDED_VAR_RESULT=("@test1" "@test2" "@test3")
+  }
+
+  set +e
+  COMP_WORDS=("yarn" "plugin" "import" "from" "sources" "--path" "test" "")
+  COMPREPLY=()
+  result=()
+  y2c_add_word_candidates "[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" "-"
+  set -e
+  [ "${COMPREPLY[*]}" == "--repository #0 --branch #0 --no-minify -f --force" ]
+
+  set +e
+  COMP_WORDS=("yarn" "plugin" "import" "from" "sources" "--path" "test" "--repository" "test2" "-")
+  COMPREPLY=()
+  result=()
+  y2c_add_word_candidates "[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" "-"
+  set -e
+  [ "${COMPREPLY[*]}" == "--branch #0 --no-minify -f --force" ]
+
+  set +e
+  COMP_WORDS=("yarn" "plugin" "import" "from" "sources" "--path" "test" "--repository" "test2" "-f" "")
+  COMPREPLY=()
+  result=()
+  y2c_add_word_candidates "[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" ""
+  set -e
+  [ "${COMPREPLY[*]}" == "--branch #0 --no-minify" ]
+}
+
 @test "y2c_is_commandline_word_match_option" {
   . lib.sh
   declare -i status=0
