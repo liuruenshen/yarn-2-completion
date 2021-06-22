@@ -43,6 +43,7 @@ declare -a Y2C_TMP_IDENTIFIED_TOKENS=()
 declare -a Y2C_TMP_ALTERNATIVE_OPTIONS=()
 declare -a Y2C_SYSTEM_EXECUTABLES=()
 declare -i Y2C_TMP_OPTION_WORDS_NUM=0
+declare -i Y2C_WORKSPACE_COMMAND_LIST_INDEX=0
 
 Y2C_TMP_EXPANDED_VAR_RESULT=()
 
@@ -317,8 +318,6 @@ y2c_expand_yarn_workspace_command_list() {
   local yarn_command_tokens_var_name=""
   local yarn_command_tokens_ref=""
 
-  declare -i store_yarn_command_index=0
-
   local token=""
   local workspace_recursive_command=()
   local store_yarn_command_var_name=""
@@ -350,8 +349,8 @@ y2c_expand_yarn_workspace_command_list() {
       fi
     done
 
-    store_yarn_command_var_name="${Y2C_WORKSPACE_COMMAND_TOKENS_VARNAME_PREFIX}${Y2C_YARN_BASE64_VERSION}_${store_yarn_command_index}"
-    store_yarn_command_index+=1
+    store_yarn_command_var_name="${Y2C_WORKSPACE_COMMAND_TOKENS_VARNAME_PREFIX}${Y2C_YARN_BASE64_VERSION}_${Y2C_WORKSPACE_COMMAND_LIST_INDEX}"
+    Y2C_WORKSPACE_COMMAND_LIST_INDEX+=1
 
     #Y2C_COMMAND_TOKENS_REF[${#Y2C_COMMAND_TOKENS_REF[@]}]="${store_yarn_command_var_name}"
     if [[ $IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
@@ -553,15 +552,14 @@ y2c_add_word_candidates() {
   local completing_word="$2"
 
   local current_command="${COMP_WORDS[*]}"
-  declare -i token_type
+  declare -i token_type=0
   local processing_token=""
   local copied_identified_tokens=()
   local alternative_options=()
   local option=""
   local expanded_var=""
 
-  y2c_get_identified_token "${token}"
-  token_type=$?
+  y2c_get_identified_token "${token}" || token_type=$?
 
   copied_identified_tokens=("${Y2C_TMP_IDENTIFIED_TOKENS[@]}")
 
@@ -648,11 +646,11 @@ y2c_run_yarn_completion() {
   fi
 
   declare -i word_num=${#COMP_WORDS[@]}
+  declare -i token_type=0
 
   local completing_word="$1"
   local last_word_index=$word_num-1
   local expanded_var=""
-  local token_type=""
   local token=""
   local copied_identified_tokens=()
   local option=""
@@ -700,8 +698,7 @@ y2c_run_yarn_completion() {
     fi
 
     for ((comp_word_index = 0; comp_word_index < last_word_index; ++comp_word_index)); do
-      y2c_get_identified_token "${yarn_command_tokens[yarn_command_tokens_index++]}"
-      token_type=$?
+      y2c_get_identified_token "${yarn_command_tokens[yarn_command_tokens_index++]}" || token_type=$?
 
       copied_identified_tokens=("${Y2C_TMP_IDENTIFIED_TOKENS[@]}")
 
@@ -756,8 +753,8 @@ y2c_run_yarn_completion() {
     # two options named "--inspect" and "--inspect-brk";
     # the user can skip those two options and type the script name
     # defined in the package.json directly.
-    y2c_get_identified_token "${candidate_token}"
-    if [[ $? -ne "${Y2C_YARN_WORD_IS_OPTION}" ]]; then
+    y2c_get_identified_token "${candidate_token}" || token_type=$?
+    if [[ $token_type -ne "${Y2C_YARN_WORD_IS_OPTION}" ]]; then
       continue
     fi
 
@@ -850,7 +847,7 @@ y2c_yarn_completion_main() {
     return 1
   fi
 
-  y2c_setup
+  y2c_setup || true
   install_hooks
 
   complete -F y2c_yarn_completion_for_complete -o bashdefault -o default yarn
