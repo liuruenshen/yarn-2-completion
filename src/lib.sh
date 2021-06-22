@@ -14,9 +14,6 @@
 #                 which means a user can skip it.
 #    4-3: Variable: The angle brackets enclose the token suggests that it is a variable,
 #                   which the value depends on the command, the environment, or the repository itself.
-
-Y2C_COMPLETION_SCRIPT_LOCATION=$(dirname "${BASH_SOURCE[0]}")
-
 Y2C_COMMAND_TOKENS_VARNAME_PREFIX="Y2C_COMMAND_TOKENS_"
 Y2C_WORKSPACE_COMMAND_TOKENS_VARNAME_PREFIX="Y2C_WORKSPACE_COMMAND_TOKENS_"
 Y2C_COMMAND_TOKENS_LIST_VERSION_REF_PREFIX="Y2C_COMMAND_TOKENS_LIST_VER_"
@@ -49,9 +46,6 @@ declare -i Y2C_TMP_OPTION_WORDS_NUM=0
 
 Y2C_TMP_EXPANDED_VAR_RESULT=()
 
-IS_SUPPORT_DECLARE_N_FLAG=1
-IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT=1
-
 declare -i Y2C_IS_YARN_2_REPO=0
 declare -i Y2C_SETUP_HIT_CACHE=0
 
@@ -62,6 +56,9 @@ Y2C_CURRENT_ROOT_REPO_BASE64_PATH=""
 Y2C_VERBOSE=0
 Y2C_SYSTEM_EXECUTABLE_BY_PATH_ENV=1
 Y2C_IS_IN_WORKSPACE_PACKAGE=0
+
+# shellcheck disable=SC1091
+. "$(dirname "${BASH_SOURCE[0]}")/feature-detector.sh"
 
 y2c_is_verbose_output() {
   return $((Y2C_VERBOSE ^ 1))
@@ -250,6 +247,9 @@ y2c_expand_commandName_variable() {
   local package_path_var_name=""
 
   case "${current_command}" in
+  "yarn workspace"*"exec"*)
+    Y2C_TMP_EXPANDED_VAR_RESULT=("${Y2C_SYSTEM_EXECUTABLES[@]}")
+    ;;
   "yarn workspace"*)
     if [[ $IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT -eq 1 ]]; then
       prior_token="${COMP_WORDS[-2]}"
@@ -501,12 +501,14 @@ y2c_generate_yarn_command_list() {
       eval "$store_yarn_command_var_name=("'"''${yarn_command_words[@]}''"'")"
     fi
 
-    if [[ $instruction = *"yarn workspace "* ]]; then
-      yarn_command_workspace_var_name="${store_yarn_command_var_name}"
+    if [[ $instruction = *"yarn workspace"*"commandName"* ]]; then
+      expand_command_name_var_names+=("${store_yarn_command_var_name}")
     fi
   done
 
-  y2c_expand_yarn_workspace_command_list "${yarn_command_workspace_var_name}" "${yarn_command_tokens_list_var_name}" "${base64_yarn_version}"
+  for expand_command_name_var_name in "${expand_command_name_var_names[@]}"; do
+    y2c_expand_yarn_workspace_command_list "${expand_command_name_var_name}" "${yarn_command_tokens_list_var_name}"
+  done
 }
 
 y2c_get_identified_token() {
@@ -837,14 +839,7 @@ y2c_detect_environment() {
     return 1
   fi
 
-  # shellcheck disable=SC2034
-  if ! declare -n declare_n_flag_test >/dev/null 2>&1; then
-    IS_SUPPORT_DECLARE_N_FLAG=0
-  fi
-
-  if ! "${Y2C_COMPLETION_SCRIPT_LOCATION}/syntax-checker/negative-subscript.sh" >/dev/null 2>&1; then
-    IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT=0
-  fi
+  feature_detector
 }
 
 y2c_yarn_completion_main() {

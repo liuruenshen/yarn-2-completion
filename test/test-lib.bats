@@ -555,6 +555,24 @@ validate_yarn_command_words() {
   [ $command_index -eq $command_line_num ]
 }
 
+@test "y2c_detect_environment" {
+  . lib.sh
+
+  y2c_detect_environment
+
+  echo "IS_SUPPORT_DECLARE_N_FLAG=$IS_SUPPORT_DECLARE_N_FLAG"
+
+  if [ "${BASH_VERSINFO[0]}" -eq 3 ]; then
+    [ "$IS_SUPPORT_DECLARE_N_FLAG" -eq 0 ]
+    [ "$IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT" -eq 0 ]
+    [ "$IS_SUPPORT_UPPER_CASE_TRANSFORM" -eq 0 ]
+  elif [ "${BASH_VERSINFO[0]}" -gt 3 ]; then
+    [ "$IS_SUPPORT_DECLARE_N_FLAG" -eq 1 ]
+    [ "$IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT" -eq 1 ]
+    [ "$IS_SUPPORT_UPPER_CASE_TRANSFORM" -eq 1 ]
+  fi
+}
+
 @test "yarn_get_version_from_yarnrc" {
   local yarn_version
 
