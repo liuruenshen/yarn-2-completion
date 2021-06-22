@@ -57,8 +57,11 @@ Y2C_VERBOSE=0
 Y2C_SYSTEM_EXECUTABLE_BY_PATH_ENV=1
 Y2C_IS_IN_WORKSPACE_PACKAGE=0
 
+Y2C_SCRIPT_ROOT_PATH=$(dirname "${BASH_SOURCE[0]}")
 # shellcheck disable=SC1091
-. "$(dirname "${BASH_SOURCE[0]}")/feature-detector.sh"
+. "${Y2C_SCRIPT_ROOT_PATH}/feature-detector.sh"
+# shellcheck disable=SC1091
+. "${Y2C_SCRIPT_ROOT_PATH}/builtin-hook.sh"
 
 y2c_is_verbose_output() {
   return $((Y2C_VERBOSE ^ 1))
@@ -848,8 +851,7 @@ y2c_yarn_completion_main() {
   fi
 
   y2c_setup
-  # shellcheck disable=SC1091
-  . "$(dirname "${BASH_SOURCE[0]}")/builtin-hook.sh"
+  install_hooks
 
   complete -F y2c_yarn_completion_for_complete -o bashdefault -o default yarn
 }

@@ -560,8 +560,6 @@ validate_yarn_command_words() {
 
   y2c_detect_environment
 
-  echo "IS_SUPPORT_DECLARE_N_FLAG=$IS_SUPPORT_DECLARE_N_FLAG"
-
   if [ "${BASH_VERSINFO[0]}" -eq 3 ]; then
     [ "$IS_SUPPORT_DECLARE_N_FLAG" -eq 0 ]
     [ "$IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT" -eq 0 ]
