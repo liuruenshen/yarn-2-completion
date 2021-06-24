@@ -80,6 +80,8 @@ y2c_setup() {
   local checking_path=""
 
   [[ $Y2C_TESTING_MODE -eq 1 ]] && Y2C_SETUP_HIT_CACHE=0
+  # shellcheck disable=SC2034
+  [[ $Y2C_TESTING_MODE -eq 1 ]] && Y2C_SETUP_HAS_BEEN_CALLED=1
 
   Y2C_IS_IN_WORKSPACE_PACKAGE=0
 
@@ -847,8 +849,7 @@ y2c_yarn_completion_main() {
     return 1
   fi
 
-  y2c_setup || true
-  install_hooks
+  y2c_install_hooks
 
   complete -F y2c_yarn_completion_for_complete -o bashdefault -o default yarn
 }
