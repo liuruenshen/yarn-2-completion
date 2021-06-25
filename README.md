@@ -43,7 +43,7 @@ git clone git@github.com:dustin71728/yarn-2-completion.git
 
 The installation will modify your BASH environment's startup file .bashrc(Linux) or .bash_profile(macOS) in the home directory.
 
-BASH loads the script for yarn command's completion after opening the terminal or executing `exec $SHELL`.
+BASH loads the script for yarn command's completion after opening new terminal.
 
 Your original startup file will be saved, so if something went wrong, just recovering it from the backup file.
 
