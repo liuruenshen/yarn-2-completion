@@ -66,7 +66,7 @@ export Y2C_SYSTEM_EXECUTABLE_BY_PATH_ENV=${enable_exec_complete_answer:-1}
 # End of yarn-2-completion's configurations
 END
 
-  echo $'\n'"Install successfully. Open the new terminal or execute \"exec \$SHELL\" to activate yarn-2-completion."
+  echo $'\n'"Install successfully. Open the new terminal to activate yarn-2-completion."
   [[ $has_backed_up -eq 1 ]] && echo "The original ${startup_file} has been backed up to ${bashrc_path}.${timestamp}.bak"
 }
 
