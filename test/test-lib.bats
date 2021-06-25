@@ -371,9 +371,10 @@ generate_yarn_expected_command_words() {
     EXPECTED_Y2C_COMMAND_TOKENS_242_41=("yarn" "workspace" "<workspaceName" "<commandName" "...")
     EXPECTED_Y2C_COMMAND_TOKENS_242_42=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "<commandName" "...")
     EXPECTED_Y2C_COMMAND_TOKENS_242_43=("yarn" "workspaces" "list" "[-v|--verbose,--json" "[-v|--verbose,--json")
+    EXPECTED_Y2C_COMMAND_TOKENS_242_44=("yarn" "<scriptName")
 
     EXPECTED_Y2C_COMMAND_TOKENS_LIST_242=()
-    for (( index=0; index<44; ++index )); do
+    for (( index=0; index<45; ++index )); do
       EXPECTED_Y2C_COMMAND_TOKENS_LIST_242+=("EXPECTED_Y2C_COMMAND_TOKENS_242_${index}")
     done
     ;;
@@ -414,9 +415,10 @@ generate_yarn_expected_command_words() {
     EXPECTED_Y2C_COMMAND_TOKENS_210_33=("yarn" "plugin" "runtime" "[--json")
     EXPECTED_Y2C_COMMAND_TOKENS_210_34=("yarn" "workspace" "<workspaceName" "<commandName" "...")
     EXPECTED_Y2C_COMMAND_TOKENS_210_35=("yarn" "workspaces" "list" "[-v|--verbose,--json" "[-v|--verbose,--json")
+    EXPECTED_Y2C_COMMAND_TOKENS_210_36=("yarn" "<scriptName")
 
     EXPECTED_Y2C_COMMAND_TOKENS_LIST_210=()
-    for (( index=0; index<36; ++index )); do
+    for (( index=0; index<37; ++index )); do
       EXPECTED_Y2C_COMMAND_TOKENS_LIST_210+=("EXPECTED_Y2C_COMMAND_TOKENS_210_${index}")
     done
     ;;
@@ -470,47 +472,49 @@ generate_expected_workspace_commands() {
     EXPECTED_WORKSPACE_COMMAND_TOKENS_242_38=("yarn" "workspace" "<workspaceName" "plugin" "list" "[--json")
     EXPECTED_WORKSPACE_COMMAND_TOKENS_242_39=("yarn" "workspace" "<workspaceName" "plugin" "remove" "<name")
     EXPECTED_WORKSPACE_COMMAND_TOKENS_242_40=("yarn" "workspace" "<workspaceName" "plugin" "runtime" "[--json")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_41=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "add" "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" "...")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_42=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "bin" "[-v|--verbose,--json,name" "[-v|--verbose,--json,name" "[-v|--verbose,--json,name")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_43=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "cache" "clean" "[--mirror,--all" "[--mirror,--all")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_44=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "config" "[-v|--verbose,--why,--json" "[-v|--verbose,--why,--json" "[-v|--verbose,--why,--json")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_45=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "config" "get" "[--json,--no-redacted" "[--json,--no-redacted" "<name")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_46=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "config" "set" "[--json,-H|--home" "[--json,-H|--home" "<name" "<value")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_47=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "dedupe" "[-s|--strategy #0,-c|--check,--json" "[-s|--strategy #0,-c|--check,--json" "[-s|--strategy #0,-c|--check,--json" "...")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_48=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "dlx" "[-p|--package #0,-q|--quiet" "[-p|--package #0,-q|--quiet" "<command" "...")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_49=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "exec" "<commandName" "...")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_50=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "explain" "peer-requirements" "[hash")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_51=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "info" "[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" "[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" "[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" "[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" "[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" "[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" "[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" "[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" "[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" "...")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_52=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "init" "[-p|--private,-w|--workspace,-i|--install" "[-p|--private,-w|--workspace,-i|--install" "[-p|--private,-w|--workspace,-i|--install")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_53=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "install" "[--json,--immutable,--immutable-cache,--check-cache,--inline-builds,--skip-builds" "[--json,--immutable,--immutable-cache,--check-cache,--inline-builds,--skip-builds" "[--json,--immutable,--immutable-cache,--check-cache,--inline-builds,--skip-builds" "[--json,--immutable,--immutable-cache,--check-cache,--inline-builds,--skip-builds" "[--json,--immutable,--immutable-cache,--check-cache,--inline-builds,--skip-builds" "[--json,--immutable,--immutable-cache,--check-cache,--inline-builds,--skip-builds")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_54=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "link" "[-A|--all,-p|--private,-r|--relative" "[-A|--all,-p|--private,-r|--relative" "[-A|--all,-p|--private,-r|--relative" "<destination")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_55=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "node" "...")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_56=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "npm" "audit" "[-A|--all,-R|--recursive,--environment #0,--json,--severity #0" "[-A|--all,-R|--recursive,--environment #0,--json,--severity #0" "[-A|--all,-R|--recursive,--environment #0,--json,--severity #0" "[-A|--all,-R|--recursive,--environment #0,--json,--severity #0" "[-A|--all,-R|--recursive,--environment #0,--json,--severity #0")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_57=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "pack" "[--install-if-needed,-n|--dry-run,--json,-o|--out #0,--filename #0" "[--install-if-needed,-n|--dry-run,--json,-o|--out #0,--filename #0" "[--install-if-needed,-n|--dry-run,--json,-o|--out #0,--filename #0" "[--install-if-needed,-n|--dry-run,--json,-o|--out #0,--filename #0" "[--install-if-needed,-n|--dry-run,--json,-o|--out #0,--filename #0")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_58=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "patch" "<package")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_59=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "patch-commit" "<patchFolder")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_60=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "rebuild" "...")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_61=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "remove" "[-A|--all" "...")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_62=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "run" "[--inspect,--inspect-brk" "[--inspect,--inspect-brk" "<scriptName" "...")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_63=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "set" "resolution" "[-s|--save" "<descriptor" "<resolution")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_64=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "set" "version" "[--only-if-needed" "<version")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_65=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "set" "version" "from" "sources" "[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force" "[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force" "[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force" "[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force" "[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force" "[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_66=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "unplug" "[-A|--all,-R|--recursive,--json" "[-A|--all,-R|--recursive,--json" "[-A|--all,-R|--recursive,--json" "...")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_67=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "up" "[-i|--interactive,-E|--exact,-T|--tilde,-C|--caret" "[-i|--interactive,-E|--exact,-T|--tilde,-C|--caret" "[-i|--interactive,-E|--exact,-T|--tilde,-C|--caret" "[-i|--interactive,-E|--exact,-T|--tilde,-C|--caret" "...")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_68=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "why" "[-R|--recursive,--json,--peers" "[-R|--recursive,--json,--peers" "[-R|--recursive,--json,--peers" "<package")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_69=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "npm" "info" "[-f|--fields #0,--json" "[-f|--fields #0,--json" "...")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_70=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "npm" "login" "[-s|--scope #0,--publish" "[-s|--scope #0,--publish")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_71=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "npm" "logout" "[-s|--scope #0,--publish,-A|--all" "[-s|--scope #0,--publish,-A|--all" "[-s|--scope #0,--publish,-A|--all")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_72=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "npm" "publish" "[--access #0,--tag #0,--tolerate-republish" "[--access #0,--tag #0,--tolerate-republish" "[--access #0,--tag #0,--tolerate-republish")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_73=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "npm" "tag" "add" "<package" "<tag")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_74=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "npm" "tag" "list" "[--json,package" "[--json,package")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_75=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "npm" "tag" "remove" "<package" "<tag")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_76=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "npm" "whoami" "[-s|--scope #0,--publish" "[-s|--scope #0,--publish")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_77=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "plugin" "import" "<name")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_78=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "plugin" "import" "from" "sources" "[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" "[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" "[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" "[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" "[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" "<name")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_79=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "plugin" "list" "[--json")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_80=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "plugin" "remove" "<name")
-    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_81=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "plugin" "runtime" "[--json")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_41=("yarn" "workspace" "<workspaceName" "<scriptName")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_42=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "add" "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" "...")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_43=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "bin" "[-v|--verbose,--json,name" "[-v|--verbose,--json,name" "[-v|--verbose,--json,name")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_44=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "cache" "clean" "[--mirror,--all" "[--mirror,--all")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_45=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "config" "[-v|--verbose,--why,--json" "[-v|--verbose,--why,--json" "[-v|--verbose,--why,--json")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_46=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "config" "get" "[--json,--no-redacted" "[--json,--no-redacted" "<name")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_47=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "config" "set" "[--json,-H|--home" "[--json,-H|--home" "<name" "<value")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_48=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "dedupe" "[-s|--strategy #0,-c|--check,--json" "[-s|--strategy #0,-c|--check,--json" "[-s|--strategy #0,-c|--check,--json" "...")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_49=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "dlx" "[-p|--package #0,-q|--quiet" "[-p|--package #0,-q|--quiet" "<command" "...")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_50=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "exec" "<commandName" "...")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_51=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "explain" "peer-requirements" "[hash")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_52=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "info" "[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" "[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" "[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" "[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" "[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" "[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" "[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" "[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" "[-A|--all,-R|--recursive,-X|--extra #0,--cache,--dependents,--manifest,--name-only,--virtuals,--json" "...")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_53=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "init" "[-p|--private,-w|--workspace,-i|--install" "[-p|--private,-w|--workspace,-i|--install" "[-p|--private,-w|--workspace,-i|--install")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_54=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "install" "[--json,--immutable,--immutable-cache,--check-cache,--inline-builds,--skip-builds" "[--json,--immutable,--immutable-cache,--check-cache,--inline-builds,--skip-builds" "[--json,--immutable,--immutable-cache,--check-cache,--inline-builds,--skip-builds" "[--json,--immutable,--immutable-cache,--check-cache,--inline-builds,--skip-builds" "[--json,--immutable,--immutable-cache,--check-cache,--inline-builds,--skip-builds" "[--json,--immutable,--immutable-cache,--check-cache,--inline-builds,--skip-builds")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_55=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "link" "[-A|--all,-p|--private,-r|--relative" "[-A|--all,-p|--private,-r|--relative" "[-A|--all,-p|--private,-r|--relative" "<destination")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_56=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "node" "...")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_57=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "npm" "audit" "[-A|--all,-R|--recursive,--environment #0,--json,--severity #0" "[-A|--all,-R|--recursive,--environment #0,--json,--severity #0" "[-A|--all,-R|--recursive,--environment #0,--json,--severity #0" "[-A|--all,-R|--recursive,--environment #0,--json,--severity #0" "[-A|--all,-R|--recursive,--environment #0,--json,--severity #0")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_58=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "pack" "[--install-if-needed,-n|--dry-run,--json,-o|--out #0,--filename #0" "[--install-if-needed,-n|--dry-run,--json,-o|--out #0,--filename #0" "[--install-if-needed,-n|--dry-run,--json,-o|--out #0,--filename #0" "[--install-if-needed,-n|--dry-run,--json,-o|--out #0,--filename #0" "[--install-if-needed,-n|--dry-run,--json,-o|--out #0,--filename #0")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_59=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "patch" "<package")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_60=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "patch-commit" "<patchFolder")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_61=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "rebuild" "...")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_62=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "remove" "[-A|--all" "...")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_63=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "run" "[--inspect,--inspect-brk" "[--inspect,--inspect-brk" "<scriptName" "...")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_64=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "set" "resolution" "[-s|--save" "<descriptor" "<resolution")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_65=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "set" "version" "[--only-if-needed" "<version")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_66=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "set" "version" "from" "sources" "[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force" "[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force" "[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force" "[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force" "[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force" "[--path #0,--repository #0,--branch #0,--plugin #0,--no-minify,-f|--force")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_67=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "unplug" "[-A|--all,-R|--recursive,--json" "[-A|--all,-R|--recursive,--json" "[-A|--all,-R|--recursive,--json" "...")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_68=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "up" "[-i|--interactive,-E|--exact,-T|--tilde,-C|--caret" "[-i|--interactive,-E|--exact,-T|--tilde,-C|--caret" "[-i|--interactive,-E|--exact,-T|--tilde,-C|--caret" "[-i|--interactive,-E|--exact,-T|--tilde,-C|--caret" "...")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_69=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "why" "[-R|--recursive,--json,--peers" "[-R|--recursive,--json,--peers" "[-R|--recursive,--json,--peers" "<package")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_70=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "npm" "info" "[-f|--fields #0,--json" "[-f|--fields #0,--json" "...")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_71=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "npm" "login" "[-s|--scope #0,--publish" "[-s|--scope #0,--publish")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_72=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "npm" "logout" "[-s|--scope #0,--publish,-A|--all" "[-s|--scope #0,--publish,-A|--all" "[-s|--scope #0,--publish,-A|--all")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_73=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "npm" "publish" "[--access #0,--tag #0,--tolerate-republish" "[--access #0,--tag #0,--tolerate-republish" "[--access #0,--tag #0,--tolerate-republish")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_74=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "npm" "tag" "add" "<package" "<tag")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_75=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "npm" "tag" "list" "[--json,package" "[--json,package")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_76=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "npm" "tag" "remove" "<package" "<tag")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_77=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "npm" "whoami" "[-s|--scope #0,--publish" "[-s|--scope #0,--publish")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_78=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "plugin" "import" "<name")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_79=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "plugin" "import" "from" "sources" "[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" "[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" "[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" "[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" "[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" "<name")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_80=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "plugin" "list" "[--json")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_81=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "plugin" "remove" "<name")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_82=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "plugin" "runtime" "[--json")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_242_83=("yarn" "workspaces" "foreach" "[-A|--all,-j|--jobs #0" "[-A|--all,-j|--jobs #0" "<scriptName")
 
     EXPECTED_WORKSPACE_COMMAND_TOKENS_LIST_242=()
     for (( index=0; index<82; ++index )); do
@@ -552,6 +556,7 @@ generate_expected_workspace_commands() {
     EXPECTED_WORKSPACE_COMMAND_TOKENS_210_31=("yarn" "workspace" "<workspaceName" "plugin" "list" "[--json")
     EXPECTED_WORKSPACE_COMMAND_TOKENS_210_32=("yarn" "workspace" "<workspaceName" "plugin" "remove" "<name")
     EXPECTED_WORKSPACE_COMMAND_TOKENS_210_33=("yarn" "workspace" "<workspaceName" "plugin" "runtime" "[--json")
+    EXPECTED_WORKSPACE_COMMAND_TOKENS_210_34=("yarn" "workspace" "<workspaceName" "<scriptName")
     ;;
   esac
 }
@@ -815,7 +820,7 @@ validate_yarn_command_words() {
 
   [ $Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_ ]
   [ ! $Y2C_COMMAND_TOKENS_LIST_VER_Mi4xLjA_ ]
-  validate_yarn_command_words "Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_[@]" "EXPECTED_Y2C_COMMAND_TOKENS_242_" 44
+  validate_yarn_command_words "Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_[@]" "EXPECTED_Y2C_COMMAND_TOKENS_242_" 45
 
   cd ../test3
 
@@ -826,8 +831,8 @@ validate_yarn_command_words() {
 
   [ $Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_ ]
   [ $Y2C_COMMAND_TOKENS_LIST_VER_Mi4xLjA_ ]
-  validate_yarn_command_words "Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_[@]" "EXPECTED_Y2C_COMMAND_TOKENS_242_" 44
-  validate_yarn_command_words "Y2C_COMMAND_TOKENS_LIST_VER_Mi4xLjA_[@]" "EXPECTED_Y2C_COMMAND_TOKENS_210_" 36
+  validate_yarn_command_words "Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_[@]" "EXPECTED_Y2C_COMMAND_TOKENS_242_" 45
+  validate_yarn_command_words "Y2C_COMMAND_TOKENS_LIST_VER_Mi4xLjA_[@]" "EXPECTED_Y2C_COMMAND_TOKENS_210_" 37
 }
 
 @test "y2c_set_package_name_path_map" {
@@ -995,21 +1000,21 @@ validate_yarn_command_words() {
   y2c_expand_yarn_workspace_command_list "EXPECTED_Y2C_COMMAND_TOKENS_242_41" "EXPECTED_Y2C_COMMAND_TOKENS_LIST_242"
   total_len=${#EXPECTED_Y2C_COMMAND_TOKENS_LIST_242[@]}
   expanded_workspace_commands_len=$(( total_len - start_expanding_index ))
-  [ $expanded_workspace_commands_len -eq 41 ]
+  [ $expanded_workspace_commands_len -eq 42 ]
 
   next_index=${#EXPECTED_Y2C_COMMAND_TOKENS_LIST_242[@]}
   Y2C_YARN_BASE64_VERSION="Mi40LjIK"
   y2c_expand_yarn_workspace_command_list "EXPECTED_Y2C_COMMAND_TOKENS_242_42" "EXPECTED_Y2C_COMMAND_TOKENS_LIST_242"
   total_len=${#EXPECTED_Y2C_COMMAND_TOKENS_LIST_242[@]}
   expanded_workspace_commands_len=$(( total_len - next_index ))
-  [ $expanded_workspace_commands_len -eq 41 ]
+  [ $expanded_workspace_commands_len -eq 42 ]
 
   workspace_commands=()
   for (( index=$start_expanding_index; index<$total_len; ++index )); do
     workspace_commands+=("${EXPECTED_Y2C_COMMAND_TOKENS_LIST_242[$index]}")
   done
 
-  validate_yarn_command_words "workspace_commands[@]" "EXPECTED_WORKSPACE_COMMAND_TOKENS_242_" 82
+  validate_yarn_command_words "workspace_commands[@]" "EXPECTED_WORKSPACE_COMMAND_TOKENS_242_" 84
 
   generate_yarn_expected_command_words "2.1.0"
   generate_expected_workspace_commands "2.1.0"
@@ -1020,14 +1025,14 @@ validate_yarn_command_words() {
   total_len=${#EXPECTED_Y2C_COMMAND_TOKENS_LIST_210[@]}
   expanded_workspace_commands_len=$(( total_len - next_index ))
 
-  [ $expanded_workspace_commands_len -eq 34 ]
+  [ $expanded_workspace_commands_len -eq 35 ]
 
   workspace_commands=()
   for (( index=$next_index; index<$total_len; ++index )); do
     workspace_commands+=("${EXPECTED_Y2C_COMMAND_TOKENS_LIST_210[$index]}")
   done
 
-  validate_yarn_command_words "workspace_commands[@]" "EXPECTED_WORKSPACE_COMMAND_TOKENS_210_" 34
+  validate_yarn_command_words "workspace_commands[@]" "EXPECTED_WORKSPACE_COMMAND_TOKENS_210_" 35
 }
 
 @test "y2c_set_alternative_options" {
@@ -1102,58 +1107,43 @@ validate_yarn_command_words() {
 
   COMP_WORDS=("yarn" "a")
 
-  set +e
   y2c_add_word_candidates "add" "a"
-  set -e
-
   [ "${result[0]}" == "add" ]
   [ "${result[1]}" == "a" ]
 
-  set +e
   COMP_WORDS=("yarn" "add" "")
   COMPREPLY=()
   result=()
   y2c_add_word_candidates "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" ""
-  set -e
   [ "${COMPREPLY[*]}" == "--json -E --exact -T --tilde -C --caret -D --dev -P --peer -O --optional --prefer-dev -i --interactive --cached" ]
 
-  set +e
   COMP_WORDS=("yarn" "add" "--")
   COMPREPLY=()
   y2c_add_word_candidates "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" "--"
-  set -e
   [ "${COMPREPLY[*]}" == "--json --exact --tilde --caret --dev --peer --optional --prefer-dev --interactive --cached" ]
 
-  set +e
   COMP_WORDS=("yarn" "add" "-E" "--tilde" "--dev" "-")
   COMPREPLY=()
   result=()
   y2c_add_word_candidates "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" "-"
-  set -e
   [ "${COMPREPLY[*]}" == "--json -C --caret -P --peer -O --optional --prefer-dev -i --interactive --cached" ]
 
-  set +e
   COMP_WORDS=("yarn" "add" "--json" "--dev" "-T" "--caret" "--optional" "--prefer-dev" "-i" "--")
   COMPREPLY=()
   result=()
   y2c_add_word_candidates "[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached" "--"
-  set -e
   [ "${COMPREPLY[*]}" == "--exact --peer --cached" ]
 
-  set +e
   COMP_WORDS=("yarn" "workspace" "@")
   COMPREPLY=()
   result=()
   y2c_add_word_candidates "<workspaceName" "@"
-  set -e
   [ "${result[*]}" == "@test1 @ @test2 @ @test3 @" ]
 
-  set +e
   COMP_WORDS=("yarn" "run" "--inspect-brk" "-")
   COMPREPLY=()
   result=()
   y2c_add_word_candidates "[--inspect-brk,--inspect" "-"
-  set -e
   [ "${COMPREPLY[*]}" == "--inspect" ]
 }
 
@@ -1170,28 +1160,22 @@ validate_yarn_command_words() {
     Y2C_TMP_EXPANDED_VAR_RESULT=("@test1" "@test2" "@test3")
   }
 
-  set +e
   COMP_WORDS=("yarn" "plugin" "import" "from" "sources" "--path" "test" "")
   COMPREPLY=()
   result=()
   y2c_add_word_candidates "[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" "-"
-  set -e
   [ "${COMPREPLY[*]}" == "--repository #0 --branch #0 --no-minify -f --force" ]
 
-  set +e
   COMP_WORDS=("yarn" "plugin" "import" "from" "sources" "--path" "test" "--repository" "test2" "-")
   COMPREPLY=()
   result=()
   y2c_add_word_candidates "[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" "-"
-  set -e
   [ "${COMPREPLY[*]}" == "--branch #0 --no-minify -f --force" ]
 
-  set +e
   COMP_WORDS=("yarn" "plugin" "import" "from" "sources" "--path" "test" "--repository" "test2" "-f" "")
   COMPREPLY=()
   result=()
   y2c_add_word_candidates "[--path #0,--repository #0,--branch #0,--no-minify,-f|--force" ""
-  set -e
   [ "${COMPREPLY[*]}" == "--branch #0 --no-minify" ]
 }
 
@@ -1233,7 +1217,7 @@ validate_yarn_command_words() {
 
   local yarn_version="2.4.2"
   local result=""
-  declare -i index=0
+  local var_name=""
 
   y2c_add_word_candidates() {
     result+="[$1;$2]"
@@ -1247,63 +1231,51 @@ validate_yarn_command_words() {
   generate_expected_workspace_commands "${yarn_version}"
 
   Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_=()
-  for (( index=0; index<${#EXPECTED_Y2C_COMMAND_TOKENS_LIST_242[@]}; ++index )); do
-    Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_+=("${EXPECTED_Y2C_COMMAND_TOKENS_LIST_242[$index]}")
+  for var_name in "${EXPECTED_Y2C_COMMAND_TOKENS_LIST_242[@]}"; do
+    Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_+=("${var_name}")
   done
-  for (( index=0; index<${#EXPECTED_WORKSPACE_COMMAND_TOKENS_LIST_242[@]}; ++index )); do
-    Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_+=("${EXPECTED_WORKSPACE_COMMAND_TOKENS_LIST_242[$index]}")
+  for var_name in "${EXPECTED_WORKSPACE_COMMAND_TOKENS_LIST_242[@]}"; do
+    Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_+=("${var_name}")
   done
 
   COMP_WORDS=("yarn" "config" "")
   Y2C_YARN_BASE64_VERSION="Mi40LjI_"
   result=""
-  set +e
   y2c_run_yarn_completion ""
-  set -e
   [ "$result" == "[[-v|--verbose,--why,--json;][get;][set;]" ]
 
   COMP_WORDS=("yarn" "add" "--json" "-D" "--optional" "--")
   Y2C_YARN_BASE64_VERSION="Mi40LjI_"
   result=""
-  set +e
   y2c_run_yarn_completion "--"
-  set -e
   [ "$result" == "[[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached;--][...;--]" ]
 
   COMP_WORDS=("yarn" "workspace" "@test" "")
   Y2C_YARN_BASE64_VERSION="Mi40LjI_"
   result=""
   Y2C_TMP_EXPANDED_VAR_RESULT=("@test")
-  set +e
   y2c_run_yarn_completion ""
-  set -e
-  [ "$result" == "[<commandName;][add;][bin;][cache;][config;][dedupe;][dlx;][exec;][explain;][info;][init;][install;][link;][node;][npm;][pack;][patch;][patch-commit;][rebuild;][remove;][run;][set;][unplug;][up;][why;][plugin;]" ]
+  [ "$result" == "[<commandName;][add;][bin;][cache;][config;][dedupe;][dlx;][exec;][explain;][info;][init;][install;][link;][node;][npm;][pack;][patch;][patch-commit;][rebuild;][remove;][run;][set;][unplug;][up;][why;][plugin;][<scriptName;]" ]
 
   COMP_WORDS=("yarn" "workspace" "@test" "plugin" "i")
   Y2C_YARN_BASE64_VERSION="Mi40LjI_"
   result=""
   Y2C_TMP_EXPANDED_VAR_RESULT=("@test")
-  set +e
   y2c_run_yarn_completion "i"
-  set -e
   [ "$result" == "[import;i][list;i][remove;i][runtime;i]" ]
 
   COMP_WORDS=("yarn" "")
   Y2C_YARN_BASE64_VERSION="Mi40LjI_"
   result=""
-  set +e
   y2c_run_yarn_completion ""
-  set -e
-  [ "$result" == "[add;][bin;][cache;][config;][dedupe;][dlx;][exec;][explain;][info;][init;][install;][link;][node;][npm;][pack;][patch;][patch-commit;][rebuild;][remove;][run;][set;][unplug;][up;][why;][plugin;][workspace;][workspaces;]" ]
+  [ "$result" == "[add;][bin;][cache;][config;][dedupe;][dlx;][exec;][explain;][info;][init;][install;][link;][node;][npm;][pack;][patch;][patch-commit;][rebuild;][remove;][run;][set;][unplug;][up;][why;][plugin;][workspace;][workspaces;][<scriptName;]" ]
 
   COMP_WORDS=("yarn" "")
   Y2C_YARN_BASE64_VERSION="Mi40LjI_"
   Y2C_IS_IN_WORKSPACE_PACKAGE=1
   result=""
-  set +e
   y2c_run_yarn_completion ""
-  set -e
-  [ "$result" == "[add;][bin;][cache;][config;][dedupe;][dlx;][exec;][explain;][info;][init;][install;][link;][node;][npm;][pack;][patch;][patch-commit;][rebuild;][remove;][run;][set;][unplug;][up;][why;][plugin;]" ]
+  [ "$result" == "[add;][bin;][cache;][config;][dedupe;][dlx;][exec;][explain;][info;][init;][install;][link;][node;][npm;][pack;][patch;][patch-commit;][rebuild;][remove;][run;][set;][unplug;][up;][why;][plugin;][<scriptName;]" ]
 }
 
 @test "y2c_run_yarn_completion(show next non-optional token)" {
@@ -1313,7 +1285,7 @@ validate_yarn_command_words() {
 
   local yarn_version="2.4.2"
   local result=""
-  declare -i index=0
+  local var_name
 
   y2c_add_word_candidates() {
     result+="[$1;$2]"
@@ -1325,64 +1297,127 @@ validate_yarn_command_words() {
 
   generate_yarn_expected_command_words "${yarn_version}"
   Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_=()
-  for (( index=0; index<${#EXPECTED_Y2C_COMMAND_TOKENS_LIST_242[@]}; ++index )); do
-    Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_+=("${EXPECTED_Y2C_COMMAND_TOKENS_LIST_242[$index]}")
+  for var_name in "${EXPECTED_Y2C_COMMAND_TOKENS_LIST_242[@]}"; do
+    Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_+=("${var_name}")
   done
 
   COMP_WORDS=("yarn" "run" "")
   Y2C_YARN_BASE64_VERSION="Mi40LjI_"
   result=""
-  set +e
   y2c_run_yarn_completion ""
-  set -e
   [ "$result" == "[[--inspect,--inspect-brk;][<scriptName;]" ]
 
   COMP_WORDS=("yarn" "run" "--inspect" "-")
   Y2C_YARN_BASE64_VERSION="Mi40LjI_"
   result=""
-  set +e
   y2c_run_yarn_completion "-"
-  set -e
   [ "$result" == "[[--inspect,--inspect-brk;-][<scriptName;-]" ]
 
   COMP_WORDS=("yarn" "run" "--inspect-brk" "--inspect" "")
   Y2C_YARN_BASE64_VERSION="Mi40LjI_"
   result=""
-  set +e
   y2c_run_yarn_completion ""
-  set -e
   [ "$result" == "[<scriptName;]" ]
 
   COMP_WORDS=("yarn" "plugin" "import" "from" "sources" "")
   Y2C_YARN_BASE64_VERSION="Mi40LjI_"
   result=""
-   set +e
   y2c_run_yarn_completion ""
-  set -e
   [ "$result" == "[[--path #0,--repository #0,--branch #0,--no-minify,-f|--force;][<name;]" ]
 
   COMP_WORDS=("yarn" "plugin" "import" "from" "sources" "--path" "#0" "--repository" "#0" "")
   Y2C_YARN_BASE64_VERSION="Mi40LjI_"
   result=""
-  set +e
   y2c_run_yarn_completion ""
-  set -e
   [ "$result" == "[[--path #0,--repository #0,--branch #0,--no-minify,-f|--force;][<name;]" ]
 
   COMP_WORDS=("yarn" "plugin" "import" "from" "sources" "--path" "#0" "--repository" "#0" "--branch" "#0" "--no-minify" "")
   Y2C_YARN_BASE64_VERSION="Mi40LjI_"
   result=""
-  set +e
   y2c_run_yarn_completion ""
-  set -e
   [ "$result" == "[[--path #0,--repository #0,--branch #0,--no-minify,-f|--force;][<name;]" ]
 
   COMP_WORDS=("yarn" "plugin" "import" "from" "sources" "--path" "#0" "--repository" "#0" "--branch" "#0" "--no-minify" "-f" "")
   Y2C_YARN_BASE64_VERSION="Mi40LjI_"
   result=""
-  set +e
   y2c_run_yarn_completion ""
-  set -e
+  [ "$result" == "[<name;]" ]
+}
+
+@test "y2c_run_yarn_completion(workspace command, show next non-optional token)" {
+  . lib.sh
+
+  y2c_detect_environment
+
+  local yarn_version="2.4.2"
+  local var_name=""
+  local result=""
+
+  y2c_add_word_candidates() {
+    result+="[$1;$2]"
+  }
+
+  y2c_set_expand_var() {
+    :
+  }
+
+  generate_yarn_expected_command_words "${yarn_version}"
+  generate_expected_workspace_commands "${yarn_version}"
+  Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_=()
+  for var_name in "${EXPECTED_Y2C_COMMAND_TOKENS_LIST_242[@]}"; do
+    Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_+=("${var_name}")
+  done
+  for var_name in "${EXPECTED_WORKSPACE_COMMAND_TOKENS_LIST_242[@]}"; do
+    Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_+=("${var_name}")
+  done
+
+  COMP_WORDS=("yarn" "workspace" "@test" "run" "")
+  Y2C_YARN_BASE64_VERSION="Mi40LjI_"
+  Y2C_TMP_EXPANDED_VAR_RESULT=("@test")
+  result=""
+  y2c_run_yarn_completion ""
+  [ "$result" == "[[--inspect,--inspect-brk;][<scriptName;]" ]
+
+  COMP_WORDS=("yarn" "workspace" "@test" "run" "--inspect" "-")
+  Y2C_YARN_BASE64_VERSION="Mi40LjI_"
+  Y2C_TMP_EXPANDED_VAR_RESULT=("@test")
+  result=""
+  y2c_run_yarn_completion "-"
+  [ "$result" == "[[--inspect,--inspect-brk;-][<scriptName;-]" ]
+
+  COMP_WORDS=("yarn" "workspace" "@test" "run" "--inspect-brk" "--inspect" "")
+  Y2C_YARN_BASE64_VERSION="Mi40LjI_"
+  Y2C_TMP_EXPANDED_VAR_RESULT=("@test")
+  result=""
+  y2c_run_yarn_completion ""
+  [ "$result" == "[<scriptName;]" ]
+
+  COMP_WORDS=("yarn" "workspace" "@test" "plugin" "import" "from" "sources" "")
+  Y2C_YARN_BASE64_VERSION="Mi40LjI_"
+  Y2C_TMP_EXPANDED_VAR_RESULT=("@test")
+  result=""
+  y2c_run_yarn_completion ""
+  [ "$result" == "[[--path #0,--repository #0,--branch #0,--no-minify,-f|--force;][<name;]" ]
+
+  COMP_WORDS=("yarn" "workspace" "@test" "plugin" "import" "from" "sources" "--path" "#0" "--repository" "#0" "")
+  Y2C_YARN_BASE64_VERSION="Mi40LjI_"
+  Y2C_TMP_EXPANDED_VAR_RESULT=("@test")
+  result=""
+  y2c_run_yarn_completion ""
+  [ "$result" == "[[--path #0,--repository #0,--branch #0,--no-minify,-f|--force;][<name;]" ]
+
+  COMP_WORDS=("yarn" "workspace" "@test" "plugin" "import" "from" "sources" "--path" "#0" "--repository" "#0" "--branch" "#0" "--no-minify" "")
+  Y2C_YARN_BASE64_VERSION="Mi40LjI_"
+  Y2C_TMP_EXPANDED_VAR_RESULT=("@test")
+  result=""
+  y2c_run_yarn_completion ""
+  [ "$result" == "[[--path #0,--repository #0,--branch #0,--no-minify,-f|--force;][<name;]" ]
+
+  COMP_WORDS=("yarn" "workspace" "@test" "plugin" "import" "from" "sources" "--path" "#0" "--repository" "#0" "--branch" "#0" "--no-minify" "-f" "")
+  Y2C_YARN_BASE64_VERSION="Mi40LjI_"
+  Y2C_TMP_EXPANDED_VAR_RESULT=("@test")
+  result=""
+  y2c_run_yarn_completion ""
   [ "$result" == "[<name;]" ]
 }
 
@@ -1393,7 +1428,7 @@ validate_yarn_command_words() {
 
   local yarn_version="2.4.2"
   local result=""
-  declare -i index=0
+  local var_name=""
 
   y2c_add_word_candidates() {
     result+="[$1;$2]"
@@ -1405,42 +1440,92 @@ validate_yarn_command_words() {
 
   generate_yarn_expected_command_words "${yarn_version}"
   Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_=()
-  for (( index=0; index<${#EXPECTED_Y2C_COMMAND_TOKENS_LIST_242[@]}; ++index )); do
-    Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_+=("${EXPECTED_Y2C_COMMAND_TOKENS_LIST_242[$index]}")
+  for var_name in "${EXPECTED_Y2C_COMMAND_TOKENS_LIST_242[@]}"; do
+    Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_+=("${var_name}")
   done
 
 
   COMP_WORDS=("yarn" "plugin" "import" "from" "sources" "")
   Y2C_YARN_BASE64_VERSION="Mi40LjI_"
   result=""
-  set +e
   y2c_run_yarn_completion ""
-  set -e
   [ "$result" == "[[--path #0,--repository #0,--branch #0,--no-minify,-f|--force;][<name;]" ]
 
   COMP_WORDS=("yarn" "plugin" "import" "from" "sources" "--branch" "")
   Y2C_YARN_BASE64_VERSION="Mi40LjI_"
   result=""
-  set +e
   y2c_run_yarn_completion ""
-  set -e
   [ "$result" == "" ]
   [ "${COMPREPLY[*]}" == "#0" ]
 
   COMP_WORDS=("yarn" "plugin" "import" "from" "sources" "--branch" "test" "")
   Y2C_YARN_BASE64_VERSION="Mi40LjI_"
   result=""
-  set +e
   y2c_run_yarn_completion ""
-  set -e
   [ "$result" == "[[--path #0,--repository #0,--branch #0,--no-minify,-f|--force;][<name;]" ]
 
   COMP_WORDS=("yarn" "plugin" "import" "from" "sources" "--branch" "test" "--path" "")
   Y2C_YARN_BASE64_VERSION="Mi40LjI_"
   result=""
-  set +e
   y2c_run_yarn_completion ""
-  set -e
+  [ "$result" == "" ]
+  [ "${COMPREPLY[*]}" == "#0" ]
+}
+
+@test "y2c_run_yarn_completion(workspace command, optional token with variables)" {
+  . lib.sh
+
+  y2c_detect_environment
+
+  local yarn_version="2.4.2"
+  local result=""
+  local var_name=""
+
+  y2c_add_word_candidates() {
+    result+="[$1;$2]"
+  }
+
+  y2c_set_expand_var() {
+    :
+  }
+
+  generate_yarn_expected_command_words "${yarn_version}"
+  generate_expected_workspace_commands "${yarn_version}"
+  Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_=()
+  for var_name in "${EXPECTED_Y2C_COMMAND_TOKENS_LIST_242[@]}"; do
+    Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_+=("${var_name}")
+  done
+  for var_name in "${EXPECTED_WORKSPACE_COMMAND_TOKENS_LIST_242[@]}"; do
+    Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_+=("${var_name}")
+  done
+
+  COMP_WORDS=("yarn" "workspace" "@test" "plugin" "import" "from" "sources" "")
+  Y2C_YARN_BASE64_VERSION="Mi40LjI_"
+  Y2C_TMP_EXPANDED_VAR_RESULT=("@test")
+  result=""
+  y2c_run_yarn_completion ""
+  [ "$result" == "[[--path #0,--repository #0,--branch #0,--no-minify,-f|--force;][<name;]" ]
+
+  COMP_WORDS=("yarn" "workspace" "@test" "plugin" "import" "from" "sources" "--branch" "")
+  Y2C_YARN_BASE64_VERSION="Mi40LjI_"
+  Y2C_TMP_EXPANDED_VAR_RESULT=("@test")
+  result=""
+  y2c_run_yarn_completion ""
+  [ "$result" == "" ]
+  [ "${COMPREPLY[*]}" == "#0" ]
+
+  COMP_WORDS=("yarn" "workspace" "@test" "plugin" "import" "from" "sources" "--branch" "test" "")
+  Y2C_YARN_BASE64_VERSION="Mi40LjI_"
+  Y2C_TMP_EXPANDED_VAR_RESULT=("@test")
+  result=""
+  y2c_run_yarn_completion ""
+  [ "$result" == "[[--path #0,--repository #0,--branch #0,--no-minify,-f|--force;][<name;]" ]
+
+  COMP_WORDS=("yarn" "workspace" "@test" "plugin" "import" "from" "sources" "--branch" "test" "--path" "")
+  Y2C_TMP_EXPANDED_VAR_RESULT=("@test")
+  Y2C_YARN_BASE64_VERSION="Mi40LjI_"
+  result=""
+  y2c_run_yarn_completion ""
   [ "$result" == "" ]
   [ "${COMPREPLY[*]}" == "#0" ]
 }
@@ -1581,18 +1666,41 @@ validate_yarn_command_words() {
 
   cd test1
 
+  COMP_WORDS=("yarn" "run" "")
   y2c_expand_scriptName_variable
   [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" = "dev test" ]
 
   cd ./workspace-a
+  COMP_WORDS=("yarn" "run" "")
   y2c_expand_scriptName_variable
   [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" = "build setup test deploy" ]
 
   cd ../workspace-c
+  COMP_WORDS=("yarn" "run" "")
   y2c_expand_scriptName_variable
   [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" = "" ]
 
   cd ../
+  COMP_WORDS=("yarn" "run" "")
   y2c_expand_scriptName_variable
   [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" = "dev test" ]
+}
+
+@test "y2c_expand_scriptName_variable(workspace command)" {
+ . lib.sh
+
+  cd test1
+
+  COMP_WORDS=("yarn" "workspace" "wrk-a" "run" "")
+  Y2C_CURRENT_ROOT_REPO_BASE64_PATH="L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx"
+  Y2C_PACKAGE_NAME_PATH_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qx_d3JrLWE_="./workspace-a/package.json"
+  y2c_expand_scriptName_variable
+  [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" = "build setup test deploy" ]
+
+  cd ../test3
+  COMP_WORDS=("yarn" "workspace" "wrk-a" "run" "")
+  Y2C_CURRENT_ROOT_REPO_BASE64_PATH="L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz"
+  Y2C_PACKAGE_NAME_PATH_L3lhcm4tMi1jb21wbGV0aW9uL3Rlc3QveWFybi1yZXBvL3Rlc3Qz_d3JrLWE_="./packages/workspace-a/package.json"
+  y2c_expand_scriptName_variable
+  [ "${Y2C_TMP_EXPANDED_VAR_RESULT[*]}" = "install uninstall" ]
 }

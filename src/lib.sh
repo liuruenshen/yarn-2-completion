@@ -247,9 +247,16 @@ y2c_get_package_json_scripts_keys() {
   fi
 }
 
+y2c_expand_workspace_script_names() {
+  local package_name="$1"
+  local package_path_var_name=""
+
+  package_path_var_name=$(y2c_get_var_name "${package_name}" "${Y2C_PACKAGE_NAME_PATH_PREFIX}${Y2C_CURRENT_ROOT_REPO_BASE64_PATH}_")
+  read -r -a Y2C_TMP_EXPANDED_VAR_RESULT < <(y2c_get_package_json_scripts_keys "${PWD}/${!package_path_var_name}")
+}
+
 y2c_expand_commandName_variable() {
   local current_command="${COMP_WORDS[*]}"
-  local prior_token=""
   local package_path_var_name=""
 
   case "${current_command}" in
@@ -257,15 +264,7 @@ y2c_expand_commandName_variable() {
     Y2C_TMP_EXPANDED_VAR_RESULT=("${Y2C_SYSTEM_EXECUTABLES[@]}")
     ;;
   "yarn workspace"*)
-    if [[ $IS_SUPPORT_NEGATIVE_NUMBER_SUBSCRIPT -eq 1 ]]; then
-      prior_token="${COMP_WORDS[-2]}"
-    else
-      declare -i index=${#COMP_WORDS[@]}-2
-      prior_token="${COMP_WORDS[index]}"
-    fi
-
-    package_path_var_name=$(y2c_get_var_name "${prior_token}" "${Y2C_PACKAGE_NAME_PATH_PREFIX}${Y2C_CURRENT_ROOT_REPO_BASE64_PATH}_")
-    read -r -a Y2C_TMP_EXPANDED_VAR_RESULT < <(y2c_get_package_json_scripts_keys "${PWD}/${!package_path_var_name}")
+    y2c_expand_workspace_script_names "${COMP_WORDS[2]}"
     ;;
   "yarn exec"*)
     Y2C_TMP_EXPANDED_VAR_RESULT=("${Y2C_SYSTEM_EXECUTABLES[@]}")
@@ -281,7 +280,16 @@ y2c_expand_workspaceName_variable() {
 }
 
 y2c_expand_scriptName_variable() {
-  read -r -a Y2C_TMP_EXPANDED_VAR_RESULT < <(y2c_get_package_json_scripts_keys "${PWD}/package.json")
+  local current_command="${COMP_WORDS[*]}"
+
+  case "${current_command}" in
+  "yarn workspace"*)
+    y2c_expand_workspace_script_names "${COMP_WORDS[2]}"
+    ;;
+  *)
+    read -r -a Y2C_TMP_EXPANDED_VAR_RESULT < <(y2c_get_package_json_scripts_keys "${PWD}/package.json")
+    ;;
+  esac
 }
 
 y2c_set_expand_var() {
@@ -423,6 +431,8 @@ y2c_generate_yarn_command_list() {
   local options=()
 
   while IFS='' read -r line; do instructions+=("$line"); done <<<"$(yarn --help | grep -E '^[[:space:]]+yarn')"
+
+  instructions+=("yarn <scriptName>")
 
   for instruction in "${instructions[@]}"; do
     previous_word_is_option=0

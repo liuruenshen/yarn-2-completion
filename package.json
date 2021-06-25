@@ -23,6 +23,6 @@
     "lint": "./src/dev/lint.sh",
     "test:build": "./src/dev/build-docker.sh",
     "test:run": "./src/dev/run-test.sh \"$@\"",
-    "test": "npm-run-all lint 'test:*'"
+    "test": "npm-run-all lint 'test:* {@}'"
   }
 }
