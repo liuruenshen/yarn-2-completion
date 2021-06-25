@@ -1,0 +1,13 @@
+{
+  "name": "test3",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "camelcase": "^6.2.0"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "name": "yarn-2-completion",
+  "version": "0.0.1",
+  "main": "index.js",
+  "description": "Yarn 2 completion for Bash 3+",
+  "keywords": [
+    "yarn 2 completion",
+    "yarn completion",
+    "yarn"
+  ],
+  "repository": "git@github.com:dustin71728/yarn-completion.git",
+  "author": "kiwi <kiwi71728@icloud.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "husky": "^6.0.0",
+    "npm-run-all": "^4.1.5",
+    "pinst": "^2.0.0"
+  },
+  "scripts": {
+    "postinstall": "husky install",
+    "prepublishOnly": "pinst --disable",
+    "postpublish": "pinst --enable",
+    "lint": "./src/dev/lint.sh",
+    "test:build": "./src/dev/build-docker.sh",
+    "test:run": "./src/dev/run-test.sh \"$@\"",
+    "test": "npm-run-all lint 'test:* {@}'"
+  }
+}

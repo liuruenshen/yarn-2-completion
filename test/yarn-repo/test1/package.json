@@ -1,0 +1,17 @@
+{
+  "name": "test1",
+  "version": "1.0.0",
+  "description": "yarn-2-completion test repo",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "workspace-a",
+    "workspace-b",
+    "workspace-c"
+  ],
+  "scripts": {
+    "dev": "",
+    "test": ""
+  }
+}
