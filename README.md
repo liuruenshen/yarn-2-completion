@@ -9,6 +9,8 @@
 
 ## <a href="https://asciinema.org/a/422312" target="_blank"><img src="https://asciinema.org/a/422312.svg" /></a>
 
+<script id="asciicast-422312" src="https://asciinema.org/a/422312.js" async></script>
+
 <p align="center"> Yarn 2+ BASH completion
     <br> 
 </p>
@@ -43,9 +45,9 @@ git clone git@github.com:dustin71728/yarn-2-completion.git
 
 The installation will modify your BASH environment's startup file .bashrc(Linux) or .bash_profile(macOS) in the home directory.
 
-Load the script for yarn command's completion after opening the terminal or executing `exec $SHELL`.
+BASH loads the script for yarn command's completion after opening the terminal or executing `exec $SHELL`.
 
-Your original startup file will be saved, so if anything goes wrong, just recovering it from the backup file.
+Your original startup file will be saved, so if something went wrong, just recovering it from the backup file.
 
 It also registers the setup function to PROMPT_COMMAND environment variable; whenever the command prompt gets printed, the script finds out if you are in the repository managed by yarn 2+, then prepares the configurations for accommodating your workflow with yarn commands.
 
