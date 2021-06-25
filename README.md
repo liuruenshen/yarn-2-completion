@@ -9,8 +9,6 @@
 
 ## <a href="https://asciinema.org/a/422312" target="_blank"><img src="https://asciinema.org/a/422312.svg" /></a>
 
-<script id="asciicast-422312" src="https://asciinema.org/a/422312.js" async></script>
-
 <p align="center"> Yarn 2+ BASH completion
     <br> 
 </p>
