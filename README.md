@@ -3,6 +3,7 @@
 <div align="center">
 
 [![Status](https://img.shields.io/badge/status-active-success.svg)](https://img.shields.io/github/workflow/status/dustin71728/yarn-2-completion/default)
+![Workflow](https://github.com/dustin71728/yarn-2-completion/actions/workflows/default.yaml/badge.svg)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
 
 </div>
@@ -16,14 +17,32 @@
 ## 📝 Table of Contents
 
 - [About](#about)
+- [Features](#features)
 - [Getting Started](#getting_started)
-- [Test](#test)
+- [Test](#tests)
 
 ## 🧐 About <a name = "about"></a>
 
 It is a BASH completion for yarn 2+, supporting macOS default shipped BASH version 3.2 and above.
 
 Tested on BASH 3.2, 4.4, and 5.0 with yarn 2.1.0 and 2.4.2
+
+## Features <a name = "features"></a>
+
+1. Show all the matched workspace's package names for "yarn workspace(s)" commands.
+
+2. Prevent alternative flags from being shown again if one of them is already on the command line
+
+   For example, -v is short for --version, having one on the command line disable the other one because
+   they are the same.
+
+3. List all the script names in the package.json for `yarn`, `yarn run`, `yarn workspace ...` or `yarn workspace ... run`; the package.json for which the yarn-2-completion searches depends on the command or the path where the command is typing.
+
+4. Enable one-tab completion during installation (Optional).
+
+5. List all the matched system executables for `yarn exec` or `yarn workspace ... exec` (Optional).
+
+6. Show available words based on the current repository's yarn version; different repositories with different yarn versions won't interfere with each other.
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
 
