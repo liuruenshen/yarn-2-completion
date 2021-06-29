@@ -17,7 +17,7 @@ teardown() {
 @test "prompt_command(prompt_command was unset in the environment)" {
   [ ! $Y2C_SETUP_HAS_BEEN_CALLED ]
 
-  run env SHELL="$BASH" ./test-prompt-command.exp "--norc" "${PWD%/test}" ".+not found\r"
+  run env SHELL="$BASH" expect ./test-prompt-command.tcl "--norc" "${PWD%/test}" ".+not found\r"
   assert_output --partial "Y2C_SETUP_HAS_BEEN_CALLED=\"1\""
   [ $status -eq 0 ]
 }
@@ -31,7 +31,7 @@ teardown() {
   export -f prompt_command_test1
   export PROMPT_COMMAND="prompt_command_test1"
 
-  run env SHELL="$BASH" ./test-prompt-command.exp "--norc" "${PWD%/test}" ".+PROMPT_COMMAND=\"prompt_command_test1\"\r"
+  run env SHELL="$BASH" expect ./test-prompt-command.tcl "--norc" "${PWD%/test}" ".+PROMPT_COMMAND=\"prompt_command_test1\"\r"
   assert_output --partial "Y2C_SETUP_HAS_BEEN_CALLED=\"1\""
 
   run cat /tmp/prompt_command_test1
@@ -55,7 +55,7 @@ prompt_command_test1() {
 PROMPT_COMMAND+=("prompt_command_test1")
 END
 
-  run env SHELL="$BASH" ./test-prompt-command.exp "--rcfile \"./set-prompt-command-arr.rc\"" \
+  run env SHELL="$BASH" expect ./test-prompt-command.tcl "--rcfile \"./set-prompt-command-arr.rc\"" \
     "${PWD%/test}" ".+PROMPT_COMMAND=[']?\(\[0\]=\"prompt_command_test1\"\)[']?"
   assert_output --partial "Y2C_SETUP_HAS_BEEN_CALLED=\"1\""
 
