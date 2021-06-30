@@ -13,7 +13,7 @@ install() {
   local enable_verbose_output_answer
   local enable_exec_complete_answer
   local enable_one_tab_completion_answer
-  local bind_show_all_if_ambiguous=":"
+  local bind_show_all_if_unmodified=":"
   declare -i has_backed_up=0
 
   timestamp=$(date +%s)
@@ -50,7 +50,7 @@ install() {
   if [[ $enable_one_tab_completion_answer == 'n' ]]; then
     enable_one_tab_completion_answer=
   else
-    bind_show_all_if_ambiguous="bind 'set show-all-if-ambiguous on'"
+    bind_show_all_if_unmodified="bind 'set show-all-if-unmodified on'"
   fi
 
   read -r -p $'\n'"Do you want to enable verbose output? (y/n, default: no): " enable_verbose_output_answer
@@ -71,7 +71,7 @@ install() {
   cat <<END >>"${HOME}/${startup_file}"
 # Beginning of yarn-2-completion's configurations
 . ${root_repo_path}/src/completion.sh
-${bind_show_all_if_ambiguous} # yarn-2-completion readline settings
+${bind_show_all_if_unmodified} # yarn-2-completion readline settings
 export Y2C_VERBOSE=${enable_verbose_output_answer:-0}
 export Y2C_SYSTEM_EXECUTABLE_BY_PATH_ENV=${enable_exec_complete_answer:-1}
 # End of yarn-2-completion's configurations
