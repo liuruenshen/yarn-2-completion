@@ -6,7 +6,9 @@ set exit_status 0
 eval spawn $env(SHELL) $bash_arg_str
 expect -re $default_bash_prompt
 
-set negative_acknowledge_response [string cat ".+" "\x1b" {\[} "\x4b"]
+set negative_acknowledge "\x15"
+# https://en.wikipedia.org/wiki/ANSI_escape_code
+set erase_in_line [string cat ".+" "\x1b" {\[} "\x4b"]
 
 set yarn_completion [string cat "yarn \r\n" \
   "add           dedupe        explain       link          patch         remove        unplug        workspaces    \r\n" \
@@ -83,18 +85,17 @@ send_and_expect "\t" "" "" $yarn_add_caret_hypen_completion 1
 send_and_expect "-D \t" "" "" $yarn_add_caret_hypen_completion2 1
 send_and_expect "--op\t" "" "" "--optional " 1
 send_and_expect "\t" "" "" $yarn_add_caret_hypen_completion3 1
-send_and_expect "\x15" "" "" $negative_acknowledge_response 1
+send_and_expect "$negative_acknowledge" "" "" $erase_in_line 1
 
 send_and_expect "yarn e\t" "" "" "^yarn ex" 1
 send_and_expect "\t" "" "" $yarn_ex_completion 1
 send_and_expect "ec a\t" "" "" $yarn_exec_a_completion 1
-send_and_expect "\x15" "" "" $negative_acknowledge_response 1
+send_and_expect "$negative_acknowledge" "" "" $erase_in_line 1
 
 send_and_expect "yarn in\t" "" "" $yarn_in_completion 1
 send_and_expect "f\t" "" "" "fo " 1
 send_and_expect "\t" "" "" $yarn_info_completion 1
 send_and_expect "--e\t" "" "" "--extra #0 " 1
-send_and_expect "\x08\x08\x08" "" "" $negative_acknowledge_response 1
+send_and_expect "\x08\x08\x08" "" "" $erase_in_line 1
 send_and_expect "test \t" "" "" $yarn_info_completion1 1
-send_and_expect "\x15" "" "" $negative_acknowledge_response 1
-
+send_and_expect "$negative_acknowledge" "" "" $erase_in_line 1
