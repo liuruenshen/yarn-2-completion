@@ -861,5 +861,8 @@ y2c_yarn_completion_main() {
 
   y2c_install_hooks
 
+  # It is common that some script names contain colon characters,
+  # so removing it from COMP_WORDBREAKS to prevent the script name from being split up.
+  COMP_WORDBREAKS="${COMP_WORDBREAKS//:/}"
   complete -F y2c_yarn_completion_for_complete -o bashdefault -o default yarn
 }
