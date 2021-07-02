@@ -8,7 +8,7 @@
 
 </div>
 
-## <a href="https://asciinema.org/a/422312" target="_blank"><img src="https://asciinema.org/a/422312.svg" /></a>
+## <a href="https://asciinema.org/a/7ySv9iquGuNtd7572NCrWF9P9" target="_blank"><img src="https://asciinema.org/a/7ySv9iquGuNtd7572NCrWF9P9.svg" /></a>
 
 <p align="center"> Yarn 2+ BASH completion
     <br> 

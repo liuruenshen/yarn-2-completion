@@ -17,8 +17,9 @@ run_test_in_docker() {
 
   echo "Running test on ${docker_tag}"
   # shellcheck disable=SC2140
-  docker run --rm -v "${PWD}/${residing_path}/../":"/yarn-2-completion/src" \
+  docker run -t --rm -v "${PWD}/${residing_path}/../":"/yarn-2-completion/src" \
     -v "${PWD}/${residing_path}/../../test":"/yarn-2-completion/test" \
+    -v "${PWD}/${residing_path}/../../":"/yarn-2-completion-integ-test" \
     "${docker_tag}" /yarn-2-completion/test/bats/bin/bats "$@" /yarn-2-completion/test
 }
 
