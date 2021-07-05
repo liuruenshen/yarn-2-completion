@@ -39,15 +39,6 @@ Describe "src/lib.sh"
     End
 
     It 'should retrieve the expected yarn version being configured in the given repository'
-
-      yarn() {
-        if [ "$1" = '--version' ]; then
-          yarn_get_version_from_yarnrc
-          return $?
-        fi
-        @yarn "$@"
-      }
-
       get_var_version() {
         cd "$1" || return 1
         yarn --version
@@ -75,8 +66,26 @@ Describe "src/lib.sh"
   End
 
   Describe "y2c_setup"
-    It "should setup all the required global variables"
+    y2c_generate_yarn_command_list() { :; }
+    y2c_generate_workspace_packages() { :; }
+    y2c_generate_system_executables() { :; }
 
+    exec_y2c_setup() {
+      cd "$1" || return 1
+      y2c_setup
+    }
+
+    It "should setup all the required global variables"
+      y2c_detect_environment
+
+      When call exec_y2c_setup "/yarn-repo/test3/packages/workspace-a"
+      The status should equal 0
+      The variable Y2C_REPO_YARN_VERSION_L3lhcm4tcmVwby90ZXN0Mw__ should equal "2.1.0"
+      The variable Y2C_REPO_YARN_BASE64_VERSION_L3lhcm4tcmVwby90ZXN0Mw__ should equal "Mi4xLjA_"
+      The variable Y2C_REPO_IS_YARN_2_L3lhcm4tcmVwby90ZXN0Mw__ should equal 1
+      The variable Y2C_CURRENT_ROOT_REPO_PATH should equal "${PWD%/packages/workspace-a}"
+      The variable Y2C_IS_YARN_2_REPO should equal 1
+      The variable Y2C_IS_IN_WORKSPACE_PACKAGE should equal 1
     End
   End
 

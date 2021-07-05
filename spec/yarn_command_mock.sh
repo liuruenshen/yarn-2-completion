@@ -537,7 +537,7 @@ yarn_get_version_from_yarnrc() {
   return
 }
 
-run_mocked_yarn_command() {
+yarn() {
   if [ "$1" = '--help' ]; then
     yarn_help_mock
   elif [ "$1" = '--version' ]; then
