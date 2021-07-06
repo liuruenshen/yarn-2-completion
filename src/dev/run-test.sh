@@ -20,7 +20,7 @@ run_test_in_docker() {
   docker run -t --rm -v "${PWD}/${residing_path}/../../":"/yarn-2-completion" \
     -v "${PWD}/${residing_path}/../../test/yarn-repo":"/yarn-repo" \
     "${docker_tag}" shellspec --chdir /yarn-2-completion --require yarn_command_mock \
-    --shell bash --execdir @project "$@"
+    --shell bash --execdir @project --covdir ./coverage --kcov "$@"
 }
 
 main() {
