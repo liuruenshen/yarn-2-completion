@@ -3,4 +3,3 @@
 !.yarn/releases
 !.yarn/plugins
 .pnp.*
-coverage
