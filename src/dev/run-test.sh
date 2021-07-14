@@ -51,7 +51,7 @@ main() {
   fi
 
   residing_path="$(dirname "${BASH_SOURCE[0]}")"
-  host_repo_root_path="${PWD}/${residing_path}/../../"
+  host_repo_root_path="${PWD%/}/${residing_path}/../../"
 
   # Remove the last coverage reports
   docker run --rm -v "${host_repo_root_path}":"${guest_repo_root_path}" \
