@@ -38,6 +38,8 @@ main() {
   local last_docker_tag_image=""
   local ci_env=""
 
+  set -e
+
   ci_env=$(bash <(curl -s https://codecov.io/env))
 
   docker_iterate get_last_docker_tag
@@ -69,10 +71,11 @@ main() {
     --workdir "${guest_repo_root_path}" \
     "${last_docker_tag}" kcov --merge "${coverage_path}/merged" "${coverage_subfolders[@]}"
 
+  export CODECOV_TOKEN="${CODECOV_ACCESS_TOKEN}"
   # shellcheck disable=SC2086
-  docker run $ci_env -e CI=true --rm -v "${host_repo_root_path}":"${guest_repo_root_path}" \
+  docker run $ci_env -e CI=true -e GITHUB_SERVER_URL --rm -v "${host_repo_root_path}":"${guest_repo_root_path}" \
     --workdir "${guest_repo_root_path}" \
-    "${last_docker_tag}" codecov -t "${CODECOV_ACCESS_TOKEN}"
+    "${last_docker_tag}" codecov
 
   # Apply the current host's UID and GID to all the items beneath the coverage folder
   docker run --rm -v "${host_repo_root_path}":"${guest_repo_root_path}" \
