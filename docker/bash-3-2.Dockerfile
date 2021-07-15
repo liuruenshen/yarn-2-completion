@@ -1,6 +1,6 @@
 FROM bash:3.2
 
-RUN apk add curl nodejs npm expect gnupg coreutils perl-utils && npm install --global yarn
+RUN apk add curl nodejs npm expect gnupg coreutils perl-utils git && npm install --global yarn
 
 WORKDIR /opt/codecov
 
