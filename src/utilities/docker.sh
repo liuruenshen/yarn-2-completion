@@ -7,6 +7,12 @@ build_docker() {
   docker build -t "${tag}" -f "${docker_file}" .
 }
 
+pull_docker() {
+  local tag="$1"
+
+  docker pull "${tag}"
+}
+
 get_docker_image_id() {
   local tag="$1"
 
@@ -23,7 +29,7 @@ get_docker_tag() {
   fi
 
   docker_file_name=$(basename "${docker_file}")
-  echo "yarn-2-completion-test:${docker_file_name%%.*}"
+  echo "kiwi93/bash-testing-coverage:${docker_file_name%%.*}"
 }
 
 docker_iterate() {

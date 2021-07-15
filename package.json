@@ -21,7 +21,8 @@
     "prepublishOnly": "pinst --disable",
     "postpublish": "pinst --enable",
     "lint": "./src/dev/lint.sh",
-    "test:build": "./src/dev/build-docker.sh",
+    "docker:pull": "./src/dev/pull-docker.sh",
+    "test:prepare": "./src/dev/prepare-test.sh",
     "test:run": "./src/dev/run-test.sh \"$@\"",
     "test": "npm-run-all lint 'test:* {@}'"
   }
