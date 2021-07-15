@@ -36,6 +36,9 @@ main() {
   local host_repo_root_path=""
   local guest_repo_root_path="/yarn-2-completion"
   local last_docker_tag_image=""
+  local ci_env=""
+
+  ci_env=$(bash <(curl -s https://codecov.io/env))
 
   docker_iterate get_last_docker_tag
 
@@ -65,6 +68,11 @@ main() {
   docker run --rm -v "${host_repo_root_path}":"${guest_repo_root_path}" \
     --workdir "${guest_repo_root_path}" \
     "${last_docker_tag}" kcov --merge "${coverage_path}/merged" "${coverage_subfolders[@]}"
+
+  # shellcheck disable=SC2086
+  docker run $ci_env -e CI=true --rm -v "${host_repo_root_path}":"${guest_repo_root_path}" \
+    --workdir "${guest_repo_root_path}" \
+    "${last_docker_tag}" codecov -t "${CODECOV_ACCESS_TOKEN}"
 
   # Apply the current host's UID and GID to all the items beneath the coverage folder
   docker run --rm -v "${host_repo_root_path}":"${guest_repo_root_path}" \
