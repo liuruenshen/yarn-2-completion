@@ -1,4 +1,4 @@
-source "./common.tcl"
+source "[file dirname [file normalize [info script]]]/common.tcl"
 
 set timeout 5
 set bash_arg_str [lindex $argv 0]
@@ -47,8 +47,9 @@ set yarn_add_caret_hypen_completion3 [string cat \
 set yarn_ex_completion [string cat "exec     explain  \r\n" $default_bash_prompt ]
 
 set yarn_exec_a_completion [string cat \
-  "acpid       addgroup    adjtimex    arch        arping      autoexpect  awk         \r\n" \
-  "add-shell   adduser     apk         arp         ash         autopasswd  \r\n" \
+  "acpid               addgroup            apk                 arp                 autoexpect          \r\n" \
+  "add-shell           adduser             applygnupgdefaults  arping              autopasswd          \r\n" \
+  "addgnupghome        adjtimex            arch                ash                 awk                 \r\n" \
   $default_bash_prompt]
 
 set yarn_in_completion [string cat "info     init     install  \r\n" $default_bash_prompt]
@@ -93,7 +94,7 @@ set yarn_test1_workspace_run_completion2 [string cat \
   $default_bash_prompt
 ]
 
-send_and_expect "cd /yarn-2-completion-integ-test\r"
+send_and_expect "cd /yarn-2-completion\r"
 send_and_expect "stty rows 32\r"
 send_and_expect "stty cols 128\r"
 send_and_expect "./install.sh\r" "Type in.+\r" "" ".+y/n.+"
@@ -102,7 +103,7 @@ send_and_expect "\r" "" "" ".+y/n.+"
 send_and_expect "\r" "Install successfully.+"
 
 send_and_expect "exec $env(SHELL)\r"
-send_and_expect "cd /yarn-2-completion/test/yarn-repo/test1\r"
+send_and_expect "cd /yarn-repo/test1\r"
 
 send_and_expect "yarn \t" "" "" $yarn_completion 1
 send_and_expect "a\t" "" "" "add " 1

@@ -1,4 +1,4 @@
-source "./common.tcl"
+source "[file dirname [file normalize [info script]]]/common.tcl"
 
 set timeout 5
 set bash_arg_str [lindex $argv 0]

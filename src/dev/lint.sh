@@ -44,6 +44,7 @@ main() {
   guest_source_files=("${host_checking_files[@]/"$host_source_path"/"$guest_checking_files_root"}")
 
   docker run --rm -v "${host_source_path}":"${guest_checking_files_root}" koalaman/shellcheck "${guest_source_files[@]}"
+  docker run --rm -v "${host_source_path}":"${guest_checking_files_root}" mvdan/shfmt -d -i 2 "${guest_source_files[@]}"
 }
 
 main
