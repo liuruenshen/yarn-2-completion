@@ -20,7 +20,7 @@ run_test_in_docker() {
     -v "${PWD}/${residing_path}/../../test/yarn-repo":"/yarn-repo" \
     "${docker_tag}" shellspec --chdir "${guest_repo_root_path}" --require yarn_command_mock \
     --shell bash --execdir @project --covdir "${coverage_subfolder}" --kcov \
-    --kcov-options "--include-pattern=/src/" "$@"
+    --kcov-options "--include-pattern=/src/,install.sh,uninstall.sh" "$@"
 }
 
 get_last_docker_tag() {
