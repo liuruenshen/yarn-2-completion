@@ -1,0 +1,1 @@
+source "[file dirname [file normalize [info script]]]/common.tcl"
