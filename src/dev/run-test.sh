@@ -71,11 +71,13 @@ main() {
     --workdir "${guest_repo_root_path}" \
     "${last_docker_tag}" kcov --merge "${coverage_path}/merged" "${coverage_subfolders[@]}"
 
-  export CODECOV_TOKEN="${CODECOV_ACCESS_TOKEN}"
-  # shellcheck disable=SC2086
-  docker run $ci_env -e CI=true -e GITHUB_SERVER_URL --rm -v "${host_repo_root_path}":"${guest_repo_root_path}" \
-    --workdir "${guest_repo_root_path}" \
-    "${last_docker_tag}" codecov
+  if [[ -z $Y2C_TEST_LOCAL_MODE ]]; then
+    export CODECOV_TOKEN="${CODECOV_ACCESS_TOKEN}"
+    # shellcheck disable=SC2086
+    docker run $ci_env -e CI=true -e GITHUB_SERVER_URL --rm -v "${host_repo_root_path}":"${guest_repo_root_path}" \
+      --workdir "${guest_repo_root_path}" \
+      "${last_docker_tag}" codecov
+  fi
 
   # Apply the current host's UID and GID to all the items beneath the coverage folder
   docker run --rm -v "${host_repo_root_path}":"${guest_repo_root_path}" \

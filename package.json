@@ -25,6 +25,7 @@
     "docker:build": "./src/dev/build-docker.sh",
     "test:prepare": "./src/dev/prepare-test.sh",
     "test:run": "./src/dev/run-test.sh \"$@\"",
-    "test": "npm-run-all lint 'test:* {@}'"
+    "test": "npm-run-all lint 'test:* {@}'",
+    "test-local": "Y2C_TEST_LOCAL_MODE=1 npm-run-all lint 'test:* {@}'"
   }
 }
