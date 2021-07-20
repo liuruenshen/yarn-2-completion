@@ -31,7 +31,7 @@ install() {
   if [[ -f "${bashrc_path}" ]]; then
     { while read -r bashrc_line; do
       if [[ "${bashrc_line}" =~ ^[[:space:]]*\.[[:space:]]${root_repo_path}/src/completion\.sh ]]; then
-        echo "Yarn-2-completion has already installed."
+        echo "Yarn-2-completion has already been installed."
         exit 0
       fi
     done; } <"${bashrc_path}"
@@ -78,7 +78,9 @@ export Y2C_SYSTEM_EXECUTABLE_BY_PATH_ENV=${enable_exec_complete_answer:-1}
 END
 
   echo $'\n'"Install successfully. Open the new terminal to activate yarn-2-completion."
-  [[ $has_backed_up -eq 1 ]] && echo "The original ${startup_file} has been backed up to ${bashrc_path}.${timestamp}.bak"
+  if [[ $has_backed_up -eq 1 ]]; then
+    echo "The original ${startup_file} has been backed up to ${bashrc_path}.${timestamp}.bak"
+  fi
 }
 
 main() {
