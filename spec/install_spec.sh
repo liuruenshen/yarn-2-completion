@@ -9,6 +9,12 @@ Describe "install.sh" install
     fi
   }
 
+  cleanup() {
+    rm -f "./answer.txt"
+  }
+
+  AfterAll 'cleanup'
+
   Parameters
     "darwin" ".bash_profile"
     "linux-gnu" ".bashrc"
