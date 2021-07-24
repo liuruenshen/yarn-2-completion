@@ -18,13 +18,13 @@ install() {
 
   timestamp=$(date +%s)
   if [ -z "${timestamp}" ]; then
-    echo "Fail to obtain a timestamp, abort installation." >&2
+    echo "Failed to obtain a timestamp, abort installation." >&2
     exit 1
   fi
 
   root_repo_path=$(get_root_repo_path)
   if [ -z "${root_repo_path}" ]; then
-    echo "Fail to get the repository's root path where install.sh located, abort installation." >&2
+    echo "Failed to get the repository's root path where install.sh located, abort installation." >&2
     exit 1
   fi
 
@@ -37,7 +37,7 @@ install() {
     done; } <"${bashrc_path}"
 
     if ! cp "${bashrc_path}" "${bashrc_path}.${timestamp}.bak"; then
-      echo "Fail to backup ${bashrc_path} to ${bashrc_path}.${timestamp}.bak, abort installation." >&2
+      echo "Failed to backup ${bashrc_path} to ${bashrc_path}.${timestamp}.bak, abort installation." >&2
       exit 1
     fi
 

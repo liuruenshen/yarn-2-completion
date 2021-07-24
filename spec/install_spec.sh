@@ -9,6 +9,12 @@ Describe "install.sh" install
     fi
   }
 
+  cleanup() {
+    rm -f "./answer.txt"
+  }
+
+  AfterAll 'cleanup'
+
   Parameters
     "darwin" ".bash_profile"
     "linux-gnu" ".bashrc"
@@ -17,15 +23,18 @@ Describe "install.sh" install
   It "should abort when the timestmap returned from date is empty"
     OSTYPE="$1"
     When run source "./install.sh"
-    The error should be present
+    The error should equal "Failed to obtain a timestamp, abort installation."
     The status should equal 1
   End
 
   It "should abort when the root path of the repository is empty"
     OSTYPE="$1"
-    get_root_repo_path() { :; }
+    gen_fake_time=1
+
+    pwd() { :; }
+
     When run source "./install.sh"
-    The error should be present
+    The error should equal "Failed to get the repository's root path where install.sh located, abort installation."
     The status should equal 1
   End
 
@@ -188,5 +197,23 @@ Describe "install.sh" install
     When call run_test "$@"
     The path "${HOME}/${2}.${fake_time}.bak" should be exist
     The output should include "The original ${2} has been backed up to ${HOME}/${2}.${fake_time}.bak"
+  End
+
+  It "should abort the installation when failing to backup the startup file"
+    OSTYPE="$1"
+    mkdir -p "/tmp/install8"
+    HOME="/tmp/install8"
+
+    cp() {
+      return 1
+    }
+
+    touch "${HOME}/$2"
+    gen_fake_time=1
+    When run source "./install.sh" "$@"
+
+    The path "${HOME}/${2}.${fake_time}.bak" should not be exist
+    The status should equal 1
+    The error should equal "Failed to backup ${HOME}/${2} to ${HOME}/${2}.${fake_time}.bak, abort installation."
   End
 End

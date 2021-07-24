@@ -74,7 +74,7 @@ main() {
   if [[ -z $Y2C_TEST_LOCAL_MODE ]]; then
     export CODECOV_TOKEN="${CODECOV_ACCESS_TOKEN}"
     # shellcheck disable=SC2086
-    docker run $ci_env -e CI=true -e GITHUB_SERVER_URL --rm -v "${host_repo_root_path}":"${guest_repo_root_path}" \
+    docker run $ci_env -e CI=true --rm -v "${host_repo_root_path}":"${guest_repo_root_path}" \
       --workdir "${guest_repo_root_path}" \
       "${last_docker_tag}" codecov
   fi

@@ -15,18 +15,19 @@ uninstall() {
 
   timestamp=$(date +%s)
   if [ -z "${timestamp}" ]; then
-    echo "Fail to obtain the timestamp, abort." >&2
+    echo "Failed to get the timestamp, abort." >&2
     exit 1
   fi
 
   root_repo_path=$(get_root_repo_path)
   if [ -z "${root_repo_path}" ]; then
-    echo "Fail to get the repository's root path where uninstall.sh located, abort." >&2
+    echo "Failed to get the repository's root path where uninstall.sh is located, abort." >&2
     exit 1
   fi
 
   if ! [[ -f "${bashrc_path}" ]]; then
-    echo "${bashrc_path} is not found, abort." >&2
+    echo "${bashrc_path} is not found, abort."
+    exit 0
   fi
 
   { while read -r bashrc_line; do
@@ -42,7 +43,7 @@ uninstall() {
   done; } <"${bashrc_path}"
 
   if [[ "${bashrc_content}" == "${uninstalled_bashrc_content}" ]]; then
-    echo "Yarn-2-completion has already uninstalled."
+    echo "Yarn-2-completion has already been uninstalled."
     exit 0
   fi
 
@@ -50,7 +51,7 @@ uninstall() {
 
   echo -n "${uninstalled_bashrc_content}" >"${bashrc_path}"
 
-  echo "Uninstall successfully. The original ${startup_file} file has been backed up to ${bashrc_path}.${timestamp}.bak"
+  echo "Uninstall successfully. The original ${bashrc_path} file has been backuped to ${bashrc_path}.${timestamp}.bak"
 }
 
 main() {
