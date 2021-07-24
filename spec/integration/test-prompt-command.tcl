@@ -13,5 +13,6 @@ send_and_expect "cd $working_dir\r"
 send_and_expect "Y2C_TESTING_MODE=1\r"
 
 send_and_expect "declare -p PROMPT_COMMAND\r" $declare_prompt_command
+send_and_expect ". ./spec/integration/trap-for-kcov.sh\r"
 send_and_expect ". ./src/completion.sh\r"
 send_and_expect "declare -p Y2C_SETUP_HAS_BEEN_CALLED\r" "declare -- Y2C_SETUP_HAS_BEEN_CALLED=\"1\"\r"
