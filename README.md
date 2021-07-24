@@ -11,7 +11,7 @@
 
 ## <a href="https://asciinema.org/a/7ySv9iquGuNtd7572NCrWF9P9" target="_blank"><img src="https://asciinema.org/a/7ySv9iquGuNtd7572NCrWF9P9.svg" /></a>
 
-<p align="center"> Yarn 2+ BASH completion
+<p align="center"> Yarn 2+ completion
     <br> 
 </p>
 
@@ -24,9 +24,9 @@
 
 ## 🧐 About <a name = "about"></a>
 
-It is a BASH completion for yarn 2+, supporting macOS default shipped BASH version 3.2 and above.
+It is a yarn completion, supporting macOS default shipped bash version 3.2 and above.
 
-Tested on BASH 3.2, 4.4, and 5.0 with yarn 2.1.0 and 2.4.2
+Tested on bash 3.2, 4.4, and 5.0 with yarn 2.1.0 and 2.4.2
 
 ## Features <a name = "features"></a>
 
@@ -61,9 +61,9 @@ git clone git@github.com:dustin71728/yarn-2-completion.git
 
 ### How it works
 
-The installation will modify your BASH environment's startup file .bashrc(Linux) or .bash_profile(macOS) in the home directory.
+The installation will modify your environment's startup file .bashrc(Linux) or .bash_profile(macOS) in the home directory.
 
-BASH loads the script for yarn command's completion after opening new terminal.
+It loads the script for yarn command's completion after opening new terminal.
 
 Your original startup file will be saved, so if something went wrong, just recovering it from the backup file.
 
@@ -71,17 +71,16 @@ It also registers the setup function to PROMPT_COMMAND environment variable; whe
 
 ## 🔧 Running the tests <a name = "tests"></a>
 
-The repository uses [bats-core](https://github.com/bats-core/bats-core) to do testing, and [shellcheck](https://github.com/koalaman/shellcheck) to maintain coding quality.
+The repository uses [shellspec](https://github.com/shellspec/shellspec) to run tests, and [shellcheck](https://github.com/koalaman/shellcheck) to maintain coding quality.
 
 All the tests are running in the Docker container.
 
 ```
-git submodule update --init --recursive
-
 yarn install
 
-yarn test
+yarn test-local
 
-# run the specified test cases
-yarn test -- -f 'y2c_setup'
+# run the specific test cases
+yarn test-local -- -T uninstall
+yarn test-local -- -E 'should set up all the required global variables in a single repository'
 ```
