@@ -288,6 +288,7 @@ Describe "src/lib.sh"
       y2c_detect_environment
 
       Y2C_YARN_VERSION=$(y2c_is_yarn_2)
+      Y2C_IS_YARN_2_REPO=$(($? ^ 1))
       # shellcheck disable=2034
       Y2C_YARN_BASE64_VERSION=$(y2c_get_var_name "${Y2C_YARN_VERSION}")
       y2c_generate_yarn_command_list
@@ -727,10 +728,13 @@ Describe "src/lib.sh"
 
   Describe "y2c_is_commandline_word_match_option"
     Parameters
-      "yarn,npm,logout,-s,," "-s" "-s|--scope #0" 3 "${Y2C_COMMAND_WORDS_MATCH_OPTION}" 1 blank
-      "yarn,npm,logout,--scope,," "--scope" "-s|--scope #0" 3 "${Y2C_COMMAND_WORDS_MISS_WHOLE_OPTION}" 2 "#0"
-      "yarn,npm,logout,--option,test,," "--option" "-o|--option #0 #1" 3 "${Y2C_COMMAND_WORDS_MISS_WHOLE_OPTION}" 3 "#1"
+      "yarn,npm,logout,-s,," "-s" "-s|--scope #0" 3 "${Y2C_COMMAND_WORDS_MATCH_OPTION}" 0 blank
+      "yarn,npm,logout,--scope,," "--scope" "-s|--scope #0" 3 "${Y2C_COMMAND_WORDS_MISS_WHOLE_OPTION}" 1 "#0"
+      "yarn,npm,logout,--option,test,," "--option" "-o|--option #0 #1" 3 "${Y2C_COMMAND_WORDS_MISS_WHOLE_OPTION}" 2 "#1"
       "yarn,npm,logout,--invalid,," "--invalid" "--branch #0" 3 "${Y2C_COMMAND_WORDS_NOT_MATCH_OPTION}" 0 blank
+      "yarn,audit,--level,," "--level" "--level critical|--level high|--level low" 2 "${Y2C_COMMAND_WORDS_MISS_WHOLE_OPTION}" 1 "critical high low"
+      "yarn,audit,--level,c," "--level" "--level critical|--level high|--level low" 2 "${Y2C_COMMAND_WORDS_MISS_WHOLE_OPTION}" 1 "critical"
+      "yarn,audit,--level,high," "--level" "--level critical|--level high|--level low" 2 "${Y2C_COMMAND_WORDS_MATCH_OPTION}" 1 blank
     End
 
     run_test() {
@@ -745,7 +749,7 @@ Describe "src/lib.sh"
     It "should find the matched option and fill out the missing part"
       validate_y2c_is_commandline_word_match_option() {
         The status should equal "$1"
-        The variable Y2C_TMP_OPTION_WORDS_NUM should equal "$2"
+        The variable Y2C_TMP_OPTION_BOUNDARY_OFFSET should equal "$2"
         if [[ $3 = blank ]]; then
           The variable "COMPREPLY[*]" should be blank
         else

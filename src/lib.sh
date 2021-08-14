@@ -127,13 +127,9 @@ y2c_setup() {
       fi
     fi
 
-    if [[ Y2C_IS_YARN_2_REPO -eq 1 ]]; then
-      y2c_generate_yarn_command_list
-      y2c_generate_workspace_packages
-      y2c_generate_system_executables "${PATH}"
-    else
-      y2c_is_verbose_output && echo "[Y2C] yarn-2-completion won't run on this repository(yarn 2+ is required)" 1>&2
-    fi
+    y2c_generate_yarn_command_list
+    y2c_generate_workspace_packages
+    y2c_generate_system_executables "${PATH}"
 
     return 0
   elif [[ -z $1 ]] && [[ -f "./package.json" ]]; then
@@ -292,6 +288,26 @@ y2c_expand_scriptName_variable() {
   esac
 }
 
+y2c_expand_package_variable() {
+  local current_command="${COMP_WORDS[*]}"
+  local package=""
+
+  case "${current_command}" in
+  "yarn add"*)
+    package="${COMP_WORDS[2]}"
+    package=${package:-"package"}
+    Y2C_TMP_EXPANDED_VAR_RESULT=("${package}")
+    ;;
+  "yarn workspace"*"add"*)
+    package="${COMP_WORDS[4]}"
+    package=${package:-"package"}
+    Y2C_TMP_EXPANDED_VAR_RESULT=("${package}")
+    ;;
+  *) ;;
+
+  esac
+}
+
 y2c_set_expand_var() {
   local var_name="$1"
   local function_name=""
@@ -427,10 +443,16 @@ y2c_generate_yarn_command_list() {
   local expand_command_name_var_names=()
   local expand_command_name_var_name=""
   local instructions=()
+  local get_source_dir=""
 
   local options=()
 
-  while IFS='' read -r line; do instructions+=("$line"); done <<<"$(yarn --help | grep -E '^[[:space:]]+yarn')"
+  if [[ $Y2C_IS_YARN_2_REPO -eq 1 ]]; then
+    while IFS='' read -r line; do instructions+=("$line"); done <<<"$(yarn --help | grep -E '^[[:space:]]+yarn')"
+  else
+    get_source_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+    while IFS='' read -r line; do instructions+=("$line"); done <"${get_source_dir}/../data/yarn-1-commands.txt"
+  fi
 
   instructions+=("yarn <scriptName>")
 
@@ -783,10 +805,6 @@ y2c_run_yarn_completion() {
 }
 
 y2c_yarn_completion_for_complete() {
-  if [[ $Y2C_IS_YARN_2_REPO -eq 0 ]]; then
-    return 0
-  fi
-
   y2c_run_yarn_completion "$2"
 }
 
