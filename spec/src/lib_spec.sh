@@ -278,6 +278,7 @@ Describe "src/lib.sh"
 
     Parameters
       "/yarn-repo/test1" "Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_" "Y2C_COMMAND_TOKENS_Mi40LjI__42 Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_"
+      "/yarn-repo/test2" "Y2C_COMMAND_TOKENS_LIST_VER_MS4yMi4xMA__" "Y2C_COMMAND_TOKENS_MS4yMi4xMA___77 Y2C_COMMAND_TOKENS_LIST_VER_MS4yMi4xMA__"
       "/yarn-repo/test3" "Y2C_COMMAND_TOKENS_LIST_VER_Mi4xLjA_" "Y2C_COMMAND_TOKENS_Mi4xLjA__34 Y2C_COMMAND_TOKENS_LIST_VER_Mi4xLjA_"
     End
 
@@ -1012,7 +1013,7 @@ Describe "src/lib.sh"
 
     It "should call y2c_run_yarn_completion"
       When call run_test
-      The line 1 of output should equal 0
+      The line 1 of output should equal 1
       The line 2 of output should equal 1
     End
   End
