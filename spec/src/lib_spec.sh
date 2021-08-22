@@ -278,7 +278,7 @@ Describe "src/lib.sh"
 
     Parameters
       "/yarn-repo/test1" "Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_" "Y2C_COMMAND_TOKENS_Mi40LjI__42 Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_"
-      "/yarn-repo/test2" "Y2C_COMMAND_TOKENS_LIST_VER_MS4yMi4xMA__" "Y2C_COMMAND_TOKENS_MS4yMi4xMA___77 Y2C_COMMAND_TOKENS_LIST_VER_MS4yMi4xMA__"
+      "/yarn-repo/test2" "Y2C_COMMAND_TOKENS_LIST_VER_MS4yMi4xMA__" "Y2C_COMMAND_TOKENS_MS4yMi4xMA___88 Y2C_COMMAND_TOKENS_LIST_VER_MS4yMi4xMA__"
       "/yarn-repo/test3" "Y2C_COMMAND_TOKENS_LIST_VER_Mi4xLjA_" "Y2C_COMMAND_TOKENS_Mi4xLjA__34 Y2C_COMMAND_TOKENS_LIST_VER_Mi4xLjA_"
     End
 
@@ -483,9 +483,7 @@ Describe "src/lib.sh"
         local global_var="$2"
 
         if [[ -z $global_var ]]; then
-          token="${token#<}"
-          The value ${#Y2C_TMP_EXPANDED_VAR_RESULT[@]} should equal 1
-          The variable "Y2C_TMP_EXPANDED_VAR_RESULT[*]" should equal "${token}"
+          The variable "Y2C_TMP_EXPANDED_VAR_RESULT[*]" should equal "${token/</#}"
         else
           The variable "Y2C_TMP_EXPANDED_VAR_RESULT[*]" should equal "${!global_var}"
         fi
@@ -766,13 +764,7 @@ Describe "src/lib.sh"
   Describe "y2c_run_yarn_completion" y2c_run_yarn_completion
     declaration_file_prefix="/tmp/_preserve_"
 
-    y2c_set_expand_var() {
-      :
-    }
-
-    y2c_set_expand_var() {
-      :
-    }
+    y2c_set_expand_var() { :; }
 
     command_list=()
 

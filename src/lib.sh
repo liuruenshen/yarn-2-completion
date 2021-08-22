@@ -289,26 +289,6 @@ y2c_expand_scriptName_variable() {
   esac
 }
 
-y2c_expand_package_variable() {
-  local current_command="${COMP_WORDS[*]}"
-  local package=""
-
-  case "${current_command}" in
-  "yarn add"*)
-    package="${COMP_WORDS[2]}"
-    package=${package:-"package"}
-    Y2C_TMP_EXPANDED_VAR_RESULT=("${package}")
-    ;;
-  "yarn workspace"*"add"*)
-    package="${COMP_WORDS[4]}"
-    package=${package:-"package"}
-    Y2C_TMP_EXPANDED_VAR_RESULT=("${package}")
-    ;;
-  *) ;;
-
-  esac
-}
-
 y2c_set_expand_var() {
   local var_name="$1"
   local function_name=""
@@ -327,7 +307,7 @@ y2c_set_expand_var() {
   if declare -f "${function_name}" >/dev/null 2>&1; then
     $function_name "$@"
   else
-    Y2C_TMP_EXPANDED_VAR_RESULT=("${var_name#$Y2C_VARIABLE_SYMBOL}")
+    Y2C_TMP_EXPANDED_VAR_RESULT=("${var_name/$Y2C_VARIABLE_SYMBOL/#}")
   fi
 }
 
@@ -704,11 +684,10 @@ y2c_run_yarn_completion() {
     local yarn_command_tokens
   fi
 
-  declare -i word_num=${#COMP_WORDS[@]}
   declare -i token_type=0
 
   local completing_word="$1"
-  local last_word_index=$word_num-1
+  local last_word_index=$((${#COMP_WORDS[@]} - 1))
   local expanded_var=""
   local token=""
   local copied_identified_tokens=()
@@ -784,12 +763,15 @@ y2c_run_yarn_completion() {
           ;;
         "$Y2C_YARN_WORD_IS_VARIABLE")
           y2c_set_expand_var "${token}" "${completing_word}"
-
-          for expanded_var in "${Y2C_TMP_EXPANDED_VAR_RESULT[@]}"; do
-            if [[ ${COMP_WORDS[$comp_word_index]} = "${expanded_var}" ]]; then
-              continue 3
-            fi
-          done
+          if [[ ${Y2C_TMP_EXPANDED_VAR_RESULT[*]} = "${token/$Y2C_VARIABLE_SYMBOL/#}" ]]; then
+            continue 2
+          else
+            for expanded_var in "${Y2C_TMP_EXPANDED_VAR_RESULT[@]}"; do
+              if [[ ${COMP_WORDS[$comp_word_index]} = "${expanded_var}" ]]; then
+                continue 3
+              fi
+            done
+          fi
           ;;
         esac
       done

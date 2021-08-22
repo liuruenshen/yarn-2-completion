@@ -1,6 +1,7 @@
 yarn add <package> [-D,--dev] [-P,--peer] [-O,--optional] [-E,--exact] [-T,--tilde] [--ignore-workspace-root-check,-W] [--audit]
 yarn audit [--level info|--level low|--level moderate|--level high|--level critical] [--groups #group_name]
-yarn autoclean [-I,--init] [-F,--force]
+yarn autoclean [-I,--init]
+yarn autoclean [-F,--force]
 yarn bin <executable>
 yarn cache list [--pattern]
 yarn cache dir
@@ -13,9 +14,19 @@ yarn config get <key>
 yarn config delete <key>
 yarn config list
 yarn create <starterKitPackage> <args>
-yarn dedupe
 yarn generate-lock-entry
-yarn global [--prefix]
+yarn global add <package> [-D,--dev] [-P,--peer] [-O,--optional] [-E,--exact] [-T,--tilde] [--ignore-workspace-root-check,-W] [--audit] [--prefix]
+yarn global bin <executable> [--prefix]
+yarn global list [--depth #number] [--pattern #pattern] [--prefix]
+yarn global remove <package> [--check-files] [--flat] [--force] [--har] [--ignore-scripts] [--modules-folder #path] [--no-lockfile] [--production] [--pure-lockfile] [--focus] [--frozen-lockfile] [--silent] [--ignore-engines] [--ignore-optional] [--offline] [--non-interactive] [--update-checksums] [--audit] [--no-bin-links] [--link-duplicates] [--verbose]
+yarn global upgrade <package> [--ignore-engines] [--pattern #pattern] [--latest,-L]
+yarn global upgrade <package> [--ignore-engines] [--pattern #pattern] [--latest,-L] [--caret]
+yarn global upgrade <package> [--ignore-engines] [--pattern #pattern] [--latest,-L] [--tilde]
+yarn global upgrade <package> [--ignore-engines] [--pattern #pattern] [--latest,-L] [--exact]
+yarn global upgrade [-S #@scope,--scope #@scope] [--ignore-engines] [--pattern #pattern] [--latest,-L]
+yarn global upgrade [-S #@scope,--scope #@scope] [--ignore-engines] [--pattern #pattern] [--latest,-L] [--caret]
+yarn global upgrade [-S #@scope,--scope #@scope] [--ignore-engines] [--pattern #pattern] [--latest,-L] [--tilde]
+yarn global upgrade [-S #@scope,--scope #@scope] [--ignore-engines] [--pattern #pattern] [--latest,-L] [--exact]
 yarn import
 yarn info <package> <field> [--json]
 yarn init [-y,--yes] [-p,--private]
@@ -32,10 +43,10 @@ yarn owner add <user> <package>
 yarn owner remove <user> <package>
 yarn pack [--filename #filename]
 yarn policies set-version <version>
-yarn publish [--access public] [--tag #tag] [--new-version #version] <folderOrTarball>
-yarn publish [--access restricted] [--tag #tag] [--new-version #version] <folderOrTarball>
+yarn publish <folderOrTarball> [--access public] [--tag #tag] [--new-version #version]
+yarn publish <folderOrTarball> [--access restricted] [--tag #tag] [--new-version #version]
 yarn remove <package> [--check-files] [--flat] [--force] [--har] [--ignore-scripts] [--modules-folder #path] [--no-lockfile] [--production] [--pure-lockfile] [--focus] [--frozen-lockfile] [--silent] [--ignore-engines] [--ignore-optional] [--offline] [--non-interactive] [--update-checksums] [--audit] [--no-bin-links] [--link-duplicates] [--verbose]
-yarn run <script> <args>
+yarn run <scriptName> <args>
 yarn run env
 yarn tag add <packageAtVersion> <tag>
 yarn tag remove <package> <tag>
@@ -51,10 +62,10 @@ yarn upgrade <package> [--ignore-engines] [--pattern #pattern] [--latest,-L]
 yarn upgrade <package> [--ignore-engines] [--pattern #pattern] [--latest,-L] [--caret]
 yarn upgrade <package> [--ignore-engines] [--pattern #pattern] [--latest,-L] [--tilde]
 yarn upgrade <package> [--ignore-engines] [--pattern #pattern] [--latest,-L] [--exact]
-yarn upgrade [-S,--scope #@scope] [--ignore-engines] [--pattern #pattern] [--latest,-L]
-yarn upgrade [-S,--scope #@scope] [--ignore-engines] [--pattern #pattern] [--latest,-L] [--caret]
-yarn upgrade [-S,--scope #@scope] [--ignore-engines] [--pattern #pattern] [--latest,-L] [--tilde]
-yarn upgrade [-S,--scope #@scope] [--ignore-engines] [--pattern #pattern] [--latest,-L] [--exact]
+yarn upgrade [-S #@scope,--scope #@scope] [--ignore-engines] [--pattern #pattern] [--latest,-L]
+yarn upgrade [-S #@scope,--scope #@scope] [--ignore-engines] [--pattern #pattern] [--latest,-L] [--caret]
+yarn upgrade [-S #@scope,--scope #@scope] [--ignore-engines] [--pattern #pattern] [--latest,-L] [--tilde]
+yarn upgrade [-S #@scope,--scope #@scope] [--ignore-engines] [--pattern #pattern] [--latest,-L] [--exact]
 yarn upgrade-interactive <package> [--ignore-engines] [--pattern #pattern] [--latest,-L]
 yarn upgrade-interactive <package> [--ignore-engines] [--pattern #pattern] [--latest,-L] [--caret]
 yarn upgrade-interactive <package> [--ignore-engines] [--pattern #pattern] [--latest,-L] [--tilde]
@@ -77,4 +88,4 @@ yarn versions
 yarn why <query>
 yarn workspace <workspaceName> <commandName>
 yarn workspaces info [--json]
-yarn workspaces run <command>
+yarn workspaces run <scriptName>
