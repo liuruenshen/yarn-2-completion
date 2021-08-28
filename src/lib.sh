@@ -302,7 +302,7 @@ y2c_set_expand_var() {
     return 0
   fi
 
-  function_name="y2c_expand_${var_name#$Y2C_VARIABLE_SYMBOL}_variable"
+  function_name="y2c_expand_${var_name#"$Y2C_VARIABLE_SYMBOL"}_variable"
 
   if declare -f "${function_name}" >/dev/null 2>&1; then
     $function_name "$@"
