@@ -17,7 +17,7 @@ main() {
   source "${residing_path}/../utilities/list-all-files.sh"
 
   if ! command -v docker; then
-    echo "Install docker before commiting any chages" 1>&2
+    echo "Install docker before committing any changes" 1>&2
     exit
   fi
 
