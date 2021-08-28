@@ -278,6 +278,7 @@ Describe "src/lib.sh"
 
     Parameters
       "/yarn-repo/test1" "Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_" "Y2C_COMMAND_TOKENS_Mi40LjI__42 Y2C_COMMAND_TOKENS_LIST_VER_Mi40LjI_"
+      "/yarn-repo/test2" "Y2C_COMMAND_TOKENS_LIST_VER_MS4yMi4xMA__" "Y2C_COMMAND_TOKENS_MS4yMi4xMA___88 Y2C_COMMAND_TOKENS_LIST_VER_MS4yMi4xMA__"
       "/yarn-repo/test3" "Y2C_COMMAND_TOKENS_LIST_VER_Mi4xLjA_" "Y2C_COMMAND_TOKENS_Mi4xLjA__34 Y2C_COMMAND_TOKENS_LIST_VER_Mi4xLjA_"
     End
 
@@ -288,6 +289,7 @@ Describe "src/lib.sh"
       y2c_detect_environment
 
       Y2C_YARN_VERSION=$(y2c_is_yarn_2)
+      Y2C_IS_YARN_2_REPO=$(($? ^ 1))
       # shellcheck disable=2034
       Y2C_YARN_BASE64_VERSION=$(y2c_get_var_name "${Y2C_YARN_VERSION}")
       y2c_generate_yarn_command_list
@@ -349,6 +351,7 @@ Describe "src/lib.sh"
 
     Parameters
       "/yarn-repo/test1" "Y2C_WORKSPACE_PACKAGES_L3lhcm4tcmVwby90ZXN0MQ__" "wrk-a wrk-b wrk-c"
+      "/yarn-repo/test2" "Y2C_WORKSPACE_PACKAGES_L3lhcm4tcmVwby90ZXN0Mg__" "wrk-a wrk-b"
       "/yarn-repo/test3" "Y2C_WORKSPACE_PACKAGES_L3lhcm4tcmVwby90ZXN0Mw__" "wrk-a wrk-b wrk-c"
     End
 
@@ -428,6 +431,7 @@ Describe "src/lib.sh"
 
     Parameters
       /yarn-repo/test1 "Y2C_WORKSPACE_PACKAGES_L3lhcm4tcmVwby90ZXN0MQ__[*]"
+      /yarn-repo/test2 "Y2C_WORKSPACE_PACKAGES_L3lhcm4tcmVwby90ZXN0Mg__[*]"
       /yarn-repo/test3 "Y2C_WORKSPACE_PACKAGES_L3lhcm4tcmVwby90ZXN0Mw__[*]"
     End
 
@@ -459,6 +463,7 @@ Describe "src/lib.sh"
       /yarn-repo/test1 "<workspaceName" "Y2C_WORKSPACE_PACKAGES_L3lhcm4tcmVwby90ZXN0MQ__[*]"
       /yarn-repo/test1 "tag" ""
       /yarn-repo/test1 "<tag" ""
+      /yarn-repo/test2 "<workspaceName" "Y2C_WORKSPACE_PACKAGES_L3lhcm4tcmVwby90ZXN0Mg__[*]"
       /yarn-repo/test3 "<workspaceName" "Y2C_WORKSPACE_PACKAGES_L3lhcm4tcmVwby90ZXN0Mw__[*]"
     End
 
@@ -481,9 +486,7 @@ Describe "src/lib.sh"
         local global_var="$2"
 
         if [[ -z $global_var ]]; then
-          token="${token#<}"
-          The value ${#Y2C_TMP_EXPANDED_VAR_RESULT[@]} should equal 1
-          The variable "Y2C_TMP_EXPANDED_VAR_RESULT[*]" should equal "${token}"
+          The variable "Y2C_TMP_EXPANDED_VAR_RESULT[*]" should equal "${token/</#}"
         else
           The variable "Y2C_TMP_EXPANDED_VAR_RESULT[*]" should equal "${!global_var}"
         fi
@@ -497,6 +500,7 @@ Describe "src/lib.sh"
   Describe "y2c_expand_yarn_workspace_command_list"
     Parameters
       "2.4.2" "validated_command_" "validated_command_41" "validated_command_42"
+      "1.22.10" "validated_command_" "validated_command_88"
       "2.1.0" "validated_command_" "validated_command_34"
     End
 
@@ -535,6 +539,7 @@ Describe "src/lib.sh"
     Parameters
       "-D|--dev" "-D" "--dev"
       "-f|--fields #0" "-f" "--fields #0"
+      "--level info|--level low|--level moderate" "--level info" "--level low" "--level moderate"
     End
 
     run_test() {
@@ -727,10 +732,13 @@ Describe "src/lib.sh"
 
   Describe "y2c_is_commandline_word_match_option"
     Parameters
-      "yarn,npm,logout,-s,," "-s" "-s|--scope #0" 3 "${Y2C_COMMAND_WORDS_MATCH_OPTION}" 1 blank
-      "yarn,npm,logout,--scope,," "--scope" "-s|--scope #0" 3 "${Y2C_COMMAND_WORDS_MISS_WHOLE_OPTION}" 2 "#0"
-      "yarn,npm,logout,--option,test,," "--option" "-o|--option #0 #1" 3 "${Y2C_COMMAND_WORDS_MISS_WHOLE_OPTION}" 3 "#1"
+      "yarn,npm,logout,-s,," "-s" "-s|--scope #0" 3 "${Y2C_COMMAND_WORDS_MATCH_OPTION}" 0 blank
+      "yarn,npm,logout,--scope,," "--scope" "-s|--scope #0" 3 "${Y2C_COMMAND_WORDS_MISS_WHOLE_OPTION}" 1 "#0"
+      "yarn,npm,logout,--option,test,," "--option" "-o|--option #0 #1" 3 "${Y2C_COMMAND_WORDS_MISS_WHOLE_OPTION}" 2 "#1"
       "yarn,npm,logout,--invalid,," "--invalid" "--branch #0" 3 "${Y2C_COMMAND_WORDS_NOT_MATCH_OPTION}" 0 blank
+      "yarn,audit,--level,," "--level" "--level critical|--level high|--level low" 2 "${Y2C_COMMAND_WORDS_MISS_WHOLE_OPTION}" 1 "critical high low"
+      "yarn,audit,--level,c," "--level" "--level critical|--level high|--level low" 2 "${Y2C_COMMAND_WORDS_MISS_WHOLE_OPTION}" 1 "critical"
+      "yarn,audit,--level,high," "--level" "--level critical|--level high|--level low" 2 "${Y2C_COMMAND_WORDS_MATCH_OPTION}" 1 blank
     End
 
     run_test() {
@@ -745,7 +753,7 @@ Describe "src/lib.sh"
     It "should find the matched option and fill out the missing part"
       validate_y2c_is_commandline_word_match_option() {
         The status should equal "$1"
-        The variable Y2C_TMP_OPTION_WORDS_NUM should equal "$2"
+        The variable Y2C_TMP_OPTION_BOUNDARY_OFFSET should equal "$2"
         if [[ $3 = blank ]]; then
           The variable "COMPREPLY[*]" should be blank
         else
@@ -761,13 +769,7 @@ Describe "src/lib.sh"
   Describe "y2c_run_yarn_completion" y2c_run_yarn_completion
     declaration_file_prefix="/tmp/_preserve_"
 
-    y2c_set_expand_var() {
-      :
-    }
-
-    y2c_set_expand_var() {
-      :
-    }
+    y2c_set_expand_var() { :; }
 
     command_list=()
 
@@ -820,6 +822,9 @@ Describe "src/lib.sh"
 
     Describe "y2c_run_yarn_completion(standard)"
       Parameters
+        "setup" "1.22.10" "MS4yMi4xMA__"
+        "example" "1.22.10" "yarn,audit,," "[[--level info|--level low|--level moderate|--level high|--level critical,--groups #group_name;]"
+        "example" "1.22.10" "yarn,audit,--level,," "info low moderate high critical"
         "setup" "2.4.2" "Mi40LjI_"
         "example" "2.4.2" "yarn,config,," "[[-v|--verbose,--why,--json;][get;][set;]"
         "example" "2.4.2" "yarn,add,--json,-D,--optional,--" "[[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached;--][...;--]"
@@ -836,11 +841,18 @@ Describe "src/lib.sh"
 
     Describe "y2c_run_yarn_completion(workspace command)"
       run_test_override_variables() {
-        #shellcheck disable=SC2034
-        Y2C_TMP_EXPANDED_VAR_RESULT=("@test")
+        y2c_set_expand_var() {
+          case "$1" in
+          "<workspaceName") Y2C_TMP_EXPANDED_VAR_RESULT=("@test") ;;
+          "<package") Y2C_TMP_EXPANDED_VAR_RESULT=("react") ;;
+          esac
+        }
       }
 
       Parameters
+        "setup" "1.22.10" "MS4yMi4xMA__"
+        "example" "1.22.10" "yarn,workspace,@test,," "[<commandName;][add;][audit;][autoclean;][bin;][cache;][check;][config;][create;][generate-lock-entry;][global;][import;][info;][init;][install;][licenses;][link;][list;][login;][logout;][outdated;][owner;][pack;][policies;][publish;][remove;][run;][tag;][team;][test;][unlink;][upgrade;][upgrade-interactive;][version;][versions;][why;][<scriptName;]"
+        "example" "1.22.10" "yarn,workspace,@test,upgrade,react,," "[[--ignore-engines,--pattern #pattern,--latest|-L;][[--ignore-engines,--pattern #pattern,--latest|-L,--caret;][[--ignore-engines,--pattern #pattern,--latest|-L,--tilde;][[--ignore-engines,--pattern #pattern,--latest|-L,--exact;]"
         "setup" "2.4.2" "Mi40LjI_"
         "example" "2.4.2" "yarn,workspace,@test,," "[<commandName;][add;][bin;][cache;][config;][dedupe;][dlx;][exec;][explain;][info;][init;][install;][link;][node;][npm;][pack;][patch;][patch-commit;][rebuild;][remove;][run;][set;][unplug;][up;][why;][plugin;][<scriptName;]"
         "example" "2.4.2" "yarn,workspace,@test,plugin,i" "[import;i][list;i][remove;i][runtime;i]"
@@ -857,6 +869,11 @@ Describe "src/lib.sh"
 
     Describe "y2c_run_yarn_completion(Y2C_IS_IN_WORKSPACE_PACKAGE)"
       Parameters
+        "setup" "1.22.10" "MS4yMi4xMA__"
+        "example" "1.22.10" "yarn,," \
+          "[add;][audit;][autoclean;][bin;][cache;][check;][config;][create;][generate-lock-entry;][global;][import;][info;][init;][install;][licenses;][link;][list;][login;][logout;][outdated;][owner;][pack;][policies;][publish;][remove;][run;][tag;][team;][test;][unlink;][upgrade;][upgrade-interactive;][version;][versions;][why;][workspace;][workspaces;][<scriptName;]" 0
+        "example" "1.22.10" "yarn,," \
+          "[add;][audit;][autoclean;][bin;][cache;][check;][config;][create;][generate-lock-entry;][global;][import;][info;][init;][install;][licenses;][link;][list;][login;][logout;][outdated;][owner;][pack;][policies;][publish;][remove;][run;][tag;][team;][test;][unlink;][upgrade;][upgrade-interactive;][version;][versions;][why;][<scriptName;]" 1
         "setup" "2.4.2" "Mi40LjI_"
         "example" "2.4.2" "yarn,," \
           "[add;][bin;][cache;][config;][dedupe;][dlx;][exec;][explain;][info;][init;][install;][link;][node;][npm;][pack;][patch;][patch-commit;][rebuild;][remove;][run;][set;][unplug;][up;][why;][plugin;][workspace;][workspaces;][<scriptName;]" 0
@@ -942,6 +959,10 @@ Describe "src/lib.sh"
 
     Describe "y2c_run_yarn_completion(optional token with variables)"
       Parameters
+        "setup" "1.22.10" "MS4yMi4xMA__"
+        "example" "1.22.10" "yarn,list,," "[[--depth #number,--pattern #pattern;]"
+        "example" "1.22.10" "yarn,list,--depth,," "#number"
+        "example" "1.22.10" "yarn,list,--depth,0,," "[[--depth #number,--pattern #pattern;]"
         "setup" "2.4.2" "Mi40LjI_"
         "example" "2.4.2" "yarn,plugin,import,from,sources,," "[[--path #0,--repository #0,--branch #0,--no-minify,-f|--force;][<name;]"
         "example" "2.4.2" "yarn,plugin,import,from,sources,--branch,," "#0"
@@ -967,6 +988,10 @@ Describe "src/lib.sh"
       }
 
       Parameters
+        "setup" "1.22.10" "MS4yMi4xMA__"
+        "example" "1.22.10" "yarn,workspace,@test,list,," "[[--depth #number,--pattern #pattern;]"
+        "example" "1.22.10" "yarn,workspace,@test,list,--depth,," "#number"
+        "example" "1.22.10" "yarn,workspace,@test,list,--depth,0,," "[[--depth #number,--pattern #pattern;]"
         "setup" "2.4.2" "Mi40LjI_"
         "example" "2.4.2" "yarn,workspace,@test,plugin,import,from,sources,," "[[--path #0,--repository #0,--branch #0,--no-minify,-f|--force;][<name;]"
         "example" "2.4.2" "yarn,workspace,@test,plugin,import,from,sources,--branch,," "#0"
@@ -1008,7 +1033,7 @@ Describe "src/lib.sh"
 
     It "should call y2c_run_yarn_completion"
       When call run_test
-      The line 1 of output should equal 0
+      The line 1 of output should equal 1
       The line 2 of output should equal 1
     End
   End

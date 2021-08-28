@@ -42,7 +42,7 @@ declare -i Y2C_FUNC_ARG_IS_ARR=1
 declare -a Y2C_TMP_IDENTIFIED_TOKENS=()
 declare -a Y2C_TMP_ALTERNATIVE_OPTIONS=()
 declare -a Y2C_SYSTEM_EXECUTABLES=()
-declare -i Y2C_TMP_OPTION_WORDS_NUM=0
+declare -i Y2C_TMP_OPTION_BOUNDARY_OFFSET=0
 declare -i Y2C_WORKSPACE_COMMAND_LIST_INDEX=0
 
 Y2C_TMP_EXPANDED_VAR_RESULT=()
@@ -59,6 +59,7 @@ Y2C_SYSTEM_EXECUTABLE_BY_PATH_ENV=1
 Y2C_IS_IN_WORKSPACE_PACKAGE=0
 
 Y2C_SCRIPT_ROOT_PATH=$(dirname "${BASH_SOURCE[0]}")
+Y2C_REPO_ROOT_PATH=$(cd "${Y2C_SCRIPT_ROOT_PATH}/../" && pwd)
 # shellcheck disable=SC1091
 . "${Y2C_SCRIPT_ROOT_PATH}/feature-detector.sh"
 # shellcheck disable=SC1091
@@ -127,13 +128,9 @@ y2c_setup() {
       fi
     fi
 
-    if [[ Y2C_IS_YARN_2_REPO -eq 1 ]]; then
-      y2c_generate_yarn_command_list
-      y2c_generate_workspace_packages
-      y2c_generate_system_executables "${PATH}"
-    else
-      y2c_is_verbose_output && echo "[Y2C] yarn-2-completion won't run on this repository(yarn 2+ is required)" 1>&2
-    fi
+    y2c_generate_yarn_command_list
+    y2c_generate_workspace_packages
+    y2c_generate_system_executables "${PATH}"
 
     return 0
   elif [[ -z $1 ]] && [[ -f "./package.json" ]]; then
@@ -173,7 +170,7 @@ y2c_generate_workspace_packages() {
   local package_name=""
   local package_path=""
   local package_paths=()
-  local existed_package_paths=()
+  local existing_package_paths=()
   local workspace_packagaes_var_name=""
 
   if ! [[ -f "${repo_package_path}" ]]; then
@@ -196,7 +193,7 @@ y2c_generate_workspace_packages() {
 
     if [[ -f "${package_json_path}" ]]; then
       node_commands+="console.log(require('$package_json_path').name);"
-      existed_package_paths+=("${package_json_path}")
+      existing_package_paths+=("${package_json_path}")
     fi
   done
 
@@ -210,7 +207,7 @@ y2c_generate_workspace_packages() {
     eval "$workspace_packagaes_var_name=(\"\${package_names[@]}\")"
   fi
 
-  y2c_set_package_name_path_map "package_names[@]" "existed_package_paths[@]"
+  y2c_set_package_name_path_map "package_names[@]" "existing_package_paths[@]"
 }
 
 y2c_generate_system_executables() {
@@ -305,12 +302,12 @@ y2c_set_expand_var() {
     return 0
   fi
 
-  function_name="y2c_expand_${var_name#$Y2C_VARIABLE_SYMBOL}_variable"
+  function_name="y2c_expand_${var_name#"$Y2C_VARIABLE_SYMBOL"}_variable"
 
   if declare -f "${function_name}" >/dev/null 2>&1; then
     $function_name "$@"
   else
-    Y2C_TMP_EXPANDED_VAR_RESULT=("${var_name#$Y2C_VARIABLE_SYMBOL}")
+    Y2C_TMP_EXPANDED_VAR_RESULT=("${var_name/$Y2C_VARIABLE_SYMBOL/#}")
   fi
 }
 
@@ -430,7 +427,11 @@ y2c_generate_yarn_command_list() {
 
   local options=()
 
-  while IFS='' read -r line; do instructions+=("$line"); done <<<"$(yarn --help | grep -E '^[[:space:]]+yarn')"
+  if [[ $Y2C_IS_YARN_2_REPO -eq 1 ]]; then
+    while IFS='' read -r line; do instructions+=("$line"); done <<<"$(yarn --help | grep -E '^[[:space:]]+yarn')"
+  else
+    while IFS='' read -r line; do instructions+=("$line"); done <"${Y2C_REPO_ROOT_PATH}/data/yarn-1-commands.txt"
+  fi
 
   instructions+=("yarn <scriptName>")
 
@@ -611,6 +612,10 @@ y2c_add_word_candidates() {
   done
 }
 
+y2c_set_max_option_boundary_offset() {
+  [[ $1 -gt $Y2C_TMP_OPTION_BOUNDARY_OFFSET ]] && Y2C_TMP_OPTION_BOUNDARY_OFFSET=$1
+}
+
 y2c_is_commandline_word_match_option() {
   local commandline_word="$1"
   local option="$2"
@@ -620,34 +625,56 @@ y2c_is_commandline_word_match_option() {
   declare -i comp_words_num=${#COMP_WORDS[@]}
   declare -i index=0
   declare -i checking_comp_word_index=0
+  declare -i result=$Y2C_COMMAND_WORDS_NOT_MATCH_OPTION
+  declare -i append_comreply=0
+  declare -i option_words_num=0
   local option_words=()
 
-  Y2C_TMP_OPTION_WORDS_NUM=0
+  Y2C_TMP_OPTION_BOUNDARY_OFFSET=0
 
   y2c_set_alternative_options "${option}"
   for exclusive_option in "${Y2C_TMP_ALTERNATIVE_OPTIONS[@]}"; do
     IFS=" " read -r -a option_words <<<"${exclusive_option}"
     if [[ ${commandline_word} = "${option_words[0]}" ]]; then
-      Y2C_TMP_OPTION_WORDS_NUM=${#option_words[@]}
-      if [[ $Y2C_TMP_OPTION_WORDS_NUM -ne 1 ]]; then
-        for ((index = 1; index < Y2C_TMP_OPTION_WORDS_NUM; ++index)); do
-          checking_comp_word_index=$comp_word_index+$index
-          if [[ $checking_comp_word_index -ge $comp_words_num ]]; then
-            break
-          fi
 
-          if [[ -z "${COMP_WORDS[checking_comp_word_index]}" ]]; then
+      option_words_num=${#option_words[@]}
+      for ((index = 1; index < option_words_num; ++index)); do
+        checking_comp_word_index=$comp_word_index+$index
+        if [[ $checking_comp_word_index -ge $comp_words_num ]]; then
+          break
+        fi
+
+        if [[ ${option_words[index]} = "#"* ]]; then
+          y2c_set_max_option_boundary_offset "$index"
+          if [[ -z ${COMP_WORDS[checking_comp_word_index]} ]]; then
             COMPREPLY=("${option_words[index]}")
-            return $Y2C_COMMAND_WORDS_MISS_WHOLE_OPTION
+            append_comreply=1
+            continue 2
           fi
-        done
-      fi
+          continue
+        elif [[ ${COMP_WORDS[checking_comp_word_index]} = "${option_words[index]}" ]]; then
+          y2c_set_max_option_boundary_offset "$index"
+          continue
+        elif [[ ${option_words[index]} = "${COMP_WORDS[checking_comp_word_index]}"* ]]; then
+          y2c_set_max_option_boundary_offset "$index"
+          COMPREPLY+=("${option_words[index]}")
+          append_comreply=1
+          continue 2
+        else
+          continue 2
+        fi
+      done
 
-      return $Y2C_COMMAND_WORDS_MATCH_OPTION
+      y2c_set_max_option_boundary_offset "$((index - 1))"
+      result=$Y2C_COMMAND_WORDS_MATCH_OPTION
     fi
   done
 
-  return $Y2C_COMMAND_WORDS_NOT_MATCH_OPTION
+  if [[ $result -eq $Y2C_COMMAND_WORDS_NOT_MATCH_OPTION ]] && [[ $append_comreply -eq 1 ]]; then
+    return $Y2C_COMMAND_WORDS_MISS_WHOLE_OPTION
+  else
+    return $result
+  fi
 }
 
 y2c_run_yarn_completion() {
@@ -657,11 +684,10 @@ y2c_run_yarn_completion() {
     local yarn_command_tokens
   fi
 
-  declare -i word_num=${#COMP_WORDS[@]}
   declare -i token_type=0
 
   local completing_word="$1"
-  local last_word_index=$word_num-1
+  local last_word_index=$((${#COMP_WORDS[@]} - 1))
   local expanded_var=""
   local token=""
   local copied_identified_tokens=()
@@ -729,7 +755,7 @@ y2c_run_yarn_completion() {
           ;;
         "$Y2C_YARN_WORD_IS_OPTION")
           if y2c_is_commandline_word_match_option "${COMP_WORDS[$comp_word_index]}" "${token}" "${comp_word_index}"; then
-            comp_word_index+=$Y2C_TMP_OPTION_WORDS_NUM-1
+            comp_word_index+=$Y2C_TMP_OPTION_BOUNDARY_OFFSET
             continue 2
           elif [[ $? -eq $Y2C_COMMAND_WORDS_MISS_WHOLE_OPTION ]]; then
             return 0
@@ -737,12 +763,15 @@ y2c_run_yarn_completion() {
           ;;
         "$Y2C_YARN_WORD_IS_VARIABLE")
           y2c_set_expand_var "${token}" "${completing_word}"
-
-          for expanded_var in "${Y2C_TMP_EXPANDED_VAR_RESULT[@]}"; do
-            if [[ ${COMP_WORDS[$comp_word_index]} = "${expanded_var}" ]]; then
-              continue 3
-            fi
-          done
+          if [[ ${Y2C_TMP_EXPANDED_VAR_RESULT[*]} = "${token/$Y2C_VARIABLE_SYMBOL/#}" ]]; then
+            continue 2
+          else
+            for expanded_var in "${Y2C_TMP_EXPANDED_VAR_RESULT[@]}"; do
+              if [[ ${COMP_WORDS[$comp_word_index]} = "${expanded_var}" ]]; then
+                continue 3
+              fi
+            done
+          fi
           ;;
         esac
       done
@@ -783,10 +812,6 @@ y2c_run_yarn_completion() {
 }
 
 y2c_yarn_completion_for_complete() {
-  if [[ $Y2C_IS_YARN_2_REPO -eq 0 ]]; then
-    return 0
-  fi
-
   y2c_run_yarn_completion "$2"
 }
 
