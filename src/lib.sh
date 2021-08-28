@@ -170,7 +170,7 @@ y2c_generate_workspace_packages() {
   local package_name=""
   local package_path=""
   local package_paths=()
-  local existed_package_paths=()
+  local existing_package_paths=()
   local workspace_packagaes_var_name=""
 
   if ! [[ -f "${repo_package_path}" ]]; then
@@ -193,7 +193,7 @@ y2c_generate_workspace_packages() {
 
     if [[ -f "${package_json_path}" ]]; then
       node_commands+="console.log(require('$package_json_path').name);"
-      existed_package_paths+=("${package_json_path}")
+      existing_package_paths+=("${package_json_path}")
     fi
   done
 
@@ -207,7 +207,7 @@ y2c_generate_workspace_packages() {
     eval "$workspace_packagaes_var_name=(\"\${package_names[@]}\")"
   fi
 
-  y2c_set_package_name_path_map "package_names[@]" "existed_package_paths[@]"
+  y2c_set_package_name_path_map "package_names[@]" "existing_package_paths[@]"
 }
 
 y2c_generate_system_executables() {

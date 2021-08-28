@@ -351,6 +351,7 @@ Describe "src/lib.sh"
 
     Parameters
       "/yarn-repo/test1" "Y2C_WORKSPACE_PACKAGES_L3lhcm4tcmVwby90ZXN0MQ__" "wrk-a wrk-b wrk-c"
+      "/yarn-repo/test2" "Y2C_WORKSPACE_PACKAGES_L3lhcm4tcmVwby90ZXN0Mg__" "wrk-a wrk-b"
       "/yarn-repo/test3" "Y2C_WORKSPACE_PACKAGES_L3lhcm4tcmVwby90ZXN0Mw__" "wrk-a wrk-b wrk-c"
     End
 
@@ -430,6 +431,7 @@ Describe "src/lib.sh"
 
     Parameters
       /yarn-repo/test1 "Y2C_WORKSPACE_PACKAGES_L3lhcm4tcmVwby90ZXN0MQ__[*]"
+      /yarn-repo/test2 "Y2C_WORKSPACE_PACKAGES_L3lhcm4tcmVwby90ZXN0Mg__[*]"
       /yarn-repo/test3 "Y2C_WORKSPACE_PACKAGES_L3lhcm4tcmVwby90ZXN0Mw__[*]"
     End
 
@@ -461,6 +463,7 @@ Describe "src/lib.sh"
       /yarn-repo/test1 "<workspaceName" "Y2C_WORKSPACE_PACKAGES_L3lhcm4tcmVwby90ZXN0MQ__[*]"
       /yarn-repo/test1 "tag" ""
       /yarn-repo/test1 "<tag" ""
+      /yarn-repo/test2 "<workspaceName" "Y2C_WORKSPACE_PACKAGES_L3lhcm4tcmVwby90ZXN0Mg__[*]"
       /yarn-repo/test3 "<workspaceName" "Y2C_WORKSPACE_PACKAGES_L3lhcm4tcmVwby90ZXN0Mw__[*]"
     End
 
@@ -497,6 +500,7 @@ Describe "src/lib.sh"
   Describe "y2c_expand_yarn_workspace_command_list"
     Parameters
       "2.4.2" "validated_command_" "validated_command_41" "validated_command_42"
+      "1.22.10" "validated_command_" "validated_command_88"
       "2.1.0" "validated_command_" "validated_command_34"
     End
 
@@ -535,6 +539,7 @@ Describe "src/lib.sh"
     Parameters
       "-D|--dev" "-D" "--dev"
       "-f|--fields #0" "-f" "--fields #0"
+      "--level info|--level low|--level moderate" "--level info" "--level low" "--level moderate"
     End
 
     run_test() {
@@ -817,6 +822,9 @@ Describe "src/lib.sh"
 
     Describe "y2c_run_yarn_completion(standard)"
       Parameters
+        "setup" "1.22.10" "MS4yMi4xMA__"
+        "example" "1.22.10" "yarn,audit,," "[[--level info|--level low|--level moderate|--level high|--level critical,--groups #group_name;]"
+        "example" "1.22.10" "yarn,audit,--level,," "info low moderate high critical"
         "setup" "2.4.2" "Mi40LjI_"
         "example" "2.4.2" "yarn,config,," "[[-v|--verbose,--why,--json;][get;][set;]"
         "example" "2.4.2" "yarn,add,--json,-D,--optional,--" "[[--json,-E|--exact,-T|--tilde,-C|--caret,-D|--dev,-P|--peer,-O|--optional,--prefer-dev,-i|--interactive,--cached;--][...;--]"
@@ -833,11 +841,18 @@ Describe "src/lib.sh"
 
     Describe "y2c_run_yarn_completion(workspace command)"
       run_test_override_variables() {
-        #shellcheck disable=SC2034
-        Y2C_TMP_EXPANDED_VAR_RESULT=("@test")
+        y2c_set_expand_var() {
+          case "$1" in
+          "<workspaceName") Y2C_TMP_EXPANDED_VAR_RESULT=("@test") ;;
+          "<package") Y2C_TMP_EXPANDED_VAR_RESULT=("react") ;;
+          esac
+        }
       }
 
       Parameters
+        "setup" "1.22.10" "MS4yMi4xMA__"
+        "example" "1.22.10" "yarn,workspace,@test,," "[<commandName;][add;][audit;][autoclean;][bin;][cache;][check;][config;][create;][generate-lock-entry;][global;][import;][info;][init;][install;][licenses;][link;][list;][login;][logout;][outdated;][owner;][pack;][policies;][publish;][remove;][run;][tag;][team;][test;][unlink;][upgrade;][upgrade-interactive;][version;][versions;][why;][<scriptName;]"
+        "example" "1.22.10" "yarn,workspace,@test,upgrade,react,," "[[--ignore-engines,--pattern #pattern,--latest|-L;][[--ignore-engines,--pattern #pattern,--latest|-L,--caret;][[--ignore-engines,--pattern #pattern,--latest|-L,--tilde;][[--ignore-engines,--pattern #pattern,--latest|-L,--exact;]"
         "setup" "2.4.2" "Mi40LjI_"
         "example" "2.4.2" "yarn,workspace,@test,," "[<commandName;][add;][bin;][cache;][config;][dedupe;][dlx;][exec;][explain;][info;][init;][install;][link;][node;][npm;][pack;][patch;][patch-commit;][rebuild;][remove;][run;][set;][unplug;][up;][why;][plugin;][<scriptName;]"
         "example" "2.4.2" "yarn,workspace,@test,plugin,i" "[import;i][list;i][remove;i][runtime;i]"
@@ -854,6 +869,11 @@ Describe "src/lib.sh"
 
     Describe "y2c_run_yarn_completion(Y2C_IS_IN_WORKSPACE_PACKAGE)"
       Parameters
+        "setup" "1.22.10" "MS4yMi4xMA__"
+        "example" "1.22.10" "yarn,," \
+          "[add;][audit;][autoclean;][bin;][cache;][check;][config;][create;][generate-lock-entry;][global;][import;][info;][init;][install;][licenses;][link;][list;][login;][logout;][outdated;][owner;][pack;][policies;][publish;][remove;][run;][tag;][team;][test;][unlink;][upgrade;][upgrade-interactive;][version;][versions;][why;][workspace;][workspaces;][<scriptName;]" 0
+        "example" "1.22.10" "yarn,," \
+          "[add;][audit;][autoclean;][bin;][cache;][check;][config;][create;][generate-lock-entry;][global;][import;][info;][init;][install;][licenses;][link;][list;][login;][logout;][outdated;][owner;][pack;][policies;][publish;][remove;][run;][tag;][team;][test;][unlink;][upgrade;][upgrade-interactive;][version;][versions;][why;][<scriptName;]" 1
         "setup" "2.4.2" "Mi40LjI_"
         "example" "2.4.2" "yarn,," \
           "[add;][bin;][cache;][config;][dedupe;][dlx;][exec;][explain;][info;][init;][install;][link;][node;][npm;][pack;][patch;][patch-commit;][rebuild;][remove;][run;][set;][unplug;][up;][why;][plugin;][workspace;][workspaces;][<scriptName;]" 0
@@ -939,6 +959,10 @@ Describe "src/lib.sh"
 
     Describe "y2c_run_yarn_completion(optional token with variables)"
       Parameters
+        "setup" "1.22.10" "MS4yMi4xMA__"
+        "example" "1.22.10" "yarn,list,," "[[--depth #number,--pattern #pattern;]"
+        "example" "1.22.10" "yarn,list,--depth,," "#number"
+        "example" "1.22.10" "yarn,list,--depth,0,," "[[--depth #number,--pattern #pattern;]"
         "setup" "2.4.2" "Mi40LjI_"
         "example" "2.4.2" "yarn,plugin,import,from,sources,," "[[--path #0,--repository #0,--branch #0,--no-minify,-f|--force;][<name;]"
         "example" "2.4.2" "yarn,plugin,import,from,sources,--branch,," "#0"
@@ -964,6 +988,10 @@ Describe "src/lib.sh"
       }
 
       Parameters
+        "setup" "1.22.10" "MS4yMi4xMA__"
+        "example" "1.22.10" "yarn,workspace,@test,list,," "[[--depth #number,--pattern #pattern;]"
+        "example" "1.22.10" "yarn,workspace,@test,list,--depth,," "#number"
+        "example" "1.22.10" "yarn,workspace,@test,list,--depth,0,," "[[--depth #number,--pattern #pattern;]"
         "setup" "2.4.2" "Mi40LjI_"
         "example" "2.4.2" "yarn,workspace,@test,plugin,import,from,sources,," "[[--path #0,--repository #0,--branch #0,--no-minify,-f|--force;][<name;]"
         "example" "2.4.2" "yarn,workspace,@test,plugin,import,from,sources,--branch,," "#0"
