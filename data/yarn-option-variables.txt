@@ -1,0 +1,10 @@
+yarn add					--mode				skip-build update-lockfile
+yarn dedupe				-s						highest
+yarn dedupe				--mode				skip-build update-lockfile
+yarn install			--mode				skip-build update-lockfile
+yarn npm audit		--environment	production
+yarn npm audit		--severity		info low moderate high critical
+yarn npm info			-f						name version description keywords homepage bugs license author contributors funding files main browser bin man directories repository scripts config dependencies devDependencies peerDependencies peerDependenciesMeta bundledDependencies optionalDependencies engines os cpu private publishConfig workspaces
+yarn npm publish	--access			public restricted
+yarn remove				--mode				skip-build update-lockfile
+yarn up						--mode				skip-build update-lockfile

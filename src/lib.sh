@@ -58,12 +58,37 @@ Y2C_VERBOSE=0
 Y2C_SYSTEM_EXECUTABLE_BY_PATH_ENV=1
 Y2C_IS_IN_WORKSPACE_PACKAGE=0
 
+Y2C_V2_OPTION_VARIABLE_VAR_NAME_PREFIX="Y2C_V2_OPTION_VARIABLES_"
+declare -a Y2C_OPTION_VARIABLE_LIST=()
+
 Y2C_SCRIPT_ROOT_PATH=$(dirname "${BASH_SOURCE[0]}")
 Y2C_REPO_ROOT_PATH=$(cd "${Y2C_SCRIPT_ROOT_PATH}/../" && pwd)
 # shellcheck disable=SC1091
 . "${Y2C_SCRIPT_ROOT_PATH}/feature-detector.sh"
 # shellcheck disable=SC1091
 . "${Y2C_SCRIPT_ROOT_PATH}/builtin-hook.sh"
+
+y2c_load_option_variables() {
+  local option_variable_var_name=""
+
+  declare -i index=0
+  declare -a list=()
+
+  {
+    while read -r; do
+      option_variable_var_name="${Y2C_V2_OPTION_VARIABLE_VAR_NAME_PREFIX}$((++index))"
+      IFS=$'\t' read -r -a list <<<"$REPLY"
+      if [[ $IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
+        declare -n option_variable_var_ref="${option_variable_var_name}"
+        # shellcheck disable=SC2034
+        option_variable_var_ref=("${list[@]}")
+      else
+        eval "${option_variable_var_name}=(\"\${list[@]}\")"
+      fi
+      Y2C_OPTION_VARIABLE_LIST+=("${option_variable_var_name}")
+    done
+  } <"${Y2C_REPO_ROOT_PATH}/data/yarn-option-variables.txt"
+}
 
 y2c_is_verbose_output() {
   return $((Y2C_VERBOSE ^ 1))
@@ -311,6 +336,73 @@ y2c_set_expand_var() {
   fi
 }
 
+y2c_get_option_variable() {
+  local instruction="$1"
+  local current_option="$2"
+  local option_var_ref=""
+  local option_var_name=""
+  declare -a option_var_config=()
+
+  for option_var_name in "${Y2C_OPTION_VARIABLE_LIST[@]}"; do
+    option_var_ref="${option_var_name}[@]"
+    option_var_config=("${!option_var_ref}")
+    if [[ $instruction = *"${option_var_config[0]}"* ]] && [[ $current_option = *"${option_var_config[1]}"* ]]; then
+      #shellcheck disable=SC2034
+      read -r -a local_option_variable_list <<<"${option_var_config[2]}"
+      return 0
+    fi
+  done
+
+  return 1
+}
+
+y2c_expand_option_variable_list() {
+  local instruction="$1"
+  local option="$2"
+  local option_variable=""
+  local delimiter=""
+  local alternative_option=""
+  local expanded_result=""
+  declare -a local_option_variable_list=()
+
+  if ! [[ $option = *"#"* ]]; then
+    return 0
+  fi
+
+  y2c_get_option_variable "${instruction}" "${option}"
+  if [[ ${#local_option_variable_list[@]} -eq 0 ]]; then
+    return 0
+  fi
+
+  y2c_set_alternative_options "${option}"
+
+  delimiter=""
+  for alternative_option in "${Y2C_TMP_ALTERNATIVE_OPTIONS[@]}"; do
+    for option_variable in "${local_option_variable_list[@]}"; do
+      alternative_option="${alternative_option%% *}"
+      expanded_result+="${delimiter}${alternative_option} ${option_variable}"
+      delimiter="${Y2C_ALTERNATIVE_OPTIONS_SEPARATOR}"
+    done
+  done
+
+  echo "${expanded_result}"
+}
+
+y2c_replace_option_token_variable_with_enum() {
+  local instruction="$1"
+  local input_option="$2"
+  local result=""
+  local option="${input_option#*[}"
+  option="${option%]*}"
+
+  result=$(y2c_expand_option_variable_list "${instruction}" "${option}")
+  if [[ -n $result ]]; then
+    echo "${input_option/$option/$result}"
+  else
+    echo "${input_option}"
+  fi
+}
+
 y2c_get_command_tokens_var_name() {
   local base64_yarn_version="$1"
   local index="$2"
@@ -466,6 +558,7 @@ y2c_generate_yarn_command_list() {
         if [[ $broken_word = *$'\x5d' ]]; then
           assembling_option="${assembling_option%]}"
           assembling_option="${assembling_option%>}"
+          assembling_option=$(y2c_replace_option_token_variable_with_enum "${instruction}" "${assembling_option}")
 
           if [[ $previous_word_is_option -eq 1 ]]; then
             # shellcheck disable=SC2015
@@ -505,7 +598,7 @@ y2c_generate_yarn_command_list() {
     store_yarn_command_var_name="$(y2c_get_command_tokens_var_name "${Y2C_YARN_BASE64_VERSION}" "${store_yarn_command_index}")"
     store_yarn_command_index+=1
 
-    if [[ IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
+    if [[ $IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
       yarn_command_tokens_list_ref[${#yarn_command_tokens_list_ref[@]}]="${store_yarn_command_var_name}"
 
       declare -n store_yarn_command_tokens_ref="${store_yarn_command_var_name}"
@@ -852,7 +945,7 @@ y2c_set_package_name_path_map() {
   # shellcheck disable=SC2207
   var_names_for_package_names=($(y2c_get_var_name "${package_names_ref}" "${Y2C_PACKAGE_NAME_PATH_PREFIX}${Y2C_CURRENT_ROOT_REPO_BASE64_PATH}_" $Y2C_FUNC_ARG_IS_ARR))
 
-  if [[ IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
+  if [[ $IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
     for index in "${!var_names_for_package_names[@]}"; do
       declare -n package_name_path_ref="${var_names_for_package_names[$index]}"
       # shellcheck disable=SC2034
@@ -884,6 +977,7 @@ y2c_yarn_completion_main() {
     return 1
   fi
 
+  y2c_load_option_variables
   y2c_install_hooks
 
   # It is common that some script names contain colon characters,
