@@ -1272,4 +1272,94 @@ Describe "src/lib.sh"
       done
     End
   End
+
+  Describe "y2c_load_option_variables"
+    dump_variable() {
+      local var_name=""
+      local option_variable_ref=""
+      local result=""
+      local element_delimiter=""
+
+      for var_name in "${Y2C_OPTION_VARIABLE_LIST[@]}"; do
+        option_variable_ref="${var_name}[@]"
+        element_delimiter=""
+        for element in "${!option_variable_ref}"; do
+          result+="${element_delimiter}${element}"
+          element_delimiter=$'\t'
+        done
+        result+=$'\n'
+      done
+
+      echo "$result"
+    }
+
+    It "should set up Y2C_OPTION_VARIABLE_LIST"
+      When call y2c_load_option_variables
+      #shellcheck disable=SC2034
+      source_content=$(tr -s $'\t' <data/yarn-option-variables.txt)
+      The variable source_content should equal "$(dump_variable)"
+    End
+  End
+
+  Describe "y2c_get_option_variable"
+    Parameters
+      " yarn dedupe [-s,--strategy #0] [-c,--check] [--json] [--mode #0] ..." "-s|--strategy #0" "highest" 0
+      " yarn add [--json] [-E,--exact] [-T,--tilde] [-C,--caret] [-D,--dev] [-P,--peer] [-O,--optional] [--prefer-dev] [-i,--interactive] [--cached] [--mode #0] ..." "--mode #0" "skip-build update-lockfile" 0
+      " yarn add [--json] [-E,--exact] [-T,--tilde] [-C,--caret] [-D,--dev] [-P,--peer] [-O,--optional] [--prefer-dev] [-i,--interactive] [--cached] [--mode #0] ..." "--ivnalid-flag #0" "" 1
+    End
+
+    run_test() {
+      declare -i result=0
+      declare -a local_option_variable_list=()
+      #shellcheck disable=SC2034
+
+      y2c_load_option_variables
+      y2c_get_option_variable "$1" "$2" || result=$?
+
+      echo "${local_option_variable_list[*]}"
+      return $result
+    }
+
+    It "should get expected option variable"
+      When call run_test "$@"
+      The output should equal "$3"
+      The status should equal "$4"
+    End
+  End
+
+  Describe "y2c_expand_option_variable_list"
+    Parameters
+      " yarn dedupe [-s,--strategy #0] [-c,--check] [--json] [--mode #0] ..." "-s|--strategy #0" "-s highest|--strategy highest"
+      " yarn remove [-A,--all] [--mode #0] ..." "--mode #0" "--mode skip-build|--mode update-lockfile"
+    End
+
+    run_test() {
+      y2c_load_option_variables
+      y2c_expand_option_variable_list "$1" "$2"
+    }
+
+    It "should expand option variable"
+      When call run_test "$@"
+      The output should equal "$3"
+    End
+  End
+
+  Describe "y2c_replace_option_token_variable_with_enum"
+    Parameters
+      " yarn dedupe [-s,--strategy #0] [-c,--check] [--json] [--mode #0] ..." "[-s|--strategy #0]" "[-s highest|--strategy highest]"
+      " yarn dedupe [-s,--strategy #0] [-c,--check] [--json] [--mode #0] ..." "[--json]" "[--json]"
+      " yarn npm audit [-A,--all] [-R,--recursive] [--environment #0] [--json] [--severity #0]" "[--severity #0]" "[--severity info|--severity low|--severity moderate|--severity high|--severity critical]"
+      " yarn npm audit [-A,--all] [-R,--recursive] [--environment #0] [--json] [--severity #0] [--undefined #0]" "[--undefined #0]" "[--undefined #0]"
+    End
+
+    run_test() {
+      y2c_load_option_variables
+      y2c_replace_option_token_variable_with_enum "$1" "$2"
+    }
+
+    It "should replace option token varable with a list of constant"
+      When call run_test "$@"
+      The output should equal "$3"
+    End
+  End
 End
