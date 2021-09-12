@@ -12,7 +12,7 @@ Describe "Running test cases on src/dev/lint.sh" "lint"
   }
 
   find_files_in_src_folder() {
-    find ./src -type f | while read -r; do echo "${REPLY/*src/}"; done | sort
+    find ./src -type f -name \*.sh | while read -r; do echo "${REPLY/*src/}"; done | sort
   }
 
   AfterEach "cleanup"

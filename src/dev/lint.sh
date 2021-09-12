@@ -29,7 +29,7 @@ main() {
   host_source_path="${PWD}/${residing_path}/../../src"
 
   if shopt -s globstar >/dev/null 2>&1; then
-    host_checking_items=("$host_source_path"/**/*)
+    host_checking_items=("$host_source_path"/**/*.sh)
 
     for item in "${host_checking_items[@]}"; do
       if [[ -f $item ]]; then
@@ -38,7 +38,7 @@ main() {
     done
   else
     #shellcheck disable=SC2207
-    host_checking_files=($(list_all_files "${PWD}/${residing_path}/../../src"))
+    host_checking_files=($(list_all_files "${PWD}/${residing_path}/../../src" "*.sh"))
   fi
 
   guest_source_files=("${host_checking_files[@]/"$host_source_path"/"$guest_checking_files_root"}")
