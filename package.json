@@ -8,7 +8,7 @@
     "yarn completion",
     "yarn"
   ],
-  "repository": "git@github.com:dustin71728/yarn-completion.git",
+  "repository": "git@github.com:liuruenshen/yarn-completion.git",
   "author": "kiwi <kiwi71728@icloud.com>",
   "license": "MIT",
   "devDependencies": {
