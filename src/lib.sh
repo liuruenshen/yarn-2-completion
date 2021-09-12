@@ -197,6 +197,7 @@ y2c_generate_workspace_packages() {
   local package_paths=()
   local existing_package_paths=()
   local workspace_packagaes_var_name=""
+  local get_workspaces_js_script="${Y2C_REPO_ROOT_PATH}/src/get-workspaces.js"
 
   if ! [[ -f "${repo_package_path}" ]]; then
     return 0
@@ -210,8 +211,8 @@ y2c_generate_workspace_packages() {
 
   y2c_is_verbose_output && echo "[Y2C] Finding all the workspace's packages and cache them" 1>&2
 
-  # shellcheck disable=SC2207
-  package_paths=($(node -e "console.log((require('${repo_package_path}').workspaces || []).join(' '))"))
+  #shellcheck disable=SC2207
+  package_paths=($(node "${get_workspaces_js_script}" "${repo_package_path}"))
 
   for package_path in "${package_paths[@]}"; do
     package_json_path="./${package_path}/package.json"
