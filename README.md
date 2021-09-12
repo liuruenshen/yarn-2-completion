@@ -2,9 +2,9 @@
 
 <div align="center">
 
-[![Status](https://img.shields.io/badge/status-active-success.svg)](https://img.shields.io/github/workflow/status/dustin71728/yarn-2-completion/default)
-![Workflow](https://github.com/dustin71728/yarn-2-completion/actions/workflows/default.yaml/badge.svg)
-[![codecov](https://codecov.io/gh/dustin71728/yarn-2-completion/branch/main/graph/badge.svg?token=JH0PRFL7MM)](https://codecov.io/gh/dustin71728/yarn-2-completion)
+[![Status](https://img.shields.io/badge/status-active-success.svg)](https://img.shields.io/github/workflow/status/liuruenshen/yarn-2-completion/default)
+![Workflow](https://github.com/liuruenshen/yarn-2-completion/actions/workflows/default.yaml/badge.svg)
+[![codecov](https://codecov.io/gh/liuruenshen/yarn-2-completion/branch/main/graph/badge.svg?token=JH0PRFL7MM)](https://codecov.io/gh/liuruenshen/yarn-2-completion)
 [![CodeFactor](https://www.codefactor.io/repository/github/liuruenshen/yarn-2-completion/badge)](https://www.codefactor.io/repository/github/liuruenshen/yarn-2-completion)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
 
@@ -32,7 +32,7 @@
 ## 🏁 Getting Started <a name = "getting_started"></a>
 
 ```
-git clone git@github.com:dustin71728/yarn-2-completion.git
+git clone git@github.com:liuruenshen/yarn-2-completion.git
 
 ./yarn-2-completion/install.sh
 ```
