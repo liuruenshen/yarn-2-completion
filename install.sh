@@ -71,7 +71,8 @@ install() {
   cat <<END >>"${HOME}/${startup_file}"
 # Beginning of yarn-2-completion's configurations
 . ${root_repo_path}/src/completion.sh
-${bind_show_all_if_unmodified} # yarn-2-completion readline settings
+${bind_show_all_if_unmodified} # [yarn-2-completion] readline settings
+shopt -u hostcomplete # [yarn-2-completion] The symbol @ is part of package name in npm ecosystem
 export Y2C_VERBOSE=${enable_verbose_output_answer:-0}
 export Y2C_SYSTEM_EXECUTABLE_BY_PATH_ENV=${enable_exec_complete_answer:-1}
 # End of yarn-2-completion's configurations

@@ -12,7 +12,8 @@
   "author": "kiwi <kiwi71728@icloud.com>",
   "license": "MIT",
   "devDependencies": {
-    "husky": "^6.0.0",
+    "husky": "^7.0.2",
+    "lint-staged": "^11.1.2",
     "npm-run-all": "^4.1.5",
     "pinst": "^2.0.0"
   },
@@ -27,5 +28,6 @@
     "test:run": "./src/dev/run-test.sh \"$@\"",
     "test": "npm-run-all lint 'test:* {@}'",
     "test-local": "Y2C_TEST_LOCAL_MODE=1 npm-run-all lint 'test:* {@}'"
-  }
+  },
+  "packageManager": "yarn@3.1.1"
 }
