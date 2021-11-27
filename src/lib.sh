@@ -22,6 +22,7 @@ Y2C_REPO_ROOT_YARN_VERSION_VAR_NAME_PREFIX="Y2C_REPO_YARN_VERSION_"
 Y2C_REPO_ROOT_YARN_BASE64_VERSION_VAR_NAME_PREFIX="Y2C_REPO_YARN_BASE64_VERSION_"
 Y2C_REPO_ROOT_IS_YARN_2_VAR_NAME_PREFIX="Y2C_REPO_IS_YARN_2_"
 Y2C_WORKSPACE_PACKAGES_PREFIX="Y2C_WORKSPACE_PACKAGES_"
+Y2C_NODE_MODULES_PACKAGES_PREFIX="Y2C_NODE_MODULES_PACKAGES_"
 
 Y2C_COMMAND_END_MARK="yarn_command_end_mark_for_prorcesing_last_token"
 Y2C_ALTERNATIVE_OPTIONS_SEPARATOR="|"
@@ -155,6 +156,7 @@ y2c_setup() {
 
     y2c_generate_yarn_command_list
     y2c_generate_workspace_packages
+    y2c_generate_node_modules_packages
     y2c_generate_system_executables "${PATH}"
 
     return 0
@@ -259,6 +261,39 @@ y2c_generate_system_executables() {
   done
 }
 
+y2c_generate_node_modules_packages() {
+  local var_name="${Y2C_NODE_MODULES_PACKAGES_PREFIX}${Y2C_CURRENT_ROOT_REPO_BASE64_PATH}"
+  local folder=""
+  local node_modules_path="${Y2C_CURRENT_ROOT_REPO_PATH}/node_modules/"
+  declare -a node_modules_packages=()
+
+  if [[ -n ${!var_name} ]]; then
+    y2c_is_verbose_output && echo "[Y2C] Found the cache of the node_modules packages" 1>&2
+    return 0
+  fi
+
+  for folder in "${node_modules_path}"*; do
+    if [[ -f "${folder}/package.json" ]]; then
+      node_modules_packages+=("${folder#"$node_modules_path"}")
+    fi
+  done
+
+  for folder in "${node_modules_path}@"*/*; do
+    if [[ -f "${folder}/package.json" ]]; then
+      node_modules_packages+=("${folder#"$node_modules_path"}")
+    fi
+  done
+
+  if [[ $IS_SUPPORT_DECLARE_N_FLAG -eq 1 ]]; then
+    # shellcheck disable=2178
+    declare -n store_map_ref="${var_name}"
+    # shellcheck disable=2034
+    store_map_ref=("${node_modules_packages[@]}")
+  else
+    eval "$var_name=(\"\${node_modules_packages[@]}\")"
+  fi
+}
+
 y2c_get_package_json_scripts_keys() {
   local package_json_path="$1"
   local node_command="console.log(Object.keys(require('${package_json_path}').scripts || {}).join(' '))"
@@ -311,6 +346,23 @@ y2c_expand_scriptName_variable() {
     ;;
   *)
     read -r -a Y2C_TMP_EXPANDED_VAR_RESULT < <(y2c_get_package_json_scripts_keys "${PWD}/package.json")
+    ;;
+  esac
+}
+
+y2c_expand_package_variable() {
+  local current_command="${COMP_WORDS[*]}"
+  local var_ref="${Y2C_NODE_MODULES_PACKAGES_PREFIX}${Y2C_CURRENT_ROOT_REPO_BASE64_PATH}[@]"
+
+  case "${current_command}" in
+  "yarn why"*)
+    Y2C_TMP_EXPANDED_VAR_RESULT=("${!var_ref}")
+    ;;
+  "yarn workspace"*"why"*)
+    Y2C_TMP_EXPANDED_VAR_RESULT=("${!var_ref}")
+    ;;
+  *)
+    :
     ;;
   esac
 }
